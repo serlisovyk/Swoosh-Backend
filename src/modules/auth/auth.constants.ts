@@ -1,5 +1,4 @@
 export const REFRESH_TOKEN_COOKIE_NAME = 'refreshToken' as const
-export const INVALID_PASSWORD_ERROR = 'Неверный пароль'
 export const INVALID_CREDENTIALS_ERROR = 'Неверный email или пароль'
 export const USER_NOT_FOUND_ERROR = 'Пользователь с таким email не найден'
 export const FAILED_TO_CREATE_USER_ERROR = 'Не удалось создать пользователя'

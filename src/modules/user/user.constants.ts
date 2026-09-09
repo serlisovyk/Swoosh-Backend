@@ -7,8 +7,6 @@ export const USER_PUBLIC_SELECT_FIELDS = USER_BASE_SELECT_FIELDS
 export const EMAIL_STRING_ERROR = 'Email должен быть строкой'
 export const EMAIL_FORMAT_ERROR = 'Некорректный формат email'
 export const PASSWORD_STRING_ERROR = 'Пароль должен быть строкой'
-export const PASSWORD_LENGTH_ERROR =
-  'Пароль должен содержать минимум 6 символов'
 export const NEW_PASSWORD_STRING_ERROR = 'Новый пароль должен быть строкой'
 export const NEW_PASSWORD_LENGTH_ERROR =
   'Новый пароль должен содержать минимум 6 символов'
@@ -31,7 +29,6 @@ export const USER_ID_EXAMPLE = '65f1e8d3f9a2b56789c54321'
 export const USER_EMAIL_EXAMPLE = 'john.swoosh@example.com'
 export const USER_NAME_EXAMPLE = 'John Doe'
 export const USER_PHONE_EXAMPLE = '+380991112233'
-export const USER_EMAIL_VERIFIED_EXAMPLE = false
 export const USER_ADDRESS_COMPANY_EXAMPLE = 'Swoosh'
 export const USER_ADDRESS_REGION_EXAMPLE = 'Kyiv region'
 export const USER_ADDRESS_CITY_EXAMPLE = 'Kyiv'
