@@ -5,16 +5,10 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
-import { randomUUID } from 'crypto'
 import { ConfigService } from '@nestjs/config'
 import { InjectModel } from '@nestjs/mongoose'
 import { hash, verify } from 'argon2'
 import { RegisterDto } from '@modules/auth/dto/register.dto'
-import {
-  type AuthSocialProfile,
-  type AuthSocialProvider,
-} from '@modules/auth/auth.types'
-import { SOCIAL_AUTH_PROVIDER } from '@modules/auth/auth.constants'
 import { hashToken, hashTokenWithSecret } from '@modules/auth/auth.utils'
 import { ONE_HOUR_IN_MS, THIRTY_MINUTES_IN_MS } from '@shared/constants'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -54,15 +48,6 @@ export class UserService {
       .lean()
   }
 
-  getBySocialProvider(provider: AuthSocialProvider, providerId: string) {
-    const socialProviderField = this.getSocialProviderField(provider)
-
-    return this.userModel
-      .findOne({ [socialProviderField]: providerId })
-      .select(USER_PUBLIC_SELECT_FIELDS)
-      .lean()
-  }
-
   async create(dto: RegisterDto) {
     const preparedEmail = dto.email.toLowerCase()
 
@@ -80,58 +65,6 @@ export class UserService {
     })
 
     return this.getById(newUser._id)
-  }
-
-  async createSocialUser(profile: AuthSocialProfile) {
-    const preparedEmail = profile.email.toLowerCase()
-
-    const isExisting = await this.getByEmail(preparedEmail)
-
-    if (isExisting) throw new ConflictException(USER_ALREADY_EXISTS_ERROR)
-
-    const socialProviderField = this.getSocialProviderField(profile.provider)
-
-    const newUser = await this.userModel.create({
-      email: preparedEmail,
-      name: profile.name,
-      role: ROLES.USER,
-      isEmailVerified: true,
-      password: await hash(randomUUID()),
-      [socialProviderField]: profile.providerId,
-    })
-
-    return this.getById(newUser._id)
-  }
-
-  async linkSocialProvider(
-    userId: string,
-    provider: AuthSocialProvider,
-    providerId: string,
-  ) {
-    const socialProviderField = this.getSocialProviderField(provider)
-
-    const linkedUser = await this.userModel
-      .findByIdAndUpdate(
-        userId,
-        {
-          [socialProviderField]: providerId,
-          isEmailVerified: true,
-          emailVerificationToken: null,
-          emailVerificationTokenExpiresAt: null,
-        },
-        {
-          returnDocument: 'after',
-          runValidators: true,
-        },
-      )
-      .select(USER_PUBLIC_SELECT_FIELDS)
-      .lean()
-
-    if (!linkedUser) {
-      throw new NotFoundException(USER_NOT_FOUND_ERROR)
-    }
-
-    return linkedUser
   }
 
   async update(userId: string, dto: UpdateUserDto) {
@@ -276,9 +209,5 @@ export class UserService {
       emailVerificationToken: null,
       emailVerificationTokenExpiresAt: null,
     })
-  }
-
-  private getSocialProviderField(provider: AuthSocialProvider) {
-    return provider === SOCIAL_AUTH_PROVIDER.GOOGLE ? 'googleId' : 'githubId'
   }
 }

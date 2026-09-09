@@ -29,7 +29,6 @@ import {
   AuthFavoriteAwareUser,
   PreparedRequest,
   RefreshTokenPayload,
-  AuthSocialProfile,
   UserWithoutPassword,
 } from './auth.types'
 
@@ -71,26 +70,8 @@ export class AuthService {
     return this.createSession(user, request)
   }
 
-  async socialLogin(profile: AuthSocialProfile) {
-    const user = await this.resolveSocialUser(profile)
-
-    if (!user) {
-      throw new InternalServerErrorException(FAILED_TO_CREATE_USER_ERROR)
-    }
-
-    return user
-  }
-
-  logout() {
+  logout(_refreshToken?: string) {
     return true
-  }
-
-  setAuthTokens(
-    response: Response,
-    _accessToken: string | null,
-    refreshToken: string | null,
-  ) {
-    this.setRefreshTokenCookie(response, refreshToken)
   }
 
   setRefreshTokenCookie(response: Response, refreshToken: string | null) {
@@ -181,27 +162,6 @@ export class AuthService {
     noop(userPassword)
 
     return safeUser
-  }
-
-  private async resolveSocialUser(profile: AuthSocialProfile) {
-    const userByProvider = await this.userService.getBySocialProvider(
-      profile.provider,
-      profile.providerId,
-    )
-
-    if (userByProvider) return userByProvider
-
-    const existingUser = await this.userService.getByEmail(profile.email)
-
-    if (existingUser) {
-      return this.userService.linkSocialProvider(
-        existingUser._id,
-        profile.provider,
-        profile.providerId,
-      )
-    }
-
-    return this.userService.createSocialUser(profile)
   }
 
   private async mergeAuthFavorites<TUser extends AuthFavoriteAwareUser>(
