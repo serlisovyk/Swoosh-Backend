@@ -41,7 +41,8 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `config/validation.config.ts` | `setupValidation` — the global ValidationPipe: `whitelist`, `transform`, `forbidNonWhitelisted` |
 | `utils/query.utils.ts` | query-param coercion: `toStringArrayQueryParam`, `toNumberArrayQueryParam`, `toBooleanQueryParam`, `trimStringValue`, `normalizeEmailValue` |
 | `utils/{phone,env,app}.utils.ts` | `normalizePhoneValue`; `isDev` / `parseCorsDomainsConfigValue`; `noop` |
-| `constants/{env,time}.constants.ts` | env variable names and time constants |
+| `constants/env.constants.ts` | only the `NODE_ENV` as-const values — **not** a registry of env variable names |
+| `constants/time.constants.ts` | `THIRTY_MINUTES_IN_MS`, `ONE_HOUR_IN_MS`, `ONE_DAY_IN_MS` |
 
 ## What this project does NOT have (do not invent it)
 
@@ -50,3 +51,4 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 - No automated tests — see [decisions/no-test-suite](decisions/2026-09-09-no-test-suite.md).
 - No `toJSON`/`transform` hooks on models — secrets are hidden with `select: false`, see [skills/mongoose-models](skills/mongoose-models.md).
 - No shared pagination-meta helper: `products` and `favorites` each compute it locally.
+- No central registry of env variable names. Each value is read where it is used via `configService.getOrThrow<T>('NAME')` with a literal string; `.env.sample` is the de-facto contract, so a new variable means updating it in the same change.

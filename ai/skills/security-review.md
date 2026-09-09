@@ -13,7 +13,7 @@ description: Use when reviewing Swoosh Server backend code for auth, authorizati
 - **Password & reset-token hashing** — passwords hashed with argon2; reset tokens stored **hashed**, never plaintext; `request-password-reset` does not reveal email existence.
 - **DTO validation** — global `ValidationPipe` whitelist/forbid-unknown behavior (`src/shared/config/validation.config.ts`); no unvalidated input reaching services.
 - **Data exposure** — public responses never include passwords, reset tokens, hashed values, or internal-only fields; docs match (`*.swagger.ts`).
-- **CORS & config** — credentialed CORS restricted to expected origins; secrets sourced from env (`src/shared/constants/env.constants.ts`), not hard-coded.
+- **CORS & config** — credentialed CORS restricted to expected origins; secrets read from env via `configService.getOrThrow<T>('NAME')` at the point of use, never hard-coded, and declared in `.env.sample`.
 - **Captcha / throttling** — Turnstile on public-credential endpoints; auth throttling stricter than global defaults.
 
 ## Current auth assumption
