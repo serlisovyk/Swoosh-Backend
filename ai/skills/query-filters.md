@@ -1,5 +1,5 @@
 ---
-name: swoosh-query-filters
+name: query-filters
 description: Use when changing Swoosh Server list endpoints, search, pagination, sorting, query DTO transforms, or Mongo query filter builders.
 ---
 
@@ -26,7 +26,7 @@ Adding or changing a list/search endpoint, a query DTO, pagination, sort, or a M
 - Sort maps and default page/limit live in `<feature>.constants.ts` (e.g. `PRODUCT_SORT_MAP`, `DEFAULT_PRODUCTS_LIMIT`); sort option enums in `<feature>.types.ts`.
 - For text search, reuse the existing exact/escape-regex helpers rather than inlining new regex (see `createExactRegex` / `REGEX_SPECIAL_CHARACTERS` in products).
 - Never return unbounded lists — always apply pagination.
-- Keep the query DTO's Swagger property docs in the module `*.swagger.ts` (see `nestjs-swagger-docs`).
+- Keep the query DTO's Swagger property docs in the module `*.swagger.ts` (see `swagger-docs`).
 
 ## Verification
 

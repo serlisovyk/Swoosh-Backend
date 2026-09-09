@@ -36,3 +36,28 @@ These rules apply to auth behavior, Swagger, public request and response contrac
 - Use Bearer auth in Swagger for protected access-token endpoints.
 - Use refresh cookie auth in Swagger only for endpoints that actually read the refresh cookie.
 - Do not expose passwords, reset tokens, hashed values, or internal-only fields in public responses or docs.
+
+## Error Response Contract (target)
+
+The canonical error shape for this API — the same shape used across the author's other backends:
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid query parameters",
+    "fields": {
+      "page": "Invalid input: expected number, received string"
+    }
+  }
+}
+```
+
+- `error.code` — a stable, machine-readable code (`VALIDATION_ERROR`, `UNAUTHORIZED`, `NOT_FOUND`, …).
+- `error.message` — a short human-readable summary, no internals leaked.
+- `error.fields` — per-field messages for field-level validation. Errors about the whole object (not a single field) go under the `_root` key inside `fields`.
+
+**Status — not yet implemented.** The backend currently returns Nest's default exception format; there is no global exception filter yet. Aligning the runtime to this contract (a global `AllExceptionsFilter` mapping Nest exceptions + `class-validator` errors into the shape above, plus Swagger error examples) is a **planned task**, not part of foundation work. Until then:
+
+- Keep throwing built-in Nest HTTP exceptions from services — do **not** hand-roll a third, different error shape in individual endpoints.
+- When the alignment task lands, this section becomes the enforced contract and Swagger error responses must match it.

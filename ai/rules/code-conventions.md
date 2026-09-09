@@ -2,10 +2,56 @@
 
 ## TypeScript
 
-- Prefer readable, explicit TypeScript over clever abstractions.
+- Prefer readable, explicit TypeScript over clever abstractions. Small, boring, easy-to-explain code over clever code.
 - Keep controller, service, DTO, model, Swagger, and utility responsibilities separate.
-- Use path aliases already configured by the project.
-- Avoid broad `any`; when unavoidable, keep it local and obvious.
+- Use path aliases already configured by the project (`@modules/*`, `@common/*`, `@shared/*`) and module barrels over deep relative paths.
+- Avoid broad `any`; when unavoidable, keep it local and obvious. Prefer narrowing over `as` type assertions.
+- Prefer `readonly` for injected dependencies and values that never reassign.
+- Prefer explicit names over abbreviations.
+
+## Types
+
+- Prefer `interface` for object-shaped public contracts (DTO-adjacent shapes, response contracts).
+- Prefer `type` for unions, literal variants, and utility composition.
+- Prefer an `as const` object with a derived union type over a TS `enum` when it reads clearer (existing enums like `ROLES` stay as they are — match the module).
+- Keep exported types and function names easy to explain out loud.
+
+## Comments
+
+- Comment only to explain **why** a non-obvious decision exists, not what the code does.
+- Keep comments rare and useful; delete stale ones with the code they described.
+
+## Naming
+
+- **Files**: kebab-case with a role suffix — `*.controller.ts`, `*.service.ts`, `*.module.ts`, `*.model.ts`, `*.dto.ts`, `*.swagger.ts`, `*.utils.ts`, `*.types.ts`, `*.constants.ts`, `*.config.ts`, `*.guard.ts`, `*.strategy.ts`, `*.decorator.ts`.
+- **List query DTO** files: `find-all-<feature>.dto.ts`; mutations: `create-*` / `update-*`.
+- **Classes**: PascalCase. DTOs end in `Dto` (`CreateProductDto`); guards end in `Guard` (`JwtAuthGuard`); Mongoose schema classes match the collection name.
+- **Composite/param decorators**: PascalCase factory functions (`Auth`, `Captcha`).
+- **Exported constants**: UPPER_SNAKE_CASE for domain/config values (`DEFAULT_PRODUCTS_LIMIT`, `PRODUCT_SORT_MAP`, cookie names, throttle configs).
+- **Enums**: match the casing already used in the module (e.g. `ROLES` in `user.types.ts`); do not introduce a competing style.
+
+## Imports
+
+- Import shared helpers from their barrel (`index.ts`) when one exists, not the file directly.
+- Use path aliases over relative chains that climb out of the module.
+- Do not fight the linter's import order — run `npm run lint` and take its ordering.
+
+## Error handling
+
+- Throw built-in Nest HTTP exceptions from services (`BadRequestException`, `UnauthorizedException`, `NotFoundException`, …).
+- The API's target error shape is the canonical envelope in `ai/rules/auth-and-api-contracts.md` (Error Response Contract). It is **not yet wired** — there is no global exception filter today, so Nest's default format is returned. Do not hand-roll a different per-endpoint error shape in the meantime.
+- Keep reused, user-facing error messages in `<feature>.constants.ts`; inline one-offs.
+- Never leak internals — stack traces, secrets, hashed values, raw Mongo errors — into a thrown message.
+
+## Async
+
+- Use `async/await`; no floating promises (await it, or explicitly `void` it).
+- Keep heavy synchronous work off request paths.
+
+## Formatting
+
+- Formatting is owned by Prettier (`.prettierrc`): no semicolons, single quotes, trailing commas everywhere, 2-space indent, 80-column width, always-parenthesized arrow params. Do not hand-format against it.
+- Run `npm run format` / `npm run lint` — do not argue style in review when the linter is green.
 
 ## Constants
 

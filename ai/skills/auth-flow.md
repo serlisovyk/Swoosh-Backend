@@ -1,5 +1,5 @@
 ---
-name: swoosh-auth-flow
+name: auth-flow
 description: Use when changing Swoosh Server JWT auth, register/login/logout/refresh behavior, password reset, current-user behavior, auth guards, cookies, or auth Swagger docs.
 ---
 

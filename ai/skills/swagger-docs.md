@@ -1,5 +1,5 @@
 ---
-name: nestjs-swagger-docs
+name: swagger-docs
 description: Use when adding, refactoring, or reviewing Swagger/OpenAPI docs for Swoosh Server controllers, DTOs, response models, auth schemes, or public API contracts.
 ---
 

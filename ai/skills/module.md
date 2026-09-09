@@ -1,5 +1,5 @@
 ---
-name: swoosh-backend-module
+name: module
 description: Use when creating or refactoring Swoosh Server NestJS modules, DTOs, models, constants, types, utilities, services, controllers, or module-local Swagger docs.
 ---
 
@@ -7,7 +7,7 @@ description: Use when creating or refactoring Swoosh Server NestJS modules, DTOs
 
 ## When to use
 
-Creating a new feature module, adding an endpoint, splitting a fat file, or aligning a module with house style. Read `ai/rules/backend-architecture.md` and `ai/rules/code-conventions.md` first.
+Creating a new feature module, adding an endpoint, splitting a fat file, or aligning a module with house style. Read `ai/rules/architecture.md` and `ai/rules/code-conventions.md` first.
 
 ## Where code lives
 
@@ -23,10 +23,10 @@ Add only when the module needs them (copy the shape from an existing module such
 
 - `dto/` — one file per request shape. List endpoints get `find-all-<feature>.dto.ts`; mutations get `create-*` / `update-*`. Validation via `class-validator`, transform via `class-transformer`.
 - `models/` — Mongoose schema/model, one file per collection (`<name>.model.ts`).
-- `<feature>.swagger.ts` — module-local Swagger wrappers (see `nestjs-swagger-docs`).
+- `<feature>.swagger.ts` — module-local Swagger wrappers (see `swagger-docs`).
 - `<feature>.constants.ts` — repeated/domain values, sort and pagination defaults, cookie names, example values.
 - `<feature>.types.ts` — module-local types.
-- `<feature>.utils.ts` — module-local helpers, e.g. Mongo filter builders (see `swoosh-query-filters`).
+- `<feature>.utils.ts` — module-local helpers, e.g. Mongo filter builders (see `query-filters`).
 
 Sub-features nest as their own folder with the same anatomy: see `src/modules/auth/auth-account/` and `src/modules/forms/*`.
 
