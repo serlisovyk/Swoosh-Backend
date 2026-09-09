@@ -3,7 +3,7 @@ name: performance-review
 description: Use when reviewing Swoosh Server backend code for latency, payload size, Mongo query cost, indexes, pagination, expensive loops, or avoidable external calls.
 ---
 
-# Swoosh Backend Performance Review
+# Performance Review
 
 ## Focus
 

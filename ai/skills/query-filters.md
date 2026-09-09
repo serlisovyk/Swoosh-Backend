@@ -3,7 +3,7 @@ name: query-filters
 description: Use when changing Swoosh Server list endpoints, search, pagination, sorting, query DTO transforms, or Mongo query filter builders.
 ---
 
-# Swoosh Query Filters
+# Query Filters
 
 ## When to use
 

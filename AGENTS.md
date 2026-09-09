@@ -29,13 +29,17 @@ These instructions apply to the standalone backend project in this directory. Ba
 
 One-off task details, current-state facts, and anything already covered by `ai/rules/` or `ai/map.md` are **not** decisions — do not create noise records.
 
-## Workflow (spec + plan first)
+## Workflow
 
-Before writing feature code for a task:
+`ai/workflow.md` is the end-to-end flow for taking a task: pick up the issue → branch → orient → spec + plan → implement → docs → verify → DoD → self-review → **author approval** → report → merge. Follow it.
+
+The parts that never bend:
 
 - Write a **plan** (always) and a **spec** (when the task changes behavior or a public/data contract) under `ai/superpowers/` (`plans/`, `specs/`). Format is up to you — keep it concise and specific.
 - Commit the plan and spec together as a **single commit**, before any implementation commit.
 - Then implement — feature code lands in separate, later commits.
+- Work on a branch named after the Linear issue, never directly on `main`.
+- **Nothing merges and nothing is marked done without the repo author's explicit approval.** Silence or a neutral reply is not approval.
 - No test suite exists; verification is `npm run lint` + `npm run build`.
 
 ## Skills

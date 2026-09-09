@@ -13,7 +13,7 @@
 
 - Prefer `interface` for object-shaped public contracts (DTO-adjacent shapes, response contracts).
 - Prefer `type` for unions, literal variants, and utility composition.
-- Prefer an `as const` object with a derived union type over a TS `enum` when it reads clearer (existing enums like `ROLES` stay as they are — match the module).
+- Prefer an `as const` object with a derived union type over a TS `enum` — that is the established pattern here (`ROLES` in `src/modules/user/user.types.ts`).
 - Keep exported types and function names easy to explain out loud.
 
 ## Comments
@@ -28,7 +28,7 @@
 - **Classes**: PascalCase. DTOs end in `Dto` (`CreateProductDto`); guards end in `Guard` (`JwtAuthGuard`); Mongoose schema classes match the collection name.
 - **Composite/param decorators**: PascalCase factory functions (`Auth`, `Captcha`).
 - **Exported constants**: UPPER_SNAKE_CASE for domain/config values (`DEFAULT_PRODUCTS_LIMIT`, `PRODUCT_SORT_MAP`, cookie names, throttle configs).
-- **Enums**: match the casing already used in the module (e.g. `ROLES` in `user.types.ts`); do not introduce a competing style.
+- **Role / status sets**: an UPPER_SNAKE `as const` object plus a derived union of the same name — see `ROLES` in `src/modules/user/user.types.ts`. Do not introduce a TS `enum` as a competing style.
 
 ## Imports
 

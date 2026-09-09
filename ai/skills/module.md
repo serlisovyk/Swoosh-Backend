@@ -3,7 +3,7 @@ name: module
 description: Use when creating or refactoring Swoosh Server NestJS modules, DTOs, models, constants, types, utilities, services, controllers, or module-local Swagger docs.
 ---
 
-# Swoosh Backend Module
+# Feature Module
 
 ## When to use
 
@@ -11,9 +11,9 @@ Creating a new feature module, adding an endpoint, splitting a fat file, or alig
 
 ## Where code lives
 
-- `src/modules/*` — business features. Current modules: `auth`, `user`, `products`, `favorites`, `forms/{contact-request,individual-order,newsletter-subscription}`.
-- `src/common/*` — shared infrastructure: `captcha`, `email`, `mongo`, `swagger`, `throttler`. Each exposes an `index.ts` barrel.
-- `src/shared/*` — cross-cutting `config`, `constants` (`env.constants.ts`, `time.constants.ts`), `utils` (`query.utils.ts`, `phone.utils.ts`, `env.utils.ts`, `app.utils.ts`).
+See `ai/map.md` for the current module list, cross-cutting packages, and entry files — it is the single place that inventory is maintained. In short: features in `src/modules/*`, shared infrastructure in `src/common/*` (each with an `index.ts` barrel), cross-cutting config/constants/utils in `src/shared/*`.
+
+Adding, removing, or renaming a module means updating `ai/map.md` in the same change.
 
 ## Module anatomy
 

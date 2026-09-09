@@ -3,7 +3,7 @@ name: auth-flow
 description: Use when changing Swoosh Server JWT auth, register/login/logout/refresh behavior, password reset, current-user behavior, auth guards, cookies, or auth Swagger docs.
 ---
 
-# Swoosh Auth Flow
+# Auth Flow
 
 ## When to use
 
@@ -30,6 +30,19 @@ All auth orchestration stays under `src/modules/auth`.
 - Access token: stateless JWT signed with `JWT_SECRET`, returned in the response body of register/login/new-tokens, consumed as `Authorization: Bearer <token>` and validated by `jwt.strategy.ts` + `jwt.guard.ts`.
 - Refresh token: stateless JWT signed with a **separate** `JWT_REFRESH_SECRET`, stored only in the `refreshToken` HttpOnly cookie. `POST /auth/new-tokens` reads it from the cookie; `POST /auth/logout` clears the cookie.
 - Logout does not revoke already-issued refresh tokens before expiry — there is no token version or blacklist. Do not claim otherwise.
+
+## Roles and access control (RBAC)
+
+- `ROLES` lives in `src/modules/user/user.types.ts` and is an **`as const` object with a derived union type**, not a TS `enum`: `{ USER: 'USER', ADMIN: 'ADMIN' }`. It is the single source of roles.
+- The user's role is persisted on the `User` model (`role`, defaulted to `ROLES.USER`, indexed) with allowed values from `Object.values(ROLES)`.
+- Protect routes with the composite `Auth()` decorator (`decorators/auth.decorator.ts`):
+  - `@Auth()` — authentication only: applies `JwtAuthGuard` + `RolesGuard` with no role metadata, so any authenticated user passes.
+  - `@Auth(ROLES.ADMIN)` — attaches `Roles(...)` metadata plus both guards.
+  - Do not hand-stack `UseGuards(JwtAuthGuard, RolesGuard)` on controllers; use `Auth()`.
+- `RolesGuard` reads `roles` metadata via `Reflector.getAllAndOverride` (handler overrides class), allows the request when no roles are required, denies when the request has no `user.role`, and **lets `ROLES.ADMIN` through every role check**.
+- Consequence: there is no role that admin cannot access. If a route must exclude admins, that needs a different mechanism and a decision record — do not fake it with role lists.
+- The current user reaches handlers through the `user` param decorator (`decorators/user.decorator.ts`), populated by `jwt.strategy.ts`. Do not re-read the user from the request object manually.
+- Mark role-protected endpoints in Swagger so the required access level is visible (see `swagger-docs`).
 
 ## Password reset
 

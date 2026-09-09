@@ -24,7 +24,7 @@ A backend change is done when all of the following hold. Use it as a pre-commit 
 - `ai/rules/*` or `ai/skills/*` updated if the change reshaped a pattern.
 - `ai/map.md` updated if a module, cross-cutting package, or entry file was added, removed, or renamed — including its "What this project does NOT have" list.
 - `ai/decisions/` has a new dated record if the change settled or reversed a durable decision (see the criteria in `AGENTS.md` → Decisions).
-- For behavior/contract changes: the `ai/superpowers/` spec + plan were committed first, per the Workflow in `AGENTS.md`.
+- For behavior/contract changes: the `ai/superpowers/` spec + plan were committed first, per `ai/workflow.md`.
 
 ## Verification
 
@@ -37,6 +37,12 @@ A backend change is done when all of the following hold. Use it as a pre-commit 
 - Commit in milestones, not one giant final snapshot.
 - Inspect `git status` and `git diff` before committing.
 - Use specific, conventional messages — never `update`, `fix`, or `changes`.
+- Work happened on a branch named after the Linear issue, not on `main`.
+
+## Approval
+
+- Self-review ran (`review`, plus `security-review` / `performance-review` when relevant) and its findings were fixed or explicitly justified.
+- The repo author was given the change summary, verification output, and review findings — and **explicitly approved**. Merging or marking the task done without that approval is not allowed (`ai/workflow.md`, step 11).
 
 ## Out of scope unless explicitly requested
 

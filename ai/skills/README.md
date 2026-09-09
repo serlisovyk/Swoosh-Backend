@@ -20,6 +20,7 @@ If a change materially reshapes a backend pattern, update the matching skill in 
 
 ## Related
 
+- Task flow: [`ai/workflow.md`](../workflow.md) — the end-to-end sequence these skills plug into.
 - Repo map: [`ai/map.md`](../map.md) — modules, packages, entry files, and what the project deliberately lacks.
 - Rules of record: [`ai/rules`](../rules) — including [`definition-of-done`](../rules/definition-of-done.md).
 - Decision records: [`ai/decisions`](../decisions) — why durable choices were made; propose a record when a new one surfaces.
