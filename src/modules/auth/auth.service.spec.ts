@@ -19,7 +19,12 @@ describe('AuthService token cookies', () => {
     }
 
     const userService = {
+      create: jest.fn().mockResolvedValue(user),
       getById: jest.fn().mockResolvedValue(user),
+    }
+
+    const authAccountService = {
+      requestEmailVerification: jest.fn(),
     }
 
     const configService = {
@@ -42,10 +47,10 @@ describe('AuthService token cookies', () => {
       userService as never,
       {} as never,
       configService as never,
-      {} as never,
+      authAccountService as never,
     )
 
-    return { service, jwt, userService, configService }
+    return { service, jwt, userService, configService, authAccountService }
   }
 
   it('sets only the HttpOnly refresh token cookie', () => {
@@ -96,5 +101,19 @@ describe('AuthService token cookies', () => {
     const { service } = createService()
 
     expect(service.logout()).toBe(true)
+  })
+
+  it('registers users without requesting email verification', async () => {
+    const { service, authAccountService } = createService()
+
+    await service.register(
+      {
+        email: user.email,
+        password: 'secret123',
+      },
+      {} as PreparedRequest,
+    )
+
+    expect(authAccountService.requestEmailVerification).not.toHaveBeenCalled()
   })
 })

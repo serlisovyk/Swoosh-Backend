@@ -1,7 +1,6 @@
 import { applyDecorators, Type } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
-  ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
   ApiProperty,
@@ -21,7 +20,6 @@ import {
   USER_ADDRESS_STREET_EXAMPLE,
   USER_ADDRESS_ZIP_EXAMPLE,
   USER_EMAIL_EXAMPLE,
-  USER_EMAIL_VERIFIED_EXAMPLE,
   USER_ID_EXAMPLE,
   USER_NAME_EXAMPLE,
   USER_PHONE_EXAMPLE,
@@ -50,11 +48,6 @@ export const UserEmailPropertyDocs = createOptionalPropertyDocsDecorator({
 export const UserEmailRequiredPropertyDocs = createPropertyDocsDecorator({
   description: 'User email address.',
   example: USER_EMAIL_EXAMPLE,
-})
-
-export const UserEmailVerifiedPropertyDocs = createPropertyDocsDecorator({
-  description: 'Whether the user email has been verified.',
-  example: USER_EMAIL_VERIFIED_EXAMPLE,
 })
 
 export const UserPhonePropertyDocs = createOptionalPropertyDocsDecorator({
@@ -202,9 +195,6 @@ export class UserResponseDocs {
   @UserEmailRequiredPropertyDocs()
   email!: string
 
-  @UserEmailVerifiedPropertyDocs()
-  isEmailVerified!: boolean
-
   @UserNameRequiredPropertyDocs()
   name?: string
 
@@ -244,9 +234,6 @@ export function UserUpdateProfileDocs() {
     ApiBadRequestResponse({
       description:
         'Request body is invalid, current password is missing, or email is already taken.',
-    }),
-    ApiForbiddenResponse({
-      description: 'Email verification is required to update the profile.',
     }),
     ApiUnauthorizedResponse({
       description: 'Authentication is required or current password is wrong.',

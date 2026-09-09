@@ -29,7 +29,5 @@ export type UserWithoutPassword = Omit<User, UserPasswordAndSensitiveFields>
 
 type UserPasswordAndSensitiveFields =
   | 'password'
-  | 'emailVerificationToken'
-  | 'emailVerificationTokenExpiresAt'
   | 'resetPasswordToken'
   | 'resetPasswordTokenExpiresAt'

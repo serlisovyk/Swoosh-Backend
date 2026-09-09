@@ -10,7 +10,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { hash, verify } from 'argon2'
 import { RegisterDto } from '@modules/auth/dto/register.dto'
 import { hashToken, hashTokenWithSecret } from '@modules/auth/auth.utils'
-import { ONE_HOUR_IN_MS, THIRTY_MINUTES_IN_MS } from '@shared/constants'
+import { THIRTY_MINUTES_IN_MS } from '@shared/constants'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './models/user.model'
 import {
@@ -60,7 +60,6 @@ export class UserService {
       phone: dto.phone,
       email: preparedEmail,
       role: ROLES.USER,
-      isEmailVerified: false,
       password: await hash(dto.password),
     })
 
@@ -153,20 +152,6 @@ export class UserService {
       .lean()
   }
 
-  findByEmailVerificationToken(token: string) {
-    const hashedToken = hashTokenWithSecret(
-      token,
-      this.configService.getOrThrow<string>('EMAIL_VERIFICATION_TOKEN_SECRET'),
-    )
-
-    return this.userModel
-      .findOne({
-        emailVerificationToken: hashedToken,
-        emailVerificationTokenExpiresAt: { $gt: new Date() },
-      })
-      .lean()
-  }
-
   setPasswordResetToken(userId: string, token: string) {
     return this.userModel.findByIdAndUpdate(userId, {
       resetPasswordToken: hashTokenWithSecret(
@@ -174,24 +159,6 @@ export class UserService {
         this.configService.getOrThrow<string>('RESET_TOKEN_SECRET'),
       ),
       resetPasswordTokenExpiresAt: new Date(Date.now() + THIRTY_MINUTES_IN_MS),
-    })
-  }
-
-  setEmailVerificationToken(userId: string, token: string) {
-    const expiresHours = this.configService.getOrThrow<number>(
-      'EMAIL_VERIFICATION_TOKEN_EXPIRES_HOURS',
-    )
-
-    const emailVerificationToken = hashTokenWithSecret(
-      token,
-      this.configService.getOrThrow<string>('EMAIL_VERIFICATION_TOKEN_SECRET'),
-    )
-
-    return this.userModel.findByIdAndUpdate(userId, {
-      emailVerificationToken,
-      emailVerificationTokenExpiresAt: new Date(
-        Date.now() + expiresHours * ONE_HOUR_IN_MS,
-      ),
     })
   }
 
@@ -203,11 +170,4 @@ export class UserService {
     })
   }
 
-  markEmailAsVerified(userId: string) {
-    return this.userModel.findByIdAndUpdate(userId, {
-      isEmailVerified: true,
-      emailVerificationToken: null,
-      emailVerificationTokenExpiresAt: null,
-    })
-  }
 }

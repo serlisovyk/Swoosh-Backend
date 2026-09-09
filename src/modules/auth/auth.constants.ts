@@ -7,11 +7,6 @@ export const FAILED_TO_CREATE_USER_ERROR = 'Не удалось создать �
 export const INVALID_REFRESH_TOKEN_ERROR = 'Неверный refresh токен'
 export const REFRESH_TOKEN_MISSING_ERROR = 'Отсутствует refresh токен'
 
-export const INVALID_OR_EXPIRED_EMAIL_VERIFICATION_TOKEN_ERROR =
-  'Недействительная или просроченная ссылка для подтверждения почты'
-export const EMAIL_VERIFICATION_REQUIRED_ERROR =
-  'Для изменения данных профиля нужно подтвердить почту'
-
 export const EMAIL_VALIDATION_ERROR = 'Email должен быть валидным email адресом'
 export const PASSWORD_STRING_ERROR = 'Пароль должен быть строкой'
 export const PASSWORD_MIN_LENGTH_ERROR =
@@ -26,9 +21,6 @@ export const INVALID_OR_EXPIRED_PASSWORD_RESET_TOKEN_ERROR =
 
 export const RESET_PASSWORD_URL = '/auth/reset-password'
 export const RESET_PASSWORD_SUBJECT = 'Сброс пароля'
-
-export const VERIFY_EMAIL_URL = '/auth/verify-email'
-export const VERIFY_EMAIL_SUBJECT = 'Подтверждение почты'
 
 export const AUTH_LOGIN_THROTTLE = {
   default: { limit: 5, ttl: 60_000 },
@@ -46,18 +38,8 @@ export const AUTH_PASSWORD_RESET_THROTTLE = {
   default: { limit: 5, ttl: 600_000 },
 } as const
 
-export const AUTH_EMAIL_VERIFICATION_REQUEST_THROTTLE = {
-  default: { limit: 3, ttl: 600_000 },
-} as const
-
-export const AUTH_EMAIL_VERIFICATION_THROTTLE = {
-  default: { limit: 5, ttl: 600_000 },
-} as const
-
 export const AUTH_EMAIL_EXAMPLE = 'john.swoosh@example.com'
 export const AUTH_PASSWORD_EXAMPLE = 'secret123'
 export const AUTH_NAME_EXAMPLE = 'John Doe'
 export const AUTH_PHONE_EXAMPLE = '+380991112233'
 export const AUTH_RESET_TOKEN_EXAMPLE = 'reset-token-example-123'
-export const AUTH_EMAIL_VERIFICATION_TOKEN_EXAMPLE =
-  'email-verification-token-example-123'

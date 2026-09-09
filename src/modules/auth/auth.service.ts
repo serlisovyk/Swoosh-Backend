@@ -54,8 +54,6 @@ export class AuthService {
       dto.favoriteProductIds,
     )
 
-    await this.authAccountService.requestEmailVerification(user)
-
     return this.createSession(user, request)
   }
 

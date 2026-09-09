@@ -20,15 +20,6 @@ export class User {
   @Prop({ type: Date, default: null, select: false })
   resetPasswordTokenExpiresAt?: Date | null
 
-  @Prop({ default: false })
-  isEmailVerified!: boolean
-
-  @Prop({ type: String, default: null, select: false })
-  emailVerificationToken?: string | null
-
-  @Prop({ type: Date, default: null, select: false })
-  emailVerificationTokenExpiresAt?: Date | null
-
   @Prop({ default: '' })
   name?: string
 
