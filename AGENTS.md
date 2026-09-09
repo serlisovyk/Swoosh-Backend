@@ -9,10 +9,25 @@ These instructions apply to the standalone backend project in this directory. Ba
 ## Read First
 
 - `README.md` — backend setup and runtime assumptions.
+- `ai/map.md` — repo map: modules, cross-cutting packages, entry files, and what the project deliberately does **not** have.
 - `ai/rules/architecture.md` — module layout, boundaries, bootstrap, persistence, error handling.
 - `ai/rules/auth-and-api-contracts.md` — auth, Swagger, public contracts, password reset, cookies, JWT, error-response contract.
 - `ai/rules/code-conventions.md` — TypeScript, naming, types, comments, formatting, constants policy.
 - `ai/rules/definition-of-done.md` — the pre-commit / pre-merge gate for a backend change.
+
+## Decisions
+
+`ai/decisions/` records durable decisions and **why** they were made (stateless refresh, email verification removed, no test suite, error-envelope target, knowledge-base layout). Read it before proposing to change or "restore" any of them — rules say what to do now, decisions say why. Reversing one means adding a new dated record, not editing the old.
+
+**Capture new decisions as they surface — do not wait to be asked.** When a durable choice appears in conversation or in a change, say that it should be recorded and offer to add a dated record. Signals worth catching:
+
+- "we will not do X", "always / never do Y" — a standing constraint.
+- A deliberate removal that must not be restored later.
+- A tradeoff accepted over a named alternative ("A instead of B, because …").
+- A target agreed now but implemented later (record it with `Status: accepted (not implemented)`).
+- A convention chosen where an obvious alternative exists (e.g. `select: false` instead of `toJSON` hooks).
+
+One-off task details, current-state facts, and anything already covered by `ai/rules/` or `ai/map.md` are **not** decisions — do not create noise records.
 
 ## Workflow (spec + plan first)
 
@@ -28,6 +43,7 @@ Before writing feature code for a task:
 Skill playbooks live in `ai/skills/` (tool-agnostic Markdown, index in `ai/skills/README.md`):
 
 - `module` — NestJS module structure and house-style alignment.
+- `mongoose-models` — schemas, fields, indexes, references, sensitive-field visibility.
 - `swagger-docs` — Swagger/OpenAPI documentation changes.
 - `query-filters` — list, search, and query-filter pipelines.
 - `auth-flow` — JWT auth, refresh-cookie behavior, password reset, current-user, auth Swagger.

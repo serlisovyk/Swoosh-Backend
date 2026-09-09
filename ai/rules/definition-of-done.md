@@ -22,6 +22,8 @@ A backend change is done when all of the following hold. Use it as a pre-commit 
 - Swagger `*.swagger.ts` matches the request/response shape and auth markers.
 - `README.md` updated if setup, scripts, or env changed.
 - `ai/rules/*` or `ai/skills/*` updated if the change reshaped a pattern.
+- `ai/map.md` updated if a module, cross-cutting package, or entry file was added, removed, or renamed — including its "What this project does NOT have" list.
+- `ai/decisions/` has a new dated record if the change settled or reversed a durable decision (see the criteria in `AGENTS.md` → Decisions).
 - For behavior/contract changes: the `ai/superpowers/` spec + plan were committed first, per the Workflow in `AGENTS.md`.
 
 ## Verification

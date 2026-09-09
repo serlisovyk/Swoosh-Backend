@@ -7,6 +7,7 @@ If a change materially reshapes a backend pattern, update the matching skill in 
 ## Build / align
 
 - [module](module.md) — NestJS module structure, DTOs, models, boundaries, house style.
+- [mongoose-models](mongoose-models.md) — schemas, fields, indexes, refs, subdocuments, `select: false` for secrets.
 - [auth-flow](auth-flow.md) — JWT auth, refresh cookie, password reset, guards, current-user, auth Swagger.
 - [query-filters](query-filters.md) — list/search/pagination/sort DTO transforms and Mongo filter builders.
 - [swagger-docs](swagger-docs.md) — Swagger/OpenAPI wrappers and public contract docs.
@@ -19,5 +20,7 @@ If a change materially reshapes a backend pattern, update the matching skill in 
 
 ## Related
 
-- Rules of record: [`ai/rules`](../rules).
+- Repo map: [`ai/map.md`](../map.md) — modules, packages, entry files, and what the project deliberately lacks.
+- Rules of record: [`ai/rules`](../rules) — including [`definition-of-done`](../rules/definition-of-done.md).
+- Decision records: [`ai/decisions`](../decisions) — why durable choices were made; propose a record when a new one surfaces.
 - Agent entrypoints: [`AGENTS.md`](../../AGENTS.md), [`CLAUDE.md`](../../CLAUDE.md).
