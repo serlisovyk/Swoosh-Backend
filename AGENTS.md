@@ -1,28 +1,38 @@
-# Backend Instructions
+# Swoosh Server Instructions
 
 ## Scope
 
-These instructions apply to everything under `server`.
+These instructions apply to the standalone backend project in this directory.
 
-## Read first
+## Read First
 
-- Read `../docs/rules/backend-architecture.md` for all backend changes
-- Read `../docs/rules/auth-and-api-contracts.md` when the task touches auth, Swagger, public contracts, password reset, or other cross-stack API behavior
+- Read `README.md` for backend setup and runtime assumptions.
+- Read `docs/rules/backend-architecture.md` for backend code changes.
+- Read `docs/rules/auth-and-api-contracts.md` when touching auth, Swagger, public contracts, password reset, cookies, or JWT behavior.
+- Read `docs/rules/code-conventions.md` for TypeScript and constants policy.
+
+## AI Docs
+
+- Use `docs/ai/specs` to capture what should change and why.
+- Use `docs/ai/plans` for approved implementation plans.
+- Use `docs/ai/decisions` for durable architecture decisions.
+- Use `docs/ai/reviews` for review and verification notes.
 
 ## Skills
 
-- Use `swoosh-backend-module` for backend module structure and house-style alignment
-- Use `nestjs-swagger-docs` for Swagger and OpenAPI documentation changes
-- Use `swoosh-query-filters` for list, search, and query-filter pipelines
-- Use `swoosh-auth-flow` for auth changes that span cookies, Swagger contracts, frontend auth flow, or current-user behavior
-- Use `swoosh-backend-review` for backend code review focused on regressions, contract safety, and docs or skill drift
-- Use `swoosh-backend-performance-review` for performance-focused backend review on latency, payload size, and database cost
-- Use `swoosh-backend-security-review` for security-focused backend review on auth, validation, config, and data exposure
-- If a change materially reshapes one of those backend patterns, update the corresponding repo-local skill under `.codex/skills`
+- Use `swoosh-backend-module` for NestJS module structure and house-style alignment.
+- Use `nestjs-swagger-docs` for Swagger and OpenAPI documentation changes.
+- Use `swoosh-query-filters` for list, search, and query-filter pipelines.
+- Use `swoosh-auth-flow` for JWT auth, refresh-cookie behavior, password reset, current-user behavior, and auth Swagger.
+- Use `swoosh-backend-review` for regression, contract, and docs/skill drift review.
+- Use `swoosh-backend-performance-review` for latency, payload size, and database-cost review.
+- Use `swoosh-backend-security-review` for auth, validation, config, secret handling, and data exposure review.
+- If a change materially reshapes a backend pattern, update the matching server-local skill under `.codex/skills`.
 
 ## Verification
 
-- Run backend checks from `server`
-- Prefer `npm run lint` after backend changes
-- If auth or API contract changes affect the frontend as well, verify both sides
-- If logic changes, prefer `npm run test` as well when possible
+- Run checks from this directory.
+- Prefer `npm run lint` after backend changes.
+- Run `npm run test` when behavior changes.
+- Run `npm run build` after deleting files, changing dependencies, or changing public contracts.
+- Do not verify or edit the frontend as part of backend-only work.
