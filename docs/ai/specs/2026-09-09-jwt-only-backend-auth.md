@@ -45,6 +45,8 @@ Remove the auth sessions collection/model from runtime code.
 
 Existing MongoDB documents need an explicit cleanup path because schema removal does not remove stored fields.
 
+Run `npm run cleanup:auth-simplification` for a dry run. Run `npm run cleanup:auth-simplification -- --apply` only after approving destructive cleanup for the target database.
+
 ## Risks
 
 - Stateless refresh tokens cannot be revoked server-side before expiry without adding a blacklist or token version.
