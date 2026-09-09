@@ -44,10 +44,12 @@ export class AuthController {
     @Body() dto: RegisterDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { refreshToken, accessToken, ...response } =
-      await this.authService.register(dto, req)
+    const { refreshToken, ...response } = await this.authService.register(
+      dto,
+      req,
+    )
 
-    this.authService.setAuthTokens(res, accessToken, refreshToken)
+    this.authService.setRefreshTokenCookie(res, refreshToken)
 
     return response
   }
@@ -62,10 +64,9 @@ export class AuthController {
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { refreshToken, accessToken, ...response } =
-      await this.authService.login(dto, req)
+    const { refreshToken, ...response } = await this.authService.login(dto, req)
 
-    this.authService.setAuthTokens(res, accessToken, refreshToken)
+    this.authService.setRefreshTokenCookie(res, refreshToken)
 
     return response
   }
@@ -78,16 +79,16 @@ export class AuthController {
   ) {
     const initialRefreshToken = req.cookies?.[REFRESH_TOKEN_COOKIE_NAME]
 
-    this.authService.setAuthTokens(res, null, null)
+    this.authService.clearRefreshTokenCookie(res)
 
     if (!initialRefreshToken) {
       throw new BadRequestException(REFRESH_TOKEN_MISSING_ERROR)
     }
 
-    const { refreshToken, accessToken, ...response } =
+    const { refreshToken, ...response } =
       await this.authService.getNewTokens(initialRefreshToken, req)
 
-    this.authService.setAuthTokens(res, accessToken, refreshToken)
+    this.authService.setRefreshTokenCookie(res, refreshToken)
 
     return response
   }
@@ -101,7 +102,7 @@ export class AuthController {
   ) {
     await this.authService.logout(req.cookies?.[REFRESH_TOKEN_COOKIE_NAME])
 
-    this.authService.setAuthTokens(res, null, null)
+    this.authService.clearRefreshTokenCookie(res)
 
     return true
   }

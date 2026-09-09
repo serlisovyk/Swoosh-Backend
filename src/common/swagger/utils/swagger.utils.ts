@@ -3,7 +3,6 @@ import {
   ApiPropertyOptional,
   DocumentBuilder,
 } from '@nestjs/swagger'
-import { SWAGGER_ACCESS_TOKEN_AUTH_NAME } from '../constants'
 import { CookieToken, SwaggerPropertyOptions } from '../types'
 
 export function createPropertyDocsDecorator(options: SwaggerPropertyOptions) {
@@ -38,13 +37,11 @@ export function addSwaggerCookieAuth(
   config: DocumentBuilder,
   token: CookieToken,
 ) {
-  const isAccessToken = token === SWAGGER_ACCESS_TOKEN_AUTH_NAME
-
   config.addCookieAuth(
     token,
     {
       type: 'apiKey',
-      description: `${isAccessToken ? 'Access' : 'Refresh'} token stored in an HttpOnly cookie.`,
+      description: 'Refresh token stored in an HttpOnly cookie.',
     },
     token,
   )

@@ -19,7 +19,6 @@ import { AuthSessionService } from './auth-session/auth-session.service'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
 import {
-  ACCESS_TOKEN_COOKIE_NAME,
   CURRENT_SESSION_REVOKE_ERROR,
   FAILED_TO_CREATE_USER_ERROR,
   INVALID_CREDENTIALS_ERROR,
@@ -27,7 +26,7 @@ import {
   REFRESH_TOKEN_COOKIE_NAME,
   USER_NOT_FOUND_ERROR,
 } from './auth.constants'
-import { ONE_DAY_IN_MS, ONE_HOUR_IN_MS } from '@shared/constants'
+import { ONE_DAY_IN_MS } from '@shared/constants'
 import {
   AccessTokenPayload,
   AuthSessionItem,
@@ -153,17 +152,13 @@ export class AuthService {
 
   setAuthTokens(
     response: Response,
-    accessToken: string | null,
+    _accessToken: string | null,
     refreshToken: string | null,
   ) {
-    const accessTokenExpiresHours = this.configService.getOrThrow<number>(
-      'JWT_ACCESS_TOKEN_EXPIRES_HOURS',
-    )
+    this.setRefreshTokenCookie(response, refreshToken)
+  }
 
-    const accessTokenExpires = new Date(
-      Date.now() + accessTokenExpiresHours * ONE_HOUR_IN_MS,
-    )
-
+  setRefreshTokenCookie(response: Response, refreshToken: string | null) {
     const refreshTokenExpiresDays = this.configService.getOrThrow<number>(
       'JWT_REFRESH_TOKEN_EXPIRES_DAYS',
     )
@@ -179,15 +174,14 @@ export class AuthService {
       sameSite: isDev(this.configService) ? 'none' : 'strict',
     } as const
 
-    response.cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken, {
-      ...defaultCookieOptions,
-      expires: accessToken ? accessTokenExpires : new Date(0),
-    })
-
     response.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
       ...defaultCookieOptions,
       expires: refreshToken ? refreshTokenExpires : new Date(0),
     })
+  }
+
+  clearRefreshTokenCookie(response: Response) {
+    this.setRefreshTokenCookie(response, null)
   }
 
   async getNewTokens(refreshToken: string, request: PreparedRequest) {

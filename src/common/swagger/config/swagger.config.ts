@@ -16,7 +16,15 @@ export function setupSwagger(app: NestExpressApplication) {
     .setDescription(SWAGGER_DESCRIPTION)
     .setVersion(SWAGGER_VERSION)
 
-  addSwaggerCookieAuth(config, SWAGGER_ACCESS_TOKEN_AUTH_NAME)
+  config.addBearerAuth(
+    {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      description: 'Access token passed in the Authorization header.',
+    },
+    SWAGGER_ACCESS_TOKEN_AUTH_NAME,
+  )
   addSwaggerCookieAuth(config, SWAGGER_REFRESH_TOKEN_AUTH_NAME)
 
   const swaggerConfig = config

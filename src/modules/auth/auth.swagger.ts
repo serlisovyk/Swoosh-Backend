@@ -87,6 +87,12 @@ export function AuthUserPropertyDocs(model: Type<unknown>) {
 export class AuthSessionResponseDocs {
   @AuthUserPropertyDocs(UserResponseDocs)
   user!: UserResponseDocs
+
+  @ApiProperty({
+    description: 'JWT access token. Pass it as Authorization: Bearer <token>.',
+    example: 'access-token',
+  })
+  accessToken!: string
 }
 
 export class AuthSessionItemResponseDocs {
@@ -152,7 +158,7 @@ export function AuthRegisterDocs() {
     ApiOperation({
       summary: 'Register a new user',
       description:
-        'Creates a new user account, sends an email verification link, validates Cloudflare Turnstile, optionally merges guest favorite ids, creates a server-side auth session for refresh rotation, and sets access/refresh tokens in HttpOnly cookies.',
+        'Creates a new user account, validates Cloudflare Turnstile, optionally merges guest favorite ids, returns an access token, and stores the refresh token in an HttpOnly cookie.',
       security: [],
     }),
     ApiCreatedResponse({
@@ -174,7 +180,7 @@ export function AuthLoginDocs() {
     ApiOperation({
       summary: 'Log in user',
       description:
-        'Authenticates a user, validates Cloudflare Turnstile, optionally merges guest favorite ids, creates a server-side auth session for refresh rotation, and sets access/refresh tokens in HttpOnly cookies.',
+        'Authenticates a user, validates Cloudflare Turnstile, optionally merges guest favorite ids, returns an access token, and stores the refresh token in an HttpOnly cookie.',
       security: [],
     }),
     ApiCreatedResponse({
@@ -195,7 +201,7 @@ export function AuthNewTokensDocs() {
     ApiOperation({
       summary: 'Refresh auth tokens',
       description:
-        'Reads the refresh token from cookies, validates it against the stored auth session, rotates the current refresh token inside that session, and sets new HttpOnly cookies.',
+        'Reads the refresh token from cookies, validates it, returns a new access token, and stores a new refresh token in an HttpOnly cookie.',
       security: [{ [SWAGGER_REFRESH_TOKEN_AUTH_NAME]: [] }],
     }),
     ApiCreatedResponse({
@@ -216,7 +222,7 @@ export function AuthLogoutDocs() {
     ApiOperation({
       summary: 'Log out user',
       description:
-        'Clears auth cookies and revokes the current refresh session when it can be resolved from the refresh-token cookie.',
+        'Clears the refresh-token cookie.',
       security: [{ [SWAGGER_REFRESH_TOKEN_AUTH_NAME]: [] }],
     }),
     ApiOkResponse({

@@ -1,4 +1,4 @@
-export const SWAGGER_ACCESS_TOKEN_AUTH_NAME = 'accessToken' as const
+export const SWAGGER_ACCESS_TOKEN_AUTH_NAME = 'bearer' as const
 export const SWAGGER_REFRESH_TOKEN_AUTH_NAME = 'refreshToken' as const
 
 export const SWAGGER_PATH = 'api/v1/docs'

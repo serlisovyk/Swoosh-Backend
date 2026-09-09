@@ -1,11 +1,6 @@
 import { createHash, createHmac, randomBytes } from 'crypto'
-import { Request } from 'express'
 import type { AuthSessionMetadata } from './auth.types'
-
-export function extractAccessTokenFromCookie(request: Request): string | null {
-  const token = request?.cookies?.accessToken as unknown
-  return typeof token === 'string' ? token : null
-}
+import type { Request } from 'express'
 
 export function extractAuthSessionMetadata(request: Request): AuthSessionMetadata {
   return {

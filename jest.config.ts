@@ -1,9 +1,14 @@
 const config = {
-  moduleFileExtensions: ['js', 'json', 'ts'],
+  moduleFileExtensions: ['js', 'json', 'ts', 'tsx'],
   rootDir: './src',
   testRegex: '.*\\.spec\\.ts$',
   transform: {
-    '^.+\\.(t|j)s$': 'ts-jest',
+    '^.+\\.(t|j)sx?$': 'ts-jest',
+  },
+  moduleNameMapper: {
+    '^@modules/(.*)$': '<rootDir>/modules/$1',
+    '^@common/(.*)$': '<rootDir>/common/$1',
+    '^@shared/(.*)$': '<rootDir>/shared/$1',
   },
   collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: '../coverage',
