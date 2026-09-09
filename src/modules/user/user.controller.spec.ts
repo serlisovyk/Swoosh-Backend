@@ -6,7 +6,6 @@ describe('UserController', () => {
     const user = {
       _id: 'user-id',
       email: 'john.swoosh@example.com',
-      isEmailVerified: false,
     } as unknown as UserWithoutPassword
 
     const updatedUser = {
