@@ -96,11 +96,11 @@ export class AuthController {
   @AuthLogoutDocs()
   @HttpCode(HttpStatus.OK)
   @Post('logout')
-  async logout(
+  logout(
     @Req() req: PreparedRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    await this.authService.logout(req.cookies?.[REFRESH_TOKEN_COOKIE_NAME])
+    this.authService.logout(req.cookies?.[REFRESH_TOKEN_COOKIE_NAME])
 
     this.authService.clearRefreshTokenCookie(res)
 

@@ -12,7 +12,7 @@ export class SocialAuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async handleCallback(
+  handleCallback(
     user: UserWithoutPassword | undefined,
     request: PreparedRequest,
     response: Response,
@@ -23,7 +23,7 @@ export class SocialAuthService {
       return response.redirect(this.getRedirectUrl(SOCIAL_AUTH_STATUS.ERROR))
     }
 
-    const { accessToken, refreshToken } = await this.authService.createSession(
+    const { accessToken, refreshToken } = this.authService.createSession(
       user,
       request,
     )

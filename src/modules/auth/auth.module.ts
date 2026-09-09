@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
-import { MongooseModule } from '@nestjs/mongoose'
 import { PassportModule } from '@nestjs/passport'
 import { UserModule } from '@modules/user/user.module'
 import { FavoritesModule } from '@modules/favorites/favorites.module'
@@ -17,19 +16,10 @@ import { SocialAuthService } from './social-auth/social-auth.service'
 import { AuthAccountController } from './auth-account/auth-account.controller'
 import { AuthAccountService } from './auth-account/auth-account.service'
 import { AuthController } from './auth.controller'
-import { AuthSessionController } from './auth-session.controller'
 import { AuthService } from './auth.service'
-import {
-  AuthSession,
-  AuthSessionSchema,
-} from './auth-session/models/auth-session.model'
-import { AuthSessionService } from './auth-session/auth-session.service'
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: AuthSession.name, schema: AuthSessionSchema },
-    ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       useFactory: getJwtConfig,
@@ -41,7 +31,6 @@ import { AuthSessionService } from './auth-session/auth-session.service'
   ],
   controllers: [
     AuthController,
-    AuthSessionController,
     AuthAccountController,
     SocialAuthController,
   ],
@@ -52,7 +41,6 @@ import { AuthSessionService } from './auth-session/auth-session.service'
     GithubStrategy,
     GoogleAuthGuard,
     GithubAuthGuard,
-    AuthSessionService,
     SocialAuthService,
     AuthAccountService,
   ],
