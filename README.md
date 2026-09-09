@@ -51,22 +51,7 @@ http://localhost:4000/api/v1/docs
 
 ```bash
 npm run lint
-npm run test
 npm run build
 ```
 
-## Legacy Auth Cleanup
-
-After removing old auth features, run the cleanup script in dry-run mode:
-
-```bash
-npm run cleanup:auth-simplification
-```
-
-Apply destructive cleanup only after confirming the target database:
-
-```bash
-npm run cleanup:auth-simplification -- --apply
-```
-
-The script unsets legacy user fields, drops legacy auth session collections, and removes obsolete social-auth user indexes.
+This backend has no automated test suite.
