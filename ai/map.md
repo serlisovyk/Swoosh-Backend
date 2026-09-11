@@ -23,6 +23,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `products` | catalog + list endpoint with filtering, sorting, pagination (**reference implementation**); exports `ProductsService` for other modules | `products.utils.ts` (`buildProductListQueryOptions`, regex helpers), `products.constants.ts` (`PRODUCT_SORT_MAP`, `DEFAULT_PRODUCTS_LIMIT`), `dto/find-all-products.dto.ts`, `models/{product,product-category,product-color}.model.ts` |
 | `favorites` | favorites list; no schema of its own — depends on `UserModule`/`ProductsModule` and calls `UserService`/`ProductsService`, never injects their models directly | `favorites.service.ts`, `favorites.utils.ts` (pagination/meta), `dto/find-all-favorites.dto.ts` |
 | `forms` | aggregator over three sub-modules: `contact-request`, `individual-order`, `newsletter-subscription` — each its own folder with the full anatomy (controller/service/module/dto/models/utils/types/constants/swagger) | `forms.module.ts` + one folder per form |
+| `system` | public root (`GET /api/v1`) and liveness health check (`GET /api/v1/health`); no schema, no auth, `@SkipThrottle()` on both | `system.controller.ts`, `system.service.ts`, `system.types.ts`, `system.swagger.ts` |
 
 ## Cross-cutting (`src/common`)
 
