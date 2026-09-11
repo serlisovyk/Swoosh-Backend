@@ -1,33 +1,33 @@
-# Spec: единый MONGO_URI и опции подключения mongoose
+# Spec: single MONGO_URI and mongoose connection options
 
 Issue: MY-45 · Date: 2026-09-11
 
-## Контракт до
+## Contract before
 
-`src/common/mongo/mongo.utils.ts` (`getMongoString`) собирает URI вручную из шести env-переменных: `MONGO_PROTOCOL`, `MONGO_LOGIN`, `MONGO_PASSWORD`, `MONGO_HOST`, `MONGO_DB`, `MONGO_OPTIONS`. `mongo.config.ts` передаёт в `MongooseModule.forRootAsync` только `uri` — `autoIndex` остаётся дефолтным `true`, `retryAttempts` не задан.
+`src/common/mongo/mongo.utils.ts` (`getMongoString`) builds the URI by hand from six env vars: `MONGO_PROTOCOL`, `MONGO_LOGIN`, `MONGO_PASSWORD`, `MONGO_HOST`, `MONGO_DB`, `MONGO_OPTIONS`. `mongo.config.ts` passes only `uri` to `MongooseModule.forRootAsync` — `autoIndex` stays at the default `true`, `retryAttempts` is unset.
 
-## Контракт после
+## Contract after
 
-- Одна env-переменная `MONGO_URI` — читается как есть (`config.getOrThrow<string>('MONGO_URI')`), без сборки и без перекодирования частей.
-- `mongo.config.ts` возвращает `MongooseModuleOptions` с:
+- One env var `MONGO_URI` — read as-is (`config.getOrThrow<string>('MONGO_URI')`), no assembly, no re-encoding of parts.
+- `mongo.config.ts` returns `MongooseModuleOptions` with:
   - `uri: config.getOrThrow<string>('MONGO_URI')`
-  - `autoIndex: isDev(configService)` — индексы пересобираются только в dev, в проде это осознанный шаг
-  - `retryAttempts: 3` — явное значение вместо дефолта `10`
-- `mongo.utils.ts` удалён целиком, `getMongoString` больше не существует.
-- Шесть старых `MONGO_*` ключей убраны из `.env.sample` и из локального `.env`.
+  - `autoIndex: isDev(configService)` — indexes rebuild only in dev, in prod it's a deliberate step
+  - `retryAttempts: 3` — explicit value instead of the default `10`
+- `mongo.utils.ts` is removed entirely, `getMongoString` no longer exists.
+- The six old `MONGO_*` keys are removed from `.env.sample` and from the local `.env`.
 
-## Кто зависит
+## Who depends on this
 
-- `MongoModule` (`mongo.module.ts`) — вызывает `getMongoConfig`, сигнатура не меняется.
-- Ничего в `src/modules/*` не читает `MONGO_*` напрямую (проверено грепом) — блок-радиус ограничен `src/common/mongo`.
+- `MongoModule` (`mongo.module.ts`) — calls `getMongoConfig`, signature unchanged.
+- Nothing in `src/modules/*` reads `MONGO_*` directly (checked with grep) — blast radius is limited to `src/common/mongo`.
 
-## Риски (из issue)
+## Risks (from the issue)
 
-- Если `MONGO_URI` не будет проставлен в окружении при раскатке — приложение упадёт на старте (`getOrThrow`). Это ожидаемо и совпадает с текущим поведением для отсутствующих `MONGO_*`.
-- `autoIndex: false` в проде — новые индексы из схем сами не появятся, нужен осознанный шаг (зафиксировано в decision record).
+- If `MONGO_URI` isn't set in an environment at deploy time — the app fails fast at boot (`getOrThrow`). Expected, same failure mode as the missing `MONGO_*` vars before.
+- `autoIndex: false` in prod — new indexes from schemas won't appear by themselves, need a deliberate step (recorded in the decision record).
 
-## Вне скоупа
+## Out of scope
 
-- Управление индексами как процесс, миграции.
-- Отдельные URI на чтение/запись, реплики.
-- env-валидация схемой (следующая задача).
+- Index management as a process, migrations.
+- Separate read/write URIs, replicas.
+- env schema validation (next task).
