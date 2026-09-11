@@ -23,16 +23,6 @@ import {
 } from './user.constants'
 import { ROLES, type UserModel } from './user.types'
 
-const MONGO_DUPLICATE_KEY_ERROR_CODE = 11000
-
-function isDuplicateKeyError(error: unknown): boolean {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    (error as { code?: unknown }).code === MONGO_DUPLICATE_KEY_ERROR_CODE
-  )
-}
-
 @Injectable()
 export class UserService {
   constructor(
@@ -76,7 +66,7 @@ export class UserService {
 
       return this.getById(newUser._id)
     } catch (error) {
-      if (isDuplicateKeyError(error)) {
+      if (this.isDuplicateKeyError(error)) {
         throw new ConflictException(USER_ALREADY_EXISTS_ERROR)
       }
 
@@ -190,4 +180,12 @@ export class UserService {
     })
   }
 
+  private isDuplicateKeyError(error: unknown) {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      error.code === 11000
+    )
+  }
 }
