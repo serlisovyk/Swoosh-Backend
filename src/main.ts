@@ -27,8 +27,6 @@ async function bootstrap() {
 
   app.useGlobalFilters(new AllExceptionsFilter())
 
-  setupSwagger(app)
-
   app.use(cookieParser())
 
   app.use(helmet())
@@ -41,6 +39,8 @@ async function bootstrap() {
   })
 
   app.disable('x-powered-by')
+
+  setupSwagger(app, configService)
 
   const PORT = configService.getOrThrow<number>('PORT')
 

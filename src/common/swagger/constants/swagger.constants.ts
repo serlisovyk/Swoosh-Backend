@@ -2,6 +2,7 @@ export const SWAGGER_ACCESS_TOKEN_AUTH_NAME = 'bearer' as const
 export const SWAGGER_REFRESH_TOKEN_AUTH_NAME = 'refreshToken' as const
 
 export const SWAGGER_PATH = 'api/v1/docs'
+export const SWAGGER_BASIC_AUTH_REALM = 'Swoosh API Docs'
 
 export const SWAGGER_SITE_TITLE = 'Swoosh API Docs'
 export const SWAGGER_DESCRIPTION =
