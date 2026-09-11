@@ -19,6 +19,26 @@ export function createOptionalPropertyDocsDecorator(
   }
 }
 
+export function QueryPagePropertyDocs(options: { example: number }) {
+  return createOptionalPropertyDocsDecorator({
+    description: 'Results page number.',
+    example: options.example,
+    minimum: 1,
+  })
+}
+
+export function QueryLimitPropertyDocs(options: {
+  example: number
+  maximum: number
+}) {
+  return createOptionalPropertyDocsDecorator({
+    description: 'Maximum number of items returned per page.',
+    example: options.example,
+    minimum: 1,
+    maximum: options.maximum,
+  })
+}
+
 export function createSwaggerOperationId(
   controllerKey: string,
   methodKey: string,
