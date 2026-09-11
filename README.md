@@ -49,6 +49,11 @@ Swagger is available at:
 http://localhost:4000/api/v1/docs
 ```
 
+In dev it's open. Outside dev (`NODE_ENV` other than `development`) it
+requires HTTP Basic auth — set `SWAGGER_USER`/`SWAGGER_PASSWORD`, or the app
+refuses to start. Set `SWAGGER_ENABLED=false` to turn the docs route off
+entirely (404 instead of a login prompt).
+
 ## Checks
 
 ```bash
