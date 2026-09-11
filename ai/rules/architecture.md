@@ -41,7 +41,7 @@ These rules apply to the Swoosh Server backend.
 
 - Global route prefix is `api/v1`. Do not set per-controller prefixes that fight it.
 - A single global `ValidationPipe` is wired via `setupValidation` (`src/shared/config/validation.config.ts`) with `whitelist`, `transform`, and `forbidNonWhitelisted`: unknown properties are rejected and payloads are transformed to their DTO types. Rely on it — do not hand-validate shapes in services.
-- Swagger is served via `setupSwagger` at `/api/v1/docs`.
+- Swagger is served via `setupSwagger` at `/api/v1/docs`. `SwaggerModule.setup` mounts the docs UI on the raw HTTP adapter, outside Nest's request pipeline — `AllExceptionsFilter` does not (and will not) apply to it, including once basic-auth is added there.
 - Also wired at bootstrap: `cookie-parser` (refresh cookie), `helmet` (security headers), `enableCors` with origins from `CORS_DOMAINS` and `credentials: true`, and `x-powered-by` disabled.
 - `PORT` is read with `getOrThrow` — it is a required env var.
 - Keep global wiring in `main.ts`; do not scatter global config into feature modules.
@@ -49,7 +49,7 @@ These rules apply to the Swoosh Server backend.
 ## Global Providers
 
 - `ThrottlerGuard` is registered globally as an `APP_GUARD` (`src/common/throttler`); tighten specific routes with `@Throttle`. Throttling is skipped in dev via `skipIf`.
-- There are **no** global interceptors or exception filters. If you add one, document it here and update the review/security skills in the same change.
+- `AllExceptionsFilter` (`src/common/errors`) is registered globally in `main.ts` via `app.useGlobalFilters`. There are still no global interceptors. If you add one, document it here and update the review/security skills in the same change.
 
 ## Persistence (Mongo)
 
@@ -59,7 +59,7 @@ These rules apply to the Swoosh Server backend.
 
 ## Error Handling
 
-- Services throw built-in Nest HTTP exceptions (`BadRequestException`, `UnauthorizedException`, `NotFoundException`, …). There is no global `@Catch` filter yet, so Nest's default format is returned today.
-- The **target** error shape is the canonical envelope in `auth-and-api-contracts.md` (Error Response Contract); wiring a global `AllExceptionsFilter` to it is a planned task. Until then, do not hand-roll a different per-endpoint error shape.
+- Services throw built-in Nest HTTP exceptions (`BadRequestException`, `UnauthorizedException`, `NotFoundException`, …). A global `AllExceptionsFilter` (`src/common/errors`) catches every exception and maps it to the canonical envelope in `auth-and-api-contracts.md` (Error Response Contract) — do not hand-roll a different per-endpoint error shape.
+- The global `ValidationPipe` (`src/shared/config/validation.config.ts`) is given an `exceptionFactory`, wired from `main.ts`, that turns `class-validator` errors into a `ValidationFailedException` carrying a flattened `fields` map. This is what lets the filter tell a field-validation 400 (`VALIDATION_ERROR`) apart from any other `BadRequestException` (`BAD_REQUEST`, no `fields`) — do not add a second `exceptionFactory` or bypass it with manual validation.
 - Keep reused, user-facing error messages in `<feature>.constants.ts`; inline one-offs.
-- Never expose persistence errors, secrets, or internal detail in a thrown message.
+- Never expose persistence errors, secrets, or internal detail in a thrown message — the filter already keeps 5xx bodies generic and logs the real error server-side.

@@ -31,6 +31,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `captcha` | Cloudflare Turnstile wrapper; the `@Captcha()` decorator — applied on auth and password-reset endpoints |
 | `throttler` | global `ThrottlerGuard` registered as `APP_GUARD`; TTL/limit from env, `skipIf` in dev; tightened per route with `@Throttle` |
 | `email` | Resend + `@react-email/render`; templates in `templates/*.template.tsx` (currently `reset-password`) |
+| `errors` | canonical error envelope: `AllExceptionsFilter` (global, wired in `main.ts`), `ValidationFailedException` + `flattenValidationErrors` (used by the global `ValidationPipe`'s `exceptionFactory`), `ERROR_CODES`, `ErrorResponseDocs` for Swagger |
 | `mongo` | the single connection: `MongooseModule.forRootAsync` (`mongo.config.ts`) |
 | `swagger` | `config/swagger.config.ts` (DocumentBuilder, bearer + cookie auth, operationId), `utils/swagger.utils.ts` (`createPropertyDocsDecorator`, `createOptionalPropertyDocsDecorator`, `addSwaggerCookieAuth`) |
 
@@ -46,8 +47,8 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 
 ## What this project does NOT have (do not invent it)
 
-- No global interceptors and no exception filters — see [decisions/error-envelope-target](decisions/2026-09-09-error-envelope-target.md).
-- No dedicated logger.
+- No global interceptors — see [decisions/error-envelope-target](decisions/2026-09-09-error-envelope-target.md) (the global exception filter is implemented; interceptors are not).
+- No dedicated logger — `AllExceptionsFilter` uses Nest's built-in `Logger` for 5xx errors, not a request-scoped one.
 - No automated tests — see [decisions/no-test-suite](decisions/2026-09-09-no-test-suite.md).
 - No `toJSON`/`transform` hooks on models — secrets are hidden with `select: false`, see [skills/mongoose-models](skills/mongoose-models.md).
 - No shared pagination-meta helper: `products` and `favorites` each compute it locally.

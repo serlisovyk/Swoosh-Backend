@@ -39,7 +39,7 @@
 ## Error handling
 
 - Throw built-in Nest HTTP exceptions from services (`BadRequestException`, `UnauthorizedException`, `NotFoundException`, …).
-- The API's target error shape is the canonical envelope in `ai/rules/auth-and-api-contracts.md` (Error Response Contract). It is **not yet wired** — there is no global exception filter today, so Nest's default format is returned. Do not hand-roll a different per-endpoint error shape in the meantime.
+- The global `AllExceptionsFilter` (`src/common/errors`) maps every exception to the canonical envelope in `ai/rules/auth-and-api-contracts.md` (Error Response Contract). Do not hand-roll a different per-endpoint error shape.
 - Keep reused, user-facing error messages in `<feature>.constants.ts`; inline one-offs.
 - Never leak internals — stack traces, secrets, hashed values, raw Mongo errors — into a thrown message.
 
