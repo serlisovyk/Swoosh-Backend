@@ -54,6 +54,8 @@ These rules apply to the Swoosh Server backend.
 ## Persistence (Mongo)
 
 - The Mongo connection is configured once in `src/common/mongo` via `MongooseModule.forRootAsync` (`mongo.config.ts`).
+- The connection string is a single `MONGO_URI` env var, taken as-is from the provider (Atlas or any host) — do not reassemble it from separate protocol/login/password/host/db parts, see [decisions/single-mongo-uri](../decisions/2026-09-11-single-mongo-uri.md).
+- `autoIndex` is `isDev(configService)` — Mongoose only rebuilds indexes on boot in dev; in prod a new index needs an explicit, deliberate step. `retryAttempts` is set explicitly rather than left at the driver default.
 - Feature modules register their schemas with `MongooseModule.forFeature`; they do not open their own connections.
 - Keep connection and driver config in `MongoModule`.
 

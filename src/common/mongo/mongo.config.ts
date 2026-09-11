@@ -1,9 +1,11 @@
 import { ConfigService } from '@nestjs/config'
 import { MongooseModuleOptions } from '@nestjs/mongoose'
-import { getMongoString } from './mongo.utils'
+import { isDev } from '@shared/utils'
 
 export function getMongoConfig(config: ConfigService): MongooseModuleOptions {
   return {
-    uri: getMongoString(config),
+    uri: config.getOrThrow<string>('MONGO_URI'),
+    autoIndex: isDev(config),
+    retryAttempts: 3,
   }
 }
