@@ -89,3 +89,25 @@ verify(DUMMY_PASSWORD_HASH, password)` перед `throw`, результат
 - `npm run build`
 - Ручной прогон через dev-сервер: register → login → new-tokens → logout;
   двойной reset одним токеном; повторная регистрация того же email.
+
+## Отклонение от плана (по факту реализации)
+
+Коммиты 1+2+4 объединены в один — все три правят один и тот же блок
+`auth.service.ts` (cookie options, `generateSessionTokens`,
+`getRefreshTokenExpiresAt`, `validateUser`), разносить по коммитам одну и ту
+же функцию было бы искусственно. Коммиты 3+5 объединены — оба живут в
+`user.service.ts` (reset-токен и гонка при регистрации). Итоговая разбивка:
+
+1. `docs(ai): add spec and plan for MY-53 auth fixes` (уже закоммичено).
+2. `fix(auth): unify refresh-token expiry, require expiresIn, fix cross-site cookie policy, timing-safe login` — `auth.service.ts`, `auth.constants.ts`, `.env.sample`.
+3. `fix(auth): HMAC-only atomic reset-token consumption; 409 on registration race` — `auth.utils.ts`, `auth-account.service.ts`, `user.service.ts`.
+4. `docs(ai): document auth fixes in decisions/rules/skills`.
+
+Живая ручная проверка через HTTP (register/login с реальным Turnstile-токеном)
+не проводилась: `CLOUDFLARE_TURNSTILE_SECRET_KEY` в `.env` — не тестовый
+dummy-ключ Cloudflare, а ключ реального сайта, для которого нужен токен от
+живого виджета. `MONGO_HOST` в `.env` указывает на реальный Atlas-кластер
+(`swoosh-cluster-1`), поэтому гонки на дублирование email/reset-токена не
+воспроизводились нагрузочно против общей базы. Проверено: `npm run lint` /
+`npm run build` чистые, и построчный разбор изменённых веток кода против
+сценариев из issue (`ai/superpowers/specs/...md`).

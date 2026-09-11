@@ -27,3 +27,4 @@ Not decisions: one-off task details, plain current-state facts, or anything `ai/
 - [2026-09-09 — no test suite by design](2026-09-09-no-test-suite.md)
 - [2026-09-09 — canonical error envelope as the target](2026-09-09-error-envelope-target.md)
 - [2026-09-09 — agent knowledge base lives in `ai/`](2026-09-09-ai-knowledge-base-layout.md)
+- [2026-09-11 — refresh-cookie cross-site `sameSite`/`secure` policy](2026-09-11-refresh-cookie-cross-site-policy.md)

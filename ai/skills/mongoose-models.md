@@ -64,6 +64,7 @@ resetPasswordToken?: string | null
 
 - Add `index: true` only for a field a query actually filters or sorts on (`title`, `category`, `role`, `email`).
 - `unique: true` for natural keys (`user.email`, `newsletterSubscription.email`) — pair it with `index: true`.
+- A pre-check (`findOne` before `create`) is not enough to prevent a duplicate under concurrent requests — the unique index is the actual guarantee. Catch the driver's duplicate-key error (`code === 11000`) in the service and map it to `ConflictException`, so a race lands on the documented 409 instead of an unhandled 500 (see `UserService.create`).
 - When adding an index, name the query path that justifies it (a filter in `<feature>.utils.ts` or a service lookup). Unjustified indexes cost writes.
 - Document new collections, fields, and indexes when they change — see `ai/rules/definition-of-done.md`.
 
