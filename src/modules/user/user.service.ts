@@ -7,9 +7,10 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { InjectModel } from '@nestjs/mongoose'
+import { mongo } from 'mongoose'
 import { hash, verify } from 'argon2'
 import { RegisterDto } from '@modules/auth/dto/register.dto'
-import { hashToken, hashTokenWithSecret } from '@modules/auth/auth.utils'
+import { hashTokenWithSecret } from '@modules/auth/auth.utils'
 import { THIRTY_MINUTES_IN_MS } from '@shared/constants'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './models/user.model'
@@ -55,15 +56,23 @@ export class UserService {
 
     if (isExisting) throw new ConflictException(USER_ALREADY_EXISTS_ERROR)
 
-    const newUser = await this.userModel.create({
-      name: dto.name,
-      phone: dto.phone,
-      email: preparedEmail,
-      role: ROLES.USER,
-      password: await hash(dto.password),
-    })
+    try {
+      const newUser = await this.userModel.create({
+        name: dto.name,
+        phone: dto.phone,
+        email: preparedEmail,
+        role: ROLES.USER,
+        password: await hash(dto.password),
+      })
 
-    return this.getById(newUser._id)
+      return this.getById(newUser._id)
+    } catch (error) {
+      if (this.isDuplicateKeyError(error)) {
+        throw new ConflictException(USER_ALREADY_EXISTS_ERROR)
+      }
+
+      throw error
+    }
   }
 
   async update(userId: string, dto: UpdateUserDto) {
@@ -136,19 +145,23 @@ export class UserService {
     }
   }
 
-  findByPasswordResetToken(token: string) {
+  consumePasswordResetToken(token: string) {
     const hashedToken = hashTokenWithSecret(
       token,
       this.configService.getOrThrow<string>('RESET_TOKEN_SECRET'),
     )
 
-    const legacyHashedToken = hashToken(token)
-
     return this.userModel
-      .findOne({
-        resetPasswordToken: { $in: [hashedToken, legacyHashedToken, token] },
-        resetPasswordTokenExpiresAt: { $gt: new Date() },
-      })
+      .findOneAndUpdate(
+        {
+          resetPasswordToken: hashedToken,
+          resetPasswordTokenExpiresAt: { $gt: new Date() },
+        },
+        {
+          resetPasswordToken: null,
+          resetPasswordTokenExpiresAt: null,
+        },
+      )
       .lean()
   }
 
@@ -165,8 +178,6 @@ export class UserService {
   async resetPassword(userId: string, newPassword: string) {
     return this.userModel.findByIdAndUpdate(userId, {
       password: await hash(newPassword),
-      resetPasswordToken: null,
-      resetPasswordTokenExpiresAt: null,
     })
   }
 
@@ -202,5 +213,9 @@ export class UserService {
       .lean()
 
     return updatedUser ? updatedUser.favoriteProductIds : null
+  }
+
+  private isDuplicateKeyError(error: unknown) {
+    return error instanceof mongo.MongoServerError && error.code === 11000
   }
 }

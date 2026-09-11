@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
 import { Response } from 'express'
 import { verify } from 'argon2'
-import { StringValue } from 'ms'
+import ms, { StringValue } from 'ms'
 import { isDev, noop } from '@shared/utils'
 import { FavoritesService } from '@modules/favorites/favorites.service'
 import { UserService } from '../user/user.service'
@@ -23,7 +23,6 @@ import {
   REFRESH_TOKEN_COOKIE_NAME,
   USER_NOT_FOUND_ERROR,
 } from './auth.constants'
-import { ONE_DAY_IN_MS } from '@shared/constants'
 import {
   AccessTokenPayload,
   AuthFavoriteAwareUser,
@@ -73,24 +72,16 @@ export class AuthService {
   }
 
   setRefreshTokenCookie(response: Response, refreshToken: string | null) {
-    const refreshTokenExpiresDays = this.configService.getOrThrow<number>(
-      'JWT_REFRESH_TOKEN_EXPIRES_DAYS',
-    )
-
-    const refreshTokenExpires = new Date(
-      Date.now() + refreshTokenExpiresDays * ONE_DAY_IN_MS,
-    )
-
     const defaultCookieOptions = {
       httpOnly: true,
-      secure: true,
+      secure: !isDev(this.configService),
       domain: this.configService.get<string>('COOKIE_DOMAIN'),
-      sameSite: isDev(this.configService) ? 'none' : 'strict',
+      sameSite: isDev(this.configService) ? 'lax' : 'none',
     } as const
 
     response.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
       ...defaultCookieOptions,
-      expires: refreshToken ? refreshTokenExpires : new Date(0),
+      expires: refreshToken ? this.getRefreshTokenExpiresAt() : new Date(0),
     })
   }
 
@@ -146,6 +137,11 @@ export class AuthService {
     const user = await this.userService.getByEmailWithPassword(email)
 
     if (!user) {
+      const dummyPasswordHash = this.configService.getOrThrow<string>(
+        'AUTH_DUMMY_PASSWORD_HASH',
+      )
+
+      await verify(dummyPasswordHash, password)
       throw new UnauthorizedException(INVALID_CREDENTIALS_ERROR)
     }
 
@@ -196,16 +192,14 @@ export class AuthService {
     }
 
     const accessToken = this.jwt.sign(accessTokenPayload, {
-      expiresIn: this.configService.get<StringValue>(
+      expiresIn: this.configService.getOrThrow<StringValue>(
         'JWT_ACCESS_TOKEN_EXPIRES_IN',
       ),
     })
 
     const refreshToken = this.jwt.sign(refreshTokenPayload, {
       secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
-      expiresIn: this.configService.get<StringValue>(
-        'JWT_REFRESH_TOKEN_EXPIRES_IN',
-      ),
+      expiresIn: this.getRefreshTokenExpiresIn(),
     })
 
     return {
@@ -215,11 +209,13 @@ export class AuthService {
     }
   }
 
-  private getRefreshTokenExpiresAt() {
-    const refreshTokenExpiresDays = this.configService.getOrThrow<number>(
-      'JWT_REFRESH_TOKEN_EXPIRES_DAYS',
+  private getRefreshTokenExpiresIn() {
+    return this.configService.getOrThrow<StringValue>(
+      'JWT_REFRESH_TOKEN_EXPIRES_IN',
     )
+  }
 
-    return new Date(Date.now() + refreshTokenExpiresDays * ONE_DAY_IN_MS)
+  private getRefreshTokenExpiresAt() {
+    return new Date(Date.now() + ms(this.getRefreshTokenExpiresIn()))
   }
 }

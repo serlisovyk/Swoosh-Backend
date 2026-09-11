@@ -40,7 +40,7 @@ export class AuthAccountService {
   }
 
   async resetPassword(token: string, newPassword: string) {
-    const user = await this.userService.findByPasswordResetToken(token)
+    const user = await this.userService.consumePasswordResetToken(token)
 
     if (!user) {
       throw new BadRequestException(

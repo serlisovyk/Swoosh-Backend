@@ -65,6 +65,7 @@ resetPasswordToken?: string | null
 
 - Add `index: true` only for a field a query actually filters or sorts on (`title`, `category`, `role`, `email`, `price`, `sizes`, `material`).
 - `unique: true` for natural keys (`user.email`, `newsletterSubscription.email`) — pair it with `index: true`.
+- A pre-check (`findOne` before `create`) is not enough to prevent a duplicate under concurrent requests — the unique index is the actual guarantee. Catch the driver's duplicate-key error (`code === 11000`) in the service and map it to `ConflictException`, so a race lands on the documented 409 instead of an unhandled 500 (see `UserService.create`).
 - When adding an index, name the query path that justifies it (a filter in `<feature>.utils.ts` or a service lookup). Unjustified indexes cost writes.
 - **Array/multikey fields** (e.g. `Product.sizes`, a `number[]`): `index: true` on the `@Prop` still works — Mongoose creates a multikey index, used by both `distinct()` and `$in` filters against the array.
 - **Fields inside an embedded subdocument array** (e.g. `Product.colors: ProductColor[]`): put `index: true` on the field inside the *subdocument's own* schema (`ProductColor.name`), not on the parent array prop. That produces the equivalent of a top-level `colors.name` index.

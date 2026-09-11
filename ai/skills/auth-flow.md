@@ -27,8 +27,10 @@ All auth orchestration stays under `src/modules/auth`.
 
 ## Token model (do not drift)
 
-- Access token: stateless JWT signed with `JWT_SECRET`, returned in the response body of register/login/new-tokens, consumed as `Authorization: Bearer <token>` and validated by `jwt.strategy.ts` + `jwt.guard.ts`.
+- Access token: stateless JWT signed with `JWT_SECRET`, returned in the response body of register/login/new-tokens, consumed as `Authorization: Bearer <token>` and validated by `jwt.strategy.ts` + `jwt.guard.ts`. `expiresIn` (`JWT_ACCESS_TOKEN_EXPIRES_IN`) is read with `getOrThrow` — never let it fall through to `undefined`, that issues a token with no expiry.
 - Refresh token: stateless JWT signed with a **separate** `JWT_REFRESH_SECRET`, stored only in the `refreshToken` HttpOnly cookie. `POST /auth/new-tokens` reads it from the cookie; `POST /auth/logout` clears the cookie.
+- The refresh token's lifetime has one source: `JWT_REFRESH_TOKEN_EXPIRES_IN` (`ms` format, e.g. `"1d"`, `getOrThrow`). It signs the JWT and — via `ms()` — derives the cookie's `expires` date. Do not add a second, days-based env var for the cookie.
+- The `refreshToken` cookie uses `sameSite: 'none'` + `secure: true` in production and `sameSite: 'lax'` + `secure: false` in dev — the frontend and API are on different sites in production but share `localhost` in dev. See [decisions/refresh-cookie-cross-site-policy](../decisions/2026-09-11-refresh-cookie-cross-site-policy.md).
 - Logout does not revoke already-issued refresh tokens before expiry — there is no token version or blacklist. Do not claim otherwise.
 
 ## Roles and access control (RBAC)
@@ -46,7 +48,8 @@ All auth orchestration stays under `src/modules/auth`.
 
 ## Password reset
 
-- Reset tokens generated server-side and stored **hashed** before persistence.
+- Reset tokens generated server-side and stored hashed with `hashTokenWithSecret` (HMAC + `RESET_TOKEN_SECRET`) — the only accepted format. There is no legacy/plain fallback; don't reintroduce one without a decision record.
+- `UserService.consumePasswordResetToken` finds and clears the token in one atomic `findOneAndUpdate` — the lookup filter and the reset of `resetPasswordToken`/`resetPasswordTokenExpiresAt` happen in the same operation, so two concurrent requests for the same token cannot both succeed.
 - `request-password-reset` must not reveal whether an email exists.
 - Keep DTOs, `AuthAccountService`, email template, user token fields, and Swagger in sync in the same change.
 

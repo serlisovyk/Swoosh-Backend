@@ -11,6 +11,9 @@ These rules apply to auth behavior, Swagger, public request and response contrac
 - Protected endpoints must read access tokens from `Authorization: Bearer <token>`.
 - Refresh tokens are stored in the `refreshToken` HttpOnly cookie.
 - Refresh tokens are stateless JWTs signed with `JWT_REFRESH_SECRET`.
+- The refresh token's lifetime has one source: `JWT_REFRESH_TOKEN_EXPIRES_IN` (`ms` format, e.g. `"1d"`), read with `getOrThrow`. It signs the JWT and derives the cookie's `expires` date — do not add a second env var for the cookie's lifetime.
+- `JWT_ACCESS_TOKEN_EXPIRES_IN` is also read with `getOrThrow`. Never let either token's `expiresIn` fall through to `undefined` — that issues a JWT with no expiry.
+- The frontend and this API are served from different sites. The `refreshToken` cookie therefore uses `sameSite: 'none'` + `secure: true` in production (required for the cookie to survive the cross-site refresh request) and `sameSite: 'lax'` + `secure: false` in dev (frontend and API both on `localhost`, over `http`) — see [decisions/refresh-cookie-cross-site-policy](../decisions/2026-09-11-refresh-cookie-cross-site-policy.md).
 - `POST /auth/logout` clears the refresh cookie; it does not revoke already issued stateless refresh tokens before expiry.
 - Do not add Google/GitHub OAuth, email verification, or server-side auth sessions without a new spec and explicit approval.
 
@@ -25,7 +28,8 @@ These rules apply to auth behavior, Swagger, public request and response contrac
 ## Password Reset
 
 - Keep password-reset tokens generated server-side.
-- Store password-reset tokens hashed before persistence.
+- Store password-reset tokens hashed with `hashTokenWithSecret` (HMAC + `RESET_TOKEN_SECRET`) before persistence — this is the only accepted format; do not add a second lookup format "for migration" without a decision record.
+- Look up and consume a reset token in a single atomic `findOneAndUpdate` (match on the hashed token + non-expired, clear `resetPasswordToken`/`resetPasswordTokenExpiresAt` in the same operation) so two concurrent requests for the same token cannot both succeed.
 - `request-password-reset` should not reveal whether an email exists.
 - Keep password-reset DTOs, email template, service behavior, and Swagger docs aligned.
 
