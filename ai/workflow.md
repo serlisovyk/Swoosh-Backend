@@ -10,7 +10,7 @@ End-to-end sequence for taking a backend task. `AGENTS.md` states the non-negoti
 
 ## 2. Branch
 
-- Branch off `main` using the branch name Linear already provides for the issue (`gitBranchName`, e.g. `serlesovik/my-39-<slug>`).
+- Branch off `main` using the branch name Linear already provides for the issue (`gitBranchName`), dropping any username prefix Linear adds — e.g. `gitBranchName` `serlesovik/my-39-<slug>` becomes branch `my-39-<slug>`.
 - Never commit backend work directly on `main`.
 - Working on several issues at once: use a separate `git worktree` per issue (see "Parallel work" below) instead of stashing between branches in one working copy.
 
