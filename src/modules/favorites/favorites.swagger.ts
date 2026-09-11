@@ -1,3 +1,4 @@
+import { ErrorResponseDocs } from '@common/errors'
 import { applyDecorators } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -90,12 +91,15 @@ export function FavoritesFindAllDocs() {
     }),
     ApiUnauthorizedResponse({
       description: 'Authentication is required.',
+      type: ErrorResponseDocs,
     }),
     ApiBadRequestResponse({
       description: 'One or more query parameters are invalid.',
+      type: ErrorResponseDocs,
     }),
     ApiNotFoundResponse({
       description: 'User was not found.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -116,12 +120,15 @@ export function FavoritesAddDocs() {
     }),
     ApiUnauthorizedResponse({
       description: 'Authentication is required.',
+      type: ErrorResponseDocs,
     }),
     ApiBadRequestResponse({
       description: 'Product id has an invalid format or favorites limit was reached.',
+      type: ErrorResponseDocs,
     }),
     ApiNotFoundResponse({
       description: 'User or product was not found.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -142,12 +149,15 @@ export function FavoritesRemoveDocs() {
     }),
     ApiUnauthorizedResponse({
       description: 'Authentication is required.',
+      type: ErrorResponseDocs,
     }),
     ApiBadRequestResponse({
       description: 'Product id has an invalid format.',
+      type: ErrorResponseDocs,
     }),
     ApiNotFoundResponse({
       description: 'User was not found.',
+      type: ErrorResponseDocs,
     }),
   )
 }

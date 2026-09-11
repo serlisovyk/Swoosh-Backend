@@ -1,3 +1,4 @@
+import { ErrorResponseDocs } from '@common/errors'
 import { applyDecorators, Type } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -106,9 +107,11 @@ export function AuthRegisterDocs() {
     }),
     ApiBadRequestResponse({
       description: 'Request body validation failed.',
+      type: ErrorResponseDocs,
     }),
     ApiConflictResponse({
       description: 'User with this email already exists.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -128,9 +131,11 @@ export function AuthLoginDocs() {
     }),
     ApiBadRequestResponse({
       description: 'Request body validation failed.',
+      type: ErrorResponseDocs,
     }),
     ApiUnauthorizedResponse({
       description: 'Email or password is invalid.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -149,9 +154,11 @@ export function AuthNewTokensDocs() {
     }),
     ApiBadRequestResponse({
       description: 'Refresh token is missing or invalid.',
+      type: ErrorResponseDocs,
     }),
     ApiNotFoundResponse({
       description: 'User for the refresh token was not found.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -185,6 +192,7 @@ export function AuthRequestPasswordResetDocs() {
     }),
     ApiBadRequestResponse({
       description: 'Request body validation failed.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -205,6 +213,7 @@ export function AuthResetPasswordDocs() {
     ApiBadRequestResponse({
       description:
         'Reset token is invalid, expired or request body is invalid.',
+      type: ErrorResponseDocs,
     }),
   )
 }
