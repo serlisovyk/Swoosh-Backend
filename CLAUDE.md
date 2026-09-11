@@ -12,4 +12,4 @@
 - Rules of record: `ai/rules/` (architecture, auth-and-api-contracts, code-conventions, definition-of-done).
 - Skill playbooks: `ai/skills/` (index in `ai/skills/README.md`) — use the matching one before touching modules, models, auth, query filters, or Swagger; update it in the same change if you reshape a pattern.
 - Decision records: `ai/decisions/` — why durable choices were made. Read before proposing to change or restore one, and propose a new record when a fresh decision surfaces.
-- No automated test suite. Verify with `npm run lint` and `npm run build` — do not add or assume tests unless explicitly asked.
+- No automated test suite. Verify with `bun run lint` and `bun run build` — do not add or assume tests unless explicitly asked.

@@ -40,7 +40,7 @@ The parts that never bend:
 - Then implement — feature code lands in separate, later commits.
 - Work on a branch named after the Linear issue, never directly on `main`.
 - **Nothing merges and nothing is marked done without the repo author's explicit approval.** Silence or a neutral reply is not approval.
-- No test suite exists; verification is `npm run lint` + `npm run build`.
+- No test suite exists; verification is `bun run lint` + `bun run build`.
 
 ## Skills
 
@@ -59,7 +59,7 @@ Skill playbooks live in `ai/skills/` (tool-agnostic Markdown, index in `ai/skill
 ## Verification
 
 - Run checks from this directory.
-- Run `npm run lint` after backend changes.
-- Run `npm run build` after deleting files, changing dependencies, or changing public contracts.
+- Run `bun run lint` after backend changes.
+- Run `bun run build` after deleting files, changing dependencies, or changing public contracts.
 - This project has no automated tests; verify behavior by lint, build, and manual reasoning.
 - Do not verify or edit the frontend as part of backend-only work.

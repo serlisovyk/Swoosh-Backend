@@ -28,8 +28,8 @@ A backend change is done when all of the following hold. Use it as a pre-commit 
 
 ## Verification
 
-- `npm run lint` is clean.
-- `npm run build` is clean (required after deleting files, changing dependencies, or changing public contracts).
+- `bun run lint` is clean.
+- `bun run build` is clean (required after deleting files, changing dependencies, or changing public contracts).
 - No automated test suite exists — verify by lint, build, and manual reasoning. Do not add tests unless explicitly asked.
 
 ## Commits
