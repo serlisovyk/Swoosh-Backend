@@ -106,6 +106,8 @@ export const PRODUCT_QUERY_PAGE_MIN_ERROR = 'Страница должна бы�
 
 export const DEFAULT_PRODUCTS_LIMIT = 18
 
+export const FILTERS_METADATA_CACHE_TTL_MS = 60_000
+
 export const REGEX_SPECIAL_CHARACTERS = /[.*+?^${}()|[\]\\]/g
 
 export const PRODUCT_SORT_MAP: Record<
