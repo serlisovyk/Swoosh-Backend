@@ -10,9 +10,12 @@ import {
   ApiParam,
   ApiProperty,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 import {
+  ApiAuthRequiredDocs,
+  ApiInvalidQueryDocs,
+  ApiNotFoundDocs,
+  ApiValidationErrorDocs,
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
 } from '@common/swagger'
@@ -457,10 +460,7 @@ export function ProductsFindAllDocs() {
       description: 'Products list returned successfully.',
       type: ProductsListResponseDocs,
     }),
-    ApiBadRequestResponse({
-      description: 'One or more query parameters are invalid.',
-      type: ErrorResponseDocs,
-    }),
+    ApiInvalidQueryDocs(),
   )
 }
 
@@ -498,10 +498,7 @@ export function ProductsFindByIdDocs() {
       description: 'Product id has an invalid format.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundResponse({
-      description: 'Product with the provided id was not found.',
-      type: ErrorResponseDocs,
-    }),
+    ApiNotFoundDocs('Product with the provided id'),
   )
 }
 
@@ -512,14 +509,8 @@ export function ProductsCreateDocs() {
       description: 'Product created successfully.',
       type: ProductsResponseDocs,
     }),
-    ApiBadRequestResponse({
-      description: 'Request body validation failed.',
-      type: ErrorResponseDocs,
-    }),
-    ApiUnauthorizedResponse({
-      description: 'Authentication is required.',
-      type: ErrorResponseDocs,
-    }),
+    ApiValidationErrorDocs(),
+    ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
       description: 'Only admins can create products.',
       type: ErrorResponseDocs,
@@ -547,10 +538,7 @@ export function ProductsUpdateDocs() {
       description: 'Product id or request body is invalid.',
       type: ErrorResponseDocs,
     }),
-    ApiUnauthorizedResponse({
-      description: 'Authentication is required.',
-      type: ErrorResponseDocs,
-    }),
+    ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
       description: 'Only admins can update products.',
       type: ErrorResponseDocs,
@@ -581,17 +569,11 @@ export function ProductsDeleteDocs() {
       description: 'Product id has an invalid format.',
       type: ErrorResponseDocs,
     }),
-    ApiUnauthorizedResponse({
-      description: 'Authentication is required.',
-      type: ErrorResponseDocs,
-    }),
+    ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
       description: 'Only admins can delete products.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundResponse({
-      description: 'Product with the provided id was not found.',
-      type: ErrorResponseDocs,
-    }),
+    ApiNotFoundDocs('Product with the provided id'),
   )
 }

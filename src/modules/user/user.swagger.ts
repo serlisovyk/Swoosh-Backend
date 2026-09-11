@@ -9,6 +9,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 import {
+  ApiAuthRequiredDocs,
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
 } from '@common/swagger'
@@ -219,10 +220,7 @@ export function UserGetProfileDocs() {
       description: 'Current user profile returned successfully.',
       type: UserResponseDocs,
     }),
-    ApiUnauthorizedResponse({
-      description: 'Authentication is required.',
-      type: ErrorResponseDocs,
-    }),
+    ApiAuthRequiredDocs(),
   )
 }
 
