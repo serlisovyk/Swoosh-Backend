@@ -62,9 +62,13 @@ resetPasswordToken?: string | null
 
 ## Indexes
 
-- Add `index: true` only for a field a query actually filters or sorts on (`title`, `category`, `role`, `email`).
+- Add `index: true` only for a field a query actually filters or sorts on (`title`, `category`, `role`, `email`, `price`, `sizes`, `material`).
 - `unique: true` for natural keys (`user.email`, `newsletterSubscription.email`) — pair it with `index: true`.
 - When adding an index, name the query path that justifies it (a filter in `<feature>.utils.ts` or a service lookup). Unjustified indexes cost writes.
+- **Array/multikey fields** (e.g. `Product.sizes`, a `number[]`): `index: true` on the `@Prop` still works — Mongoose creates a multikey index, used by both `distinct()` and `$in` filters against the array.
+- **Fields inside an embedded subdocument array** (e.g. `Product.colors: ProductColor[]`): put `index: true` on the field inside the *subdocument's own* schema (`ProductColor.name`), not on the parent array prop. That produces the equivalent of a top-level `colors.name` index.
+- **Timestamps fields** (`createdAt`/`updatedAt` from `@Schema({ timestamps: true })`): they are not class-declared props, so `index: true` cannot be attached via `@Prop`. If one is a real sort/filter path (e.g. `newest`/`oldest` sort), add it as an explicit schema-level index after `SchemaFactory.createForClass`: `ProductSchema.index({ createdAt: -1 })`.
+- An **anchored** regex filter (`^...$`, as used for exact-match `$in` filters like `colorName`/`material`) can use a normal index. An **unanchored** "contains" regex (as used for the `search` `$or` filter) cannot — that needs a `$text` index instead, which is a different match semantic (word-tokenized, not substring) and changes the public search contract; see `ai/decisions/2026-09-11-products-filters-search-and-cache.md` for why this repo kept regex search over switching.
 - Document new collections, fields, and indexes when they change — see `ai/rules/definition-of-done.md`.
 
 ## Verification
