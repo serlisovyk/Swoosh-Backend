@@ -33,6 +33,8 @@ npm install
 
 Create `.env` from `.env.sample` and fill the backend values.
 
+Mongo connection is a single `MONGO_URI` env var — paste the connection string as-is from Atlas (or any Mongo host), no assembly from separate parts.
+
 Start development server:
 
 ```bash
