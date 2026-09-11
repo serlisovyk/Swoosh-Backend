@@ -242,6 +242,33 @@ export class ProductsService {
     }
   }
 
+  existsById(productId: string) {
+    return this.productModel.exists({ _id: productId }).then(Boolean)
+  }
+
+  async filterExistingIds(productIds: string[]) {
+    if (!productIds.length) return []
+
+    const existingProducts = await this.productModel
+      .find({ _id: { $in: productIds } })
+      .select('_id')
+      .lean()
+
+    const existingProductIds = new Set(
+      existingProducts.map((product) => String(product._id)),
+    )
+
+    return productIds.filter((productId) => existingProductIds.has(productId))
+  }
+
+  findManyByIds(productIds: string[]) {
+    return this.productModel
+      .find({ _id: { $in: productIds } })
+      .select(this.productSelectFields)
+      .populate('category', this.categorySelectFields)
+      .lean()
+  }
+
   private async findAllByIds(
     productIds: string[],
     filters: Record<string, unknown>,
