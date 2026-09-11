@@ -28,7 +28,7 @@ Because refresh tokens are stateless, logout does not revoke already issued refr
 Install dependencies:
 
 ```bash
-npm install
+bun install
 ```
 
 Create `.env` from `.env.sample` and fill the backend values.
@@ -38,7 +38,7 @@ Mongo connection is a single `MONGO_URI` env var — paste the connection string
 Start development server:
 
 ```bash
-npm run start:dev
+bun run start:dev
 ```
 
 The API uses the global prefix `/api/v1`.
@@ -52,8 +52,8 @@ http://localhost:4000/api/v1/docs
 ## Checks
 
 ```bash
-npm run lint
-npm run build
+bun run lint
+bun run build
 ```
 
 This backend has no automated test suite.
