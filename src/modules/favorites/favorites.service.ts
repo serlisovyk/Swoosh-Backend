@@ -4,13 +4,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
-import { Product } from '@modules/products/models/product.model'
+import { ProductsService } from '@modules/products/products.service'
 import { PRODUCT_NOT_FOUND_ERROR } from '@modules/products/products.constants'
-import { User } from '@modules/user/models/user.model'
+import { UserService } from '@modules/user/user.service'
 import { USER_NOT_FOUND_ERROR } from '@modules/user/user.constants'
-import type { ProductModel } from '@modules/products/products.types'
-import type { UserModel } from '@modules/user/user.types'
 import { FindAllFavoritesDto } from './dto/find-all-favorites.dto'
 import {
   areFavoriteProductIdsEqual,
@@ -33,12 +30,9 @@ import {
 @Injectable()
 export class FavoritesService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: UserModel,
-    @InjectModel(Product.name) private readonly productModel: ProductModel,
+    private readonly userService: UserService,
+    private readonly productsService: ProductsService,
   ) {}
-
-  private readonly productSelectFields = '-__v'
-  private readonly categorySelectFields = '-__v'
 
   async findAll(
     userId: string,
@@ -58,11 +52,9 @@ export class FavoritesService {
 
     if (!pageFavoriteProductIds.length) return { products: [], total }
 
-    const products = await this.productModel
-      .find({ _id: { $in: pageFavoriteProductIds } })
-      .select(this.productSelectFields)
-      .populate('category', this.categorySelectFields)
-      .lean()
+    const products = await this.productsService.findManyByIds(
+      pageFavoriteProductIds,
+    )
 
     return {
       products: orderProductsByIds(pageFavoriteProductIds, products),
@@ -149,15 +141,13 @@ export class FavoritesService {
   }
 
   private async findUserFavoriteProductIdsOrThrow(userId: string) {
-    const user = await this.userModel
-      .findById(userId)
-      .select('favoriteProductIds')
-      .lean()
+    const userFavoriteState =
+      await this.userService.getFavoriteProductIdsWithVersion(userId)
 
-    if (!user) throw new NotFoundException(USER_NOT_FOUND_ERROR)
+    if (!userFavoriteState) throw new NotFoundException(USER_NOT_FOUND_ERROR)
 
     return deduplicateFavoriteProductIds(
-      normalizeFavoriteProductIds(user.favoriteProductIds),
+      normalizeFavoriteProductIds(userFavoriteState.favoriteProductIds),
     )
   }
 
@@ -166,22 +156,11 @@ export class FavoritesService {
 
     if (!normalizedProductIds.length) return []
 
-    const existingProducts = await this.productModel
-      .find({ _id: { $in: normalizedProductIds } })
-      .select('_id')
-      .lean()
-
-    const existingProductIds = new Set(
-      existingProducts.map((product) => String(product._id)),
-    )
-
-    return normalizedProductIds.filter((productId) =>
-      existingProductIds.has(productId),
-    )
+    return this.productsService.filterExistingIds(normalizedProductIds)
   }
 
   private async ensureProductExists(productId: string) {
-    const isExisting = await this.productModel.exists({ _id: productId })
+    const isExisting = await this.productsService.existsById(productId)
 
     if (!isExisting) throw new NotFoundException(PRODUCT_NOT_FOUND_ERROR)
   }
@@ -210,21 +189,16 @@ export class FavoritesService {
         return nextFavoriteProductIds
       }
 
-      const updatedUser = await this.userModel
-        .findOneAndUpdate(
-          { _id: userId, __v: version },
-          {
-            $set: { favoriteProductIds: nextFavoriteProductIds },
-            $inc: { __v: 1 },
-          },
-          { returnDocument: 'after' },
+      const updatedFavoriteProductIds =
+        await this.userService.updateFavoriteProductIdsIfVersionMatches(
+          userId,
+          version,
+          nextFavoriteProductIds,
         )
-        .select('favoriteProductIds')
-        .lean()
 
-      if (updatedUser) {
+      if (updatedFavoriteProductIds) {
         return deduplicateFavoriteProductIds(
-          normalizeFavoriteProductIds(updatedUser.favoriteProductIds),
+          normalizeFavoriteProductIds(updatedFavoriteProductIds),
         )
       }
     }
@@ -233,18 +207,16 @@ export class FavoritesService {
   }
 
   private async findUserFavoriteStateOrThrow(userId: string) {
-    const user = await this.userModel
-      .findById(userId)
-      .select('favoriteProductIds __v')
-      .lean()
+    const userFavoriteState =
+      await this.userService.getFavoriteProductIdsWithVersion(userId)
 
-    if (!user) throw new NotFoundException(USER_NOT_FOUND_ERROR)
+    if (!userFavoriteState) throw new NotFoundException(USER_NOT_FOUND_ERROR)
 
     return {
       favoriteProductIds: deduplicateFavoriteProductIds(
-        normalizeFavoriteProductIds(user.favoriteProductIds),
+        normalizeFavoriteProductIds(userFavoriteState.favoriteProductIds),
       ),
-      version: user.__v ?? 0,
+      version: userFavoriteState.version,
     }
   }
 

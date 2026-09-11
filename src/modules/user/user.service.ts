@@ -170,4 +170,37 @@ export class UserService {
     })
   }
 
+  async getFavoriteProductIdsWithVersion(userId: string) {
+    const user = await this.userModel
+      .findById(userId)
+      .select('favoriteProductIds __v')
+      .lean()
+
+    if (!user) return null
+
+    return {
+      favoriteProductIds: user.favoriteProductIds,
+      version: user.__v ?? 0,
+    }
+  }
+
+  async updateFavoriteProductIdsIfVersionMatches(
+    userId: string,
+    version: number,
+    nextFavoriteProductIds: string[],
+  ) {
+    const updatedUser = await this.userModel
+      .findOneAndUpdate(
+        { _id: userId, __v: version },
+        {
+          $set: { favoriteProductIds: nextFavoriteProductIds },
+          $inc: { __v: 1 },
+        },
+        { returnDocument: 'after' },
+      )
+      .select('favoriteProductIds')
+      .lean()
+
+    return updatedUser ? updatedUser.favoriteProductIds : null
+  }
 }
