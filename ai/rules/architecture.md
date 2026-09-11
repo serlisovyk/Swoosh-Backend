@@ -28,6 +28,7 @@ These rules apply to the Swoosh Server backend.
 - Swagger docs live in module-local `*.swagger.ts` files.
 - Keep public API contracts explicit.
 - Do not leak persistence shape into public responses.
+- A service injects `@InjectModel` only for models its own module owns. Data owned by another module goes through that module's exported service, never through a direct `@InjectModel` of its model — see [decisions/no-cross-module-model-injection](../decisions/2026-09-11-no-cross-module-model-injection.md). Was: `FavoritesService` injected `User`/`Product` models and queried their collections directly. Now: `FavoritesService` depends on `UserService`/`ProductsService`, which own the query shape (`select`/`populate`/optimistic-lock update) for their own collections.
 
 ## Query Endpoint Pattern
 

@@ -41,7 +41,8 @@ export const ProductSchema = SchemaFactory.createForClass(Product)
 - **Enums**: `@Prop({ type: String, enum: Object.values(ROLES), default: ROLES.USER })`, enum declared in `<feature>.types.ts`.
 - **References**: `@Prop({ type: MongooseSchema.Types.ObjectId, ref: Product.name, ... })` — use `Model.name`, never a hardcoded string. Array refs use `type: [MongooseSchema.Types.ObjectId]`.
 - **Embedded subdocuments**: embed the generated schema (`type: [ProductColorSchema]`) for arrays; embed the class (`type: Address, default: {}`) for a single nested object.
-- Cross-module model imports use the `@modules/*` alias.
+- Cross-module model imports use the `@modules/*` alias — but only to import the model **class** for typing or `ref:` (as `user.model.ts` does with `Product` and `auth.types.ts` does with `User`). This is not license to `@InjectModel` a foreign model into your service.
+- **A service injects `@InjectModel` only for models its own module owns.** Data another module owns is read/written only through that module's exported service — never via a direct `@InjectModel` of its model. See [decisions/no-cross-module-model-injection](../decisions/2026-09-11-no-cross-module-model-injection.md); `favorites` (now calling `UserService`/`ProductsService`) is the reference example — it was the one exception in the repo, and it was revoked, not extended.
 
 ## Sensitive fields — `select: false`
 
