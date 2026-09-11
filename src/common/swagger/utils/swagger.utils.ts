@@ -3,7 +3,12 @@ import {
   ApiPropertyOptional,
   DocumentBuilder,
 } from '@nestjs/swagger'
-import { CookieToken, SwaggerPropertyOptions } from '../types'
+import {
+  CookieToken,
+  QueryLimitPropertyDocsOptions,
+  QueryPagePropertyDocsOptions,
+  SwaggerPropertyOptions,
+} from '../types'
 
 export function createPropertyDocsDecorator(options: SwaggerPropertyOptions) {
   return function ProductsPropertyDocsDecorator() {
@@ -19,7 +24,7 @@ export function createOptionalPropertyDocsDecorator(
   }
 }
 
-export function QueryPagePropertyDocs(options: { example: number }) {
+export function QueryPagePropertyDocs(options: QueryPagePropertyDocsOptions) {
   return createOptionalPropertyDocsDecorator({
     description: 'Results page number.',
     example: options.example,
@@ -27,10 +32,9 @@ export function QueryPagePropertyDocs(options: { example: number }) {
   })
 }
 
-export function QueryLimitPropertyDocs(options: {
-  example: number
-  maximum: number
-}) {
+export function QueryLimitPropertyDocs(
+  options: QueryLimitPropertyDocsOptions,
+) {
   return createOptionalPropertyDocsDecorator({
     description: 'Maximum number of items returned per page.',
     example: options.example,

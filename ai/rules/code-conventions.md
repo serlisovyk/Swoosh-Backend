@@ -13,7 +13,7 @@
 
 - Prefer `interface` for object-shaped public contracts (DTO-adjacent shapes, response contracts).
 - Prefer `type` for unions, literal variants, and utility composition.
-- Do not inline an object type for a class field, cache entry, or function param/return shape — even when it's private/internal state. Name it and put it in `<feature>.types.ts` next to the other feature-local shapes (e.g. `FiltersMetadataCacheEntry` in `src/modules/products/products.types.ts`). An inline `{ ... }` type annotation cannot be reused, named in an error message, or found by searching for it.
+- Do not inline an object type for a class field, cache entry, or function param/return shape — even when it's private/internal state, and even when it's a single-property options bag (`function f(options: { example: number })`). Name it and put it in `<feature>.types.ts` next to the other feature-local shapes (e.g. `FiltersMetadataCacheEntry` in `src/modules/products/products.types.ts`; `QueryLimitPropertyDocsOptions` in `src/common/swagger/types/swagger.types.ts`). An inline `{ ... }` type annotation cannot be reused, named in an error message, or found by searching for it.
 - Prefer an `as const` object with a derived union type over a TS `enum` — that is the established pattern here (`ROLES` in `src/modules/user/user.types.ts`).
 - Keep exported types and function names easy to explain out loud.
 - Don't nest an object literal type inside another interface's property (`{ error: { code: ...; message: ...; fields?: ... } }`). Extract the inner shape into its own named interface and reference it (`interface ErrorBody { code; message; fields? }`, then `interface ErrorResponseBody { error: ErrorBody }`) — see `src/common/errors/errors.types.ts`.
