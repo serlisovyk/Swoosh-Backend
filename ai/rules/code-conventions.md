@@ -7,7 +7,7 @@
 - Use path aliases already configured by the project (`@modules/*`, `@common/*`, `@shared/*`) and module barrels over deep relative paths.
 - Avoid broad `any`; when unavoidable, keep it local and obvious. Prefer narrowing over `as` type assertions.
 - Prefer `readonly` for injected dependencies and values that never reassign.
-- Prefer explicit names over abbreviations.
+- Prefer explicit names over abbreviations — e.g. `context`, not `ctx` (including Nest's `ArgumentsHost`/`ExecutionContext` locals).
 
 ## Types
 
@@ -15,6 +15,7 @@
 - Prefer `type` for unions, literal variants, and utility composition.
 - Prefer an `as const` object with a derived union type over a TS `enum` — that is the established pattern here (`ROLES` in `src/modules/user/user.types.ts`).
 - Keep exported types and function names easy to explain out loud.
+- Don't nest an object literal type inside another interface's property (`{ error: { code: ...; message: ...; fields?: ... } }`). Extract the inner shape into its own named interface and reference it (`interface ErrorBody { code; message; fields? }`, then `interface ErrorResponseBody { error: ErrorBody }`) — see `src/common/errors/errors.types.ts`.
 
 ## Comments
 
@@ -59,6 +60,7 @@
 - Keep constants for repeated values, domain values, configuration names, cookie names, throttling configs, shared examples, and values used across files.
 - Inline one-off validation messages, Swagger descriptions, and examples when they are only used locally and extraction hurts readability.
 - Remove stale constants after deleting features.
+- Even module-private constants (a status→code lookup map, a threshold used only inside one filter/service) belong in `<feature>.constants.ts`, not declared at the top of the class file that uses them. Keeps the class file to behavior, keeps constants greppable in one place — see `src/common/errors/error-codes.constants.ts` (`STATUS_TO_ERROR_CODE`, `INTERNAL_SERVER_ERROR_STATUS`) vs `all-exceptions.filter.ts`.
 
 ## Files
 

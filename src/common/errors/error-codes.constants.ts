@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common'
+
 export const ERROR_CODES = {
   VALIDATION_ERROR: 'VALIDATION_ERROR',
   BAD_REQUEST: 'BAD_REQUEST',
@@ -10,3 +12,14 @@ export const ERROR_CODES = {
 } as const
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES]
+
+export const INTERNAL_SERVER_ERROR_STATUS: number =
+  HttpStatus.INTERNAL_SERVER_ERROR
+
+export const STATUS_TO_ERROR_CODE: Partial<Record<number, ErrorCode>> = {
+  [HttpStatus.UNAUTHORIZED]: ERROR_CODES.UNAUTHORIZED,
+  [HttpStatus.FORBIDDEN]: ERROR_CODES.FORBIDDEN,
+  [HttpStatus.NOT_FOUND]: ERROR_CODES.NOT_FOUND,
+  [HttpStatus.CONFLICT]: ERROR_CODES.CONFLICT,
+  [HttpStatus.TOO_MANY_REQUESTS]: ERROR_CODES.TOO_MANY_REQUESTS,
+}

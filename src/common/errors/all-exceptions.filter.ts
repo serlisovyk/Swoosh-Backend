@@ -7,29 +7,24 @@ import {
   Logger,
 } from '@nestjs/common'
 import type { Request, Response } from 'express'
-import { ERROR_CODES, ErrorCode } from './error-codes.constants'
+import {
+  ERROR_CODES,
+  INTERNAL_SERVER_ERROR_STATUS,
+  STATUS_TO_ERROR_CODE,
+} from './error-codes.constants'
 import { INTERNAL_ERROR_MESSAGE } from './errors.constants'
 import { ErrorResponseBody } from './errors.types'
 import { ValidationFailedException } from './validation-failed.exception'
-
-const INTERNAL_SERVER_ERROR_STATUS: number = HttpStatus.INTERNAL_SERVER_ERROR
-
-const STATUS_TO_ERROR_CODE: Partial<Record<number, ErrorCode>> = {
-  [HttpStatus.UNAUTHORIZED]: ERROR_CODES.UNAUTHORIZED,
-  [HttpStatus.FORBIDDEN]: ERROR_CODES.FORBIDDEN,
-  [HttpStatus.NOT_FOUND]: ERROR_CODES.NOT_FOUND,
-  [HttpStatus.CONFLICT]: ERROR_CODES.CONFLICT,
-  [HttpStatus.TOO_MANY_REQUESTS]: ERROR_CODES.TOO_MANY_REQUESTS,
-}
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name)
 
   catch(exception: unknown, host: ArgumentsHost) {
-    const ctx = host.switchToHttp()
-    const response = ctx.getResponse<Response>()
-    const request = ctx.getRequest<Request>()
+    const context = host.switchToHttp()
+
+    const response = context.getResponse<Response>()
+    const request = context.getRequest<Request>()
 
     const status = this.resolveStatus(exception)
     const body = this.buildResponseBody(exception, status)
