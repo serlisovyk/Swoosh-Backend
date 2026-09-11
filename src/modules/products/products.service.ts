@@ -19,6 +19,7 @@ import {
   updateProductOptions,
 } from './products.constants'
 import type {
+  FiltersMetadataCacheEntry,
   ProductCategoryModel,
   ProductFiltersMetadata,
   ProductModel,
@@ -38,10 +39,7 @@ export class ProductsService {
   private readonly productSelectFields = '-__v'
   private readonly categorySelectFields = '-__v'
 
-  private filtersMetadataCache: {
-    data: ProductFiltersMetadata
-    expiresAt: number
-  } | null = null
+  private filtersMetadataCache: FiltersMetadataCacheEntry | null = null
 
   async findAll(dto: FindAllProductsDto) {
     const { excludeIds, filters, ids, limit, skip, sort } =

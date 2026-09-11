@@ -1,6 +1,6 @@
 # Plan: Product indexes + findFiltersMetadata cache
 
-Issue: MY-63 · Branch: `serlesovik/my-63-products-indexes-and-filters-cache`
+Issue: MY-63 · Branch: `my-63-products-indexes-and-filters-cache`
 
 ## Decisions (to be recorded as a decision record)
 
