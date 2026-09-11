@@ -11,6 +11,7 @@ End-to-end sequence for taking a backend task. `AGENTS.md` states the non-negoti
 ## 2. Branch
 
 - Branch off `main` using the branch name Linear already provides for the issue (`gitBranchName`, e.g. `serlesovik/my-39-<slug>`).
+- Linear derives `gitBranchName` from the issue title, which is often in Russian — this can produce a transliterated, non-English slug (Russian words spelled with Latin letters). Never use that as-is. If the slug isn't made of real English words, replace it with a short English slug you write yourself, keeping the `<username>/<issue-id>-<slug>` shape (e.g. `serlesovik/my-39-error-envelope`, not `serlesovik/my-39-privesti-oshibki-k-envelope`).
 - Never commit backend work directly on `main`.
 - Working on several issues at once: use a separate `git worktree` per issue (see "Parallel work" below) instead of stashing between branches in one working copy.
 
@@ -32,6 +33,7 @@ Do not explore `src/` from scratch when the map answers the question.
 
 - **Plan** — always. **Spec** — only when the task changes observable behavior or a public/data contract.
 - Write them under `ai/superpowers/plans/` and `ai/superpowers/specs/` as `<YYYY-MM-DD>-<slug>.md`, reusing the issue's slug so spec, plan, branch, and issue all pair up.
+- Write spec and plan **in English**, always — same as code, comments, and commits. This holds even when the Linear issue is in Russian and the chat with the author is in Russian; only chat replies follow the author's language, never files committed to the repo.
 - Format is yours to choose; keep it concise and specific. The plan must contain the intended commit breakdown.
 - Commit spec + plan together as a **single commit**, before any implementation commit.
 
@@ -72,7 +74,8 @@ Walk `ai/rules/definition-of-done.md` point by point. Fix what fails before movi
 
 Hand over a short summary:
 
-- what changed and why, with the commit list;
+- **what was done** — a short plain-language bullet list of the actual changes, point by point, written so the author can follow it without opening the issue, the diff, or the plan (e.g. "moved refresh-token expiry read to `getOrThrow`", "removed the dead `logout()` method", not "fixed auth per the plan");
+- the commit list, each with what it does;
 - verification output (`lint` / `build`);
 - review findings and what was done about each;
 - anything deliberately left out of scope.
