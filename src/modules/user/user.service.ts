@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { InjectModel } from '@nestjs/mongoose'
+import { mongo } from 'mongoose'
 import { hash, verify } from 'argon2'
 import { RegisterDto } from '@modules/auth/dto/register.dto'
 import { hashTokenWithSecret } from '@modules/auth/auth.utils'
@@ -181,11 +182,6 @@ export class UserService {
   }
 
   private isDuplicateKeyError(error: unknown) {
-    return (
-      typeof error === 'object' &&
-      error !== null &&
-      'code' in error &&
-      error.code === 11000
-    )
+    return error instanceof mongo.MongoServerError && error.code === 11000
   }
 }
