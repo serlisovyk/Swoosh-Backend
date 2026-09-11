@@ -49,6 +49,8 @@ Swagger is available at:
 http://localhost:4000/api/v1/docs
 ```
 
+`GET /api/v1` returns a welcome message; `GET /api/v1/health` is a public liveness check (`{ status: 'ok', timestamp }`, no dependency checks) — both unauthenticated and exempt from rate limiting, meant for uptime monitors and load balancers.
+
 ## Checks
 
 ```bash
