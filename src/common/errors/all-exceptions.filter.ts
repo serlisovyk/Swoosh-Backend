@@ -56,15 +56,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
     exception: unknown,
     status: number,
   ): ErrorResponseBody {
-    if (status >= INTERNAL_SERVER_ERROR_STATUS) {
-      return {
-        error: {
-          code: ERROR_CODES.INTERNAL_ERROR,
-          message: INTERNAL_ERROR_MESSAGE,
-        },
-      }
-    }
-
     if (exception instanceof ValidationFailedException) {
       return {
         error: {
@@ -75,19 +66,22 @@ export class AllExceptionsFilter implements ExceptionFilter {
       }
     }
 
-    if (exception instanceof HttpException) {
+    if (
+      status >= INTERNAL_SERVER_ERROR_STATUS ||
+      !(exception instanceof HttpException)
+    ) {
       return {
         error: {
-          code: STATUS_TO_ERROR_CODE[status] ?? ERROR_CODES.BAD_REQUEST,
-          message: this.extractMessage(exception),
+          code: ERROR_CODES.INTERNAL_ERROR,
+          message: INTERNAL_ERROR_MESSAGE,
         },
       }
     }
 
     return {
       error: {
-        code: ERROR_CODES.INTERNAL_ERROR,
-        message: INTERNAL_ERROR_MESSAGE,
+        code: STATUS_TO_ERROR_CODE[status] ?? ERROR_CODES.BAD_REQUEST,
+        message: this.extractMessage(exception),
       },
     }
   }
