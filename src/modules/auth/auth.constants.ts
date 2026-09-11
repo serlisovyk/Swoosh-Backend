@@ -1,5 +1,11 @@
 export const REFRESH_TOKEN_COOKIE_NAME = 'refreshToken' as const
 export const INVALID_CREDENTIALS_ERROR = 'Неверный email или пароль'
+
+// Fixed argon2 hash with no matching password. Verified against it when a
+// user isn't found, so a missing account takes the same time as a wrong
+// password and can't be timing-enumerated.
+export const DUMMY_PASSWORD_HASH =
+  '$argon2id$v=19$m=65536,t=3,p=4$wKEk8cgWz7XsGtv8Yk/gWA$0G+JQUZLMBIxHXb6KBiRhJpi4aGwKWcDd/5nJ/aKgqk'
 export const USER_NOT_FOUND_ERROR = 'Пользователь с таким email не найден'
 export const FAILED_TO_CREATE_USER_ERROR = 'Не удалось создать пользователя'
 
