@@ -1,20 +1,20 @@
-# Spec: индексы Product + кэш findFiltersMetadata
+# Spec: Product indexes + findFiltersMetadata cache
 
 Issue: MY-63
 
-## Наблюдаемое поведение — что не меняется
+## Observable behavior — unchanged
 
-- `GET /products/filters` — тот же response shape (`ProductsFiltersMetadataResponseDocs`), тот же состав `sizes`/`materials`/`colors`/`categories`/`priceRange`.
-- `GET /products?search=...` — семантика поиска не меняется: остаётся `$or` по regex (case-insensitive "содержит подстроку" по `title`/`description`), **не** переключается на `$text`. Причина: `$text` токенизирует по словам и не эквивалентен текущему substring-match — фронт полагается на текущее поведение, менять публичный контракт поиска без согласования с фронтом нельзя (см. риски в тексте issue). Задокументировано как decision.
-- Все остальные фильтры (`sizes`, `colorName`, `material`, `category`, `price`, `isHit`, `isNewArrival`, `hasDiscount`) — без изменений в query-building логике (`products.utils.ts`), только новые индексы под них.
+- `GET /products/filters` — same response shape (`ProductsFiltersMetadataResponseDocs`), same composition of `sizes`/`materials`/`colors`/`categories`/`priceRange`.
+- `GET /products?search=...` — search semantics unchanged: stays `$or` regex (case-insensitive "contains substring" over `title`/`description`), **not** switched to `$text`. Reason: `$text` tokenizes by word and is not equivalent to the current substring match — the frontend relies on the current behavior, and changing the public search contract without frontend sign-off is not acceptable (see the risks noted in the issue). Documented as a decision.
+- All other filters (`sizes`, `colorName`, `material`, `category`, `price`, `isHit`, `isNewArrival`, `hasDiscount`) — no change to the query-building logic (`products.utils.ts`), only new indexes backing them.
 
-## Что меняется — наблюдаемо
+## Observable changes
 
-- `GET /products/filters` может отдавать данные, устаревшие до 60 секунд относительно последнего `create`/`update`/`remove` товара (in-memory TTL-кэш). Раньше результат всегда был актуален на момент запроса. Для публичных, не завязанных на конкретный товар агрегатов (список размеров/материалов/цветов/категорий/диапазон цен) это допустимо — исключение из this же тикета: кэш для цены/наличия конкретного товара не предлагается и не реализуется.
+- `GET /products/filters` may serve data up to 60 seconds stale relative to the last product `create`/`update`/`remove` (in-memory TTL cache). Previously the result was always current at request time. Acceptable for public aggregates not tied to a single product (sizes/materials/colors/categories/price range) — this ticket does not propose caching a single product's price/availability.
 
-## Не в скоупе (подтверждено)
+## Out of scope (confirmed)
 
-- Кэш `GET /products` (листинг) — не трогаем.
-- CRUD категорий — не трогаем.
-- Бизнес-логика фильтрации — не трогаем.
-- Глобальный exception filter / error envelope — не трогаем.
+- Caching `GET /products` (the listing) — not touched.
+- Category CRUD — not touched.
+- Filtering business logic — not touched.
+- Global exception filter / error envelope — not touched.
