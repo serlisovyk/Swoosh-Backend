@@ -74,6 +74,15 @@ being touched.
   `SWAGGER_PASSWORD` being required together with `SWAGGER_ENABLED=true` is
   expressed as an explicit `getOrThrow` check in code, not a validation
   schema; revisit once MY-46 lands.
+- Rate-limiting basic-auth attempts on the docs path. `SwaggerModule.setup`
+  mounts routes on the raw HTTP adapter outside Nest's DI/guard pipeline
+  (same reason `AllExceptionsFilter` doesn't reach it), so the global
+  `ThrottlerGuard` — a Nest guard — does not cover it either. A brute-force
+  attempt against `SWAGGER_USER`/`SWAGGER_PASSWORD` is not rate-limited by
+  this change. Mitigating it needs either a hand-rolled limiter on the raw
+  middleware or bringing the docs route into Nest's pipeline — both are new
+  design decisions the issue didn't ask for; the practical mitigation today
+  is a long, random `SWAGGER_PASSWORD`.
 
 ## Risks
 
