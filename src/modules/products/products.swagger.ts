@@ -15,8 +15,11 @@ import {
 import {
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
+  QueryLimitPropertyDocs,
+  QueryPagePropertyDocs,
 } from '@common/swagger'
 import {
+  DEFAULT_PRODUCTS_LIMIT,
   PRODUCT_ID_EXAMPLE,
   PRODUCT_CATEGORY_ID_EXAMPLE,
   PRODUCT_IMAGE_EXAMPLES,
@@ -212,20 +215,14 @@ export const ProductsQuerySearchPropertyDocs =
     example: 'Air Max',
   })
 
-export const ProductsQueryLimitPropertyDocs =
-  createOptionalPropertyDocsDecorator({
-    description: 'Maximum number of products returned.',
-    example: 18,
-    minimum: 1,
-    maximum: 100,
-  })
+export const ProductsQueryLimitPropertyDocs = QueryLimitPropertyDocs({
+  example: DEFAULT_PRODUCTS_LIMIT,
+  maximum: 100,
+})
 
-export const ProductsQueryPagePropertyDocs =
-  createOptionalPropertyDocsDecorator({
-    description: 'Results page number.',
-    example: 1,
-    minimum: 1,
-  })
+export const ProductsQueryPagePropertyDocs = QueryPagePropertyDocs({
+  example: 1,
+})
 
 export const ProductsQuerySortPropertyDocs =
   createOptionalPropertyDocsDecorator({

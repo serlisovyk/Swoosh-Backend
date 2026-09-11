@@ -1,12 +1,13 @@
 import { isValidObjectId } from 'mongoose'
+import { resolvePaginationOffset } from '@shared/utils'
 import { Product } from '@modules/products/models/product.model'
 
 export function paginateFavoriteProductIds(
   favoriteProductIds: string[],
-  page: number,
+  page: number | undefined,
   limit: number,
 ) {
-  const offset = (page - 1) * limit
+  const offset = resolvePaginationOffset(page, limit)
 
   return favoriteProductIds.slice(offset, offset + limit)
 }

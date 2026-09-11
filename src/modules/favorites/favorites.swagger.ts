@@ -12,10 +12,13 @@ import {
 import {
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
+  QueryLimitPropertyDocs,
+  QueryPagePropertyDocs,
 } from '@common/swagger'
 import { ProductsListItemsPropertyDocs, ProductsResponseDocs } from '@modules/products/products.swagger'
 import {
   FAVORITES_DEFAULT_LIMIT,
+  FAVORITES_MAX_LIMIT,
   FAVORITES_MAX_PRODUCT_IDS,
   FAVORITES_PRODUCT_ID_EXAMPLE,
   FAVORITES_PRODUCT_IDS_EXAMPLE,
@@ -48,19 +51,14 @@ export const FavoritesTotalPropertyDocs = createPropertyDocsDecorator({
   example: 6,
 })
 
-export const FavoritesQueryPagePropertyDocs =
-  createOptionalPropertyDocsDecorator({
-    description: 'Page number for favorites pagination.',
-    example: 1,
-    minimum: 1,
-  })
+export const FavoritesQueryPagePropertyDocs = QueryPagePropertyDocs({
+  example: 1,
+})
 
-export const FavoritesQueryLimitPropertyDocs =
-  createOptionalPropertyDocsDecorator({
-    description: 'Maximum number of favorite products returned in one page.',
-    example: FAVORITES_DEFAULT_LIMIT,
-    minimum: 1,
-  })
+export const FavoritesQueryLimitPropertyDocs = QueryLimitPropertyDocs({
+  example: FAVORITES_DEFAULT_LIMIT,
+  maximum: FAVORITES_MAX_LIMIT,
+})
 
 export class FavoritesStateResponseDocs {
   @FavoritesProductIdsPropertyDocs()

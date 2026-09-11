@@ -1,6 +1,8 @@
 export {
   createPropertyDocsDecorator,
   createOptionalPropertyDocsDecorator,
+  QueryPagePropertyDocs,
+  QueryLimitPropertyDocs,
 } from './utils'
 export { setupSwagger } from './config'
 export {
