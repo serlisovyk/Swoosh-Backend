@@ -20,8 +20,8 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `auth` | register / login / new-tokens / logout, guards, JWT strategy, decorators. No schema of its own — reuses `User` | `auth.controller.ts`, `auth.service.ts`, `guards/jwt.guard.ts`, `guards/roles.guard.ts`, `strategies/jwt.strategy.ts`, `decorators/{auth,roles,user}.decorator.ts`, `jwt.config.ts`, `auth.constants.ts` |
 | `auth/auth-account` | password reset: request and confirm | `auth-account.controller.ts`, `auth-account.service.ts`, `dto/` |
 | `user` | profile, address; **the source of `ROLES`** | `user.controller.ts`, `user.service.ts`, `models/user.model.ts`, `models/user-address.model.ts`, `user.types.ts` |
-| `products` | catalog + list endpoint with filtering, sorting, pagination (**reference implementation**) | `products.utils.ts` (`buildProductListQueryOptions`, regex helpers), `products.constants.ts` (`PRODUCT_SORT_MAP`, `DEFAULT_PRODUCTS_LIMIT`), `dto/find-all-products.dto.ts`, `models/{product,product-category,product-color}.model.ts` |
-| `favorites` | favorites list; no schema of its own — registers `User` + `Product` | `favorites.service.ts`, `favorites.utils.ts` (pagination/meta), `dto/find-all-favorites.dto.ts` |
+| `products` | catalog + list endpoint with filtering, sorting, pagination (**reference implementation**); exports `ProductsService` for other modules | `products.utils.ts` (`buildProductListQueryOptions`, regex helpers), `products.constants.ts` (`PRODUCT_SORT_MAP`, `DEFAULT_PRODUCTS_LIMIT`), `dto/find-all-products.dto.ts`, `models/{product,product-category,product-color}.model.ts` |
+| `favorites` | favorites list; no schema of its own — depends on `UserModule`/`ProductsModule` and calls `UserService`/`ProductsService`, never injects their models directly | `favorites.service.ts`, `favorites.utils.ts` (pagination/meta), `dto/find-all-favorites.dto.ts` |
 | `forms` | aggregator over three sub-modules: `contact-request`, `individual-order`, `newsletter-subscription` — each its own folder with the full anatomy (controller/service/module/dto/models/utils/types/constants/swagger) | `forms.module.ts` + one folder per form |
 
 ## Cross-cutting (`src/common`)
@@ -31,6 +31,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `captcha` | Cloudflare Turnstile wrapper; the `@Captcha()` decorator — applied on auth and password-reset endpoints |
 | `throttler` | global `ThrottlerGuard` registered as `APP_GUARD`; TTL/limit from env, `skipIf` in dev; tightened per route with `@Throttle` |
 | `email` | Resend + `@react-email/render`; templates in `templates/*.template.tsx` (currently `reset-password`) |
+| `errors` | canonical error envelope: `AllExceptionsFilter` (global, wired in `main.ts`), `ValidationFailedException` + `flattenValidationErrors` (used by the global `ValidationPipe`'s `exceptionFactory`), `ERROR_CODES`, `ErrorResponseDocs` for Swagger |
 | `mongo` | the single connection: `MongooseModule.forRootAsync` (`mongo.config.ts`) |
 | `swagger` | `config/swagger.config.ts` (DocumentBuilder, bearer + cookie auth, operationId), `utils/swagger.utils.ts` (`createPropertyDocsDecorator`, `createOptionalPropertyDocsDecorator`, `addSwaggerCookieAuth`) |
 
@@ -46,8 +47,8 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 
 ## What this project does NOT have (do not invent it)
 
-- No global interceptors and no exception filters — see [decisions/error-envelope-target](decisions/2026-09-09-error-envelope-target.md).
-- No dedicated logger.
+- No global interceptors — see [decisions/error-envelope-target](decisions/2026-09-09-error-envelope-target.md) (the global exception filter is implemented; interceptors are not).
+- No dedicated logger — `AllExceptionsFilter` uses Nest's built-in `Logger` for 5xx errors, not a request-scoped one.
 - No automated tests — see [decisions/no-test-suite](decisions/2026-09-09-no-test-suite.md).
 - No `toJSON`/`transform` hooks on models — secrets are hidden with `select: false`, see [skills/mongoose-models](skills/mongoose-models.md).
 - No shared pagination-meta helper: `products` and `favorites` each compute it locally.

@@ -18,3 +18,12 @@ description: Use when reviewing Swoosh Server backend code for latency, payload 
 
 - One line per finding: `path:line — problem. fix.`
 - Prefer concrete query/index/loop evidence over speculation. If cost depends on data volume, say so.
+
+## Reference case: `findFiltersMetadata` (MY-63)
+
+A public, unauthenticated, parameter-less endpoint hit on every catalog page load (`GET /products/filters`) ran 5 Mongo queries — 4 `distinct()` calls plus 1 aggregate — with no supporting indexes on `sizes`, `material`, `colors.name`, `price`, or `createdAt`, and no cache. Two independent fixes, not one:
+
+- **Indexes tied to the actual query paths** — `distinct()` and filters/sorts in `products.utils.ts` justified `sizes`, `material`, `colors.name`, `price`, `createdAt`. Indexes alone remove collection scans; they do not remove the round-trip cost of calling Mongo 5 times per hit.
+- **Cache on the endpoint itself** — a result that's identical for every visitor until the catalog changes is a cache candidate independent of how cheap the underlying queries are. A simple in-memory TTL cache (60s, no event invalidation) was chosen over Redis/event-based invalidation as the minimal fix that matches the acceptable staleness for aggregate filter metadata — see `ai/decisions/2026-09-11-products-filters-search-and-cache.md`.
+
+When reviewing a public read endpoint with no request parameters: check both — does it have the indexes its own queries need, and does it need a cache at all given how often it's called versus how often its underlying data changes.

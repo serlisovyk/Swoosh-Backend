@@ -1,3 +1,4 @@
+import { ErrorResponseDocs } from '@common/errors'
 import { applyDecorators, Type } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -176,6 +177,7 @@ export function IndividualOrderCreateDocs() {
     }),
     ApiBadRequestResponse({
       description: 'Request body validation failed.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -192,12 +194,15 @@ export function IndividualOrderFindAllDocs() {
     }),
     ApiBadRequestResponse({
       description: 'One or more query parameters are invalid.',
+      type: ErrorResponseDocs,
     }),
     ApiUnauthorizedResponse({
       description: 'Authentication is required.',
+      type: ErrorResponseDocs,
     }),
     ApiForbiddenResponse({
       description: 'Only admins can access individual orders.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -218,15 +223,19 @@ export function IndividualOrderFindByIdDocs() {
     }),
     ApiBadRequestResponse({
       description: 'Individual order id has an invalid format.',
+      type: ErrorResponseDocs,
     }),
     ApiUnauthorizedResponse({
       description: 'Authentication is required.',
+      type: ErrorResponseDocs,
     }),
     ApiForbiddenResponse({
       description: 'Only admins can access individual orders.',
+      type: ErrorResponseDocs,
     }),
     ApiNotFoundResponse({
       description: 'Individual order with the provided id was not found.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -247,15 +256,19 @@ export function IndividualOrderUpdateDocs() {
     }),
     ApiBadRequestResponse({
       description: 'Individual order id or request body is invalid.',
+      type: ErrorResponseDocs,
     }),
     ApiUnauthorizedResponse({
       description: 'Authentication is required.',
+      type: ErrorResponseDocs,
     }),
     ApiForbiddenResponse({
       description: 'Only admins can update individual orders.',
+      type: ErrorResponseDocs,
     }),
     ApiNotFoundResponse({
       description: 'Individual order with the provided id was not found.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -279,15 +292,19 @@ export function IndividualOrderDeleteDocs() {
     }),
     ApiBadRequestResponse({
       description: 'Individual order id has an invalid format.',
+      type: ErrorResponseDocs,
     }),
     ApiUnauthorizedResponse({
       description: 'Authentication is required.',
+      type: ErrorResponseDocs,
     }),
     ApiForbiddenResponse({
       description: 'Only admins can delete individual orders.',
+      type: ErrorResponseDocs,
     }),
     ApiNotFoundResponse({
       description: 'Individual order with the provided id was not found.',
+      type: ErrorResponseDocs,
     }),
   )
 }

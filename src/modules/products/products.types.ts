@@ -38,6 +38,11 @@ export interface ProductPriceRangeStats {
   maxPrice: number
 }
 
+export interface FiltersMetadataCacheEntry {
+  data: ProductFiltersMetadata
+  expiresAt: number
+}
+
 export const PRODUCT_SORT_OPTIONS = {
   NEWEST: 'newest',
   OLDEST: 'oldest',

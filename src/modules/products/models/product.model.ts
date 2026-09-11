@@ -10,7 +10,7 @@ export class Product {
   @Prop({ required: true, trim: true, index: true })
   title!: string
 
-  @Prop({ required: true, min: 0 })
+  @Prop({ required: true, min: 0, index: true })
   price!: number
 
   @Prop({ required: true, trim: true })
@@ -25,10 +25,10 @@ export class Product {
   @Prop({ type: Number, default: 0, min: 0 })
   saleCF!: number
 
-  @Prop({ type: [Number], default: [] })
+  @Prop({ type: [Number], default: [], index: true })
   sizes!: number[]
 
-  @Prop({ default: '', trim: true })
+  @Prop({ default: '', trim: true, index: true })
   material!: string
 
   @Prop({ default: false })
@@ -50,3 +50,5 @@ export class Product {
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product)
+
+ProductSchema.index({ createdAt: -1 })

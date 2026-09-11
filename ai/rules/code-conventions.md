@@ -7,14 +7,16 @@
 - Use path aliases already configured by the project (`@modules/*`, `@common/*`, `@shared/*`) and module barrels over deep relative paths.
 - Avoid broad `any`; when unavoidable, keep it local and obvious. Prefer narrowing over `as` type assertions.
 - Prefer `readonly` for injected dependencies and values that never reassign.
-- Prefer explicit names over abbreviations.
+- Prefer explicit names over abbreviations — e.g. `context`, not `ctx` (including Nest's `ArgumentsHost`/`ExecutionContext` locals).
 
 ## Types
 
 - Prefer `interface` for object-shaped public contracts (DTO-adjacent shapes, response contracts).
 - Prefer `type` for unions, literal variants, and utility composition.
+- Do not inline an object type for a class field, cache entry, or function param/return shape — even when it's private/internal state. Name it and put it in `<feature>.types.ts` next to the other feature-local shapes (e.g. `FiltersMetadataCacheEntry` in `src/modules/products/products.types.ts`). An inline `{ ... }` type annotation cannot be reused, named in an error message, or found by searching for it.
 - Prefer an `as const` object with a derived union type over a TS `enum` — that is the established pattern here (`ROLES` in `src/modules/user/user.types.ts`).
 - Keep exported types and function names easy to explain out loud.
+- Don't nest an object literal type inside another interface's property (`{ error: { code: ...; message: ...; fields?: ... } }`). Extract the inner shape into its own named interface and reference it (`interface ErrorBody { code; message; fields? }`, then `interface ErrorResponseBody { error: ErrorBody }`) — see `src/common/errors/errors.types.ts`.
 
 ## Comments
 
@@ -39,7 +41,7 @@
 ## Error handling
 
 - Throw built-in Nest HTTP exceptions from services (`BadRequestException`, `UnauthorizedException`, `NotFoundException`, …).
-- The API's target error shape is the canonical envelope in `ai/rules/auth-and-api-contracts.md` (Error Response Contract). It is **not yet wired** — there is no global exception filter today, so Nest's default format is returned. Do not hand-roll a different per-endpoint error shape in the meantime.
+- The global `AllExceptionsFilter` (`src/common/errors`) maps every exception to the canonical envelope in `ai/rules/auth-and-api-contracts.md` (Error Response Contract). Do not hand-roll a different per-endpoint error shape.
 - Keep reused, user-facing error messages in `<feature>.constants.ts`; inline one-offs.
 - Never leak internals — stack traces, secrets, hashed values, raw Mongo errors — into a thrown message.
 
@@ -59,6 +61,7 @@
 - Keep constants for repeated values, domain values, configuration names, cookie names, throttling configs, shared examples, and values used across files.
 - Inline one-off validation messages, Swagger descriptions, and examples when they are only used locally and extraction hurts readability.
 - Remove stale constants after deleting features.
+- Even module-private constants (a status→code lookup map, a threshold used only inside one filter/service) belong in `<feature>.constants.ts`, not declared at the top of the class file that uses them. Keeps the class file to behavior, keeps constants greppable in one place — see `src/common/errors/error-codes.constants.ts` (`STATUS_TO_ERROR_CODE`, `INTERNAL_SERVER_ERROR_STATUS`) vs `all-exceptions.filter.ts`.
 
 ## Files
 

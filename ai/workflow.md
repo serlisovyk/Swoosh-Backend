@@ -10,7 +10,8 @@ End-to-end sequence for taking a backend task. `AGENTS.md` states the non-negoti
 
 ## 2. Branch
 
-- Branch off `main` using the branch name Linear already provides for the issue (`gitBranchName`, e.g. `serlesovik/my-39-<slug>`).
+- Branch off `main`, named `<issue-id>-<slug>` (e.g. `my-39-error-envelope`) — lowercase issue id, short English slug, no username prefix.
+- Linear's `gitBranchName` derives the slug from the issue title, which is often in Russian — this can produce a transliterated, non-English slug (Russian words spelled with Latin letters), and it prepends a username. Never use `gitBranchName` as-is: drop any username prefix, and if the slug isn't made of real English words, replace it with a short English slug you write yourself (e.g. `my-39-error-envelope`, not `serlesovik/my-39-privesti-oshibki-k-envelope`).
 - Never commit backend work directly on `main`.
 - Working on several issues at once: use a separate `git worktree` per issue (see "Parallel work" below) instead of stashing between branches in one working copy.
 
@@ -32,6 +33,7 @@ Do not explore `src/` from scratch when the map answers the question.
 
 - **Plan** — always. **Spec** — only when the task changes observable behavior or a public/data contract.
 - Write them under `ai/superpowers/plans/` and `ai/superpowers/specs/` as `<YYYY-MM-DD>-<slug>.md`, reusing the issue's slug so spec, plan, branch, and issue all pair up.
+- Write spec and plan **in English**, always — same as code, comments, and commits. This holds even when the Linear issue is in Russian and the chat with the author is in Russian; only chat replies follow the author's language, never files committed to the repo.
 - Format is yours to choose; keep it concise and specific. The plan must contain the intended commit breakdown.
 - Commit spec + plan together as a **single commit**, before any implementation commit.
 
@@ -72,7 +74,8 @@ Walk `ai/rules/definition-of-done.md` point by point. Fix what fails before movi
 
 Hand over a short summary:
 
-- what changed and why, with the commit list;
+- **what was done** — a short plain-language bullet list of the actual changes, point by point, written so the author can follow it without opening the issue, the diff, or the plan (e.g. "moved refresh-token expiry read to `getOrThrow`", "removed the dead `logout()` method", not "fixed auth per the plan");
+- the commit list, each with what it does;
 - verification output (`lint` / `build`);
 - review findings and what was done about each;
 - anything deliberately left out of scope.
@@ -81,11 +84,13 @@ Then stop and wait. Silence, a neutral reply, or a question is not approval — 
 
 ## 12. Report on the task
 
-Comment on the Linear issue: short SHAs plus what landed. Move the state to `In Review` or `Done` per the author's instruction.
+Comment on the Linear issue: short SHAs plus what landed.
 
 ## 13. Merge
 
-Merge the branch into `main` only after step 11 approval.
+- Merge the branch into `main` only after step 11 approval.
+- After a successful merge, always move the Linear issue to `Done` — this is not conditional on the author repeating the instruction. Comment with the merge commit SHA.
+- Remove the worktree and delete the merged branch (`git worktree remove`, `git branch -d`) once merged.
 
 ## Parallel work (worktrees)
 
@@ -93,7 +98,7 @@ Running several issues at once means several agent sessions, each in its own `gi
 
 ### Setup
 
-- One worktree per issue, off `main`, named after the branch: `git worktree add ../swoosh-my-<n> <gitBranchName>`.
+- One worktree per issue, off `main`, named after the branch: `git worktree add ../swoosh-my-<n> my-<n>-<slug>` (see step 2 for the branch-name rule).
 - Each worktree needs its own `.env` (copy, don't symlink) and its own `node_modules`/install — they do not share a dev server or port.
 - Give each session only its own issue number. It must not read or touch other in-flight worktrees.
 

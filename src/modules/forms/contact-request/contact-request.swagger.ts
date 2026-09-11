@@ -1,3 +1,4 @@
+import { ErrorResponseDocs } from '@common/errors'
 import { applyDecorators, Type } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -141,6 +142,7 @@ export function ContactRequestCreateDocs() {
     }),
     ApiBadRequestResponse({
       description: 'Request body validation failed.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -157,12 +159,15 @@ export function ContactRequestFindAllDocs() {
     }),
     ApiBadRequestResponse({
       description: 'One or more query parameters are invalid.',
+      type: ErrorResponseDocs,
     }),
     ApiUnauthorizedResponse({
       description: 'Authentication is required.',
+      type: ErrorResponseDocs,
     }),
     ApiForbiddenResponse({
       description: 'Only admins can access contact requests.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -183,15 +188,19 @@ export function ContactRequestFindByIdDocs() {
     }),
     ApiBadRequestResponse({
       description: 'Contact request id has an invalid format.',
+      type: ErrorResponseDocs,
     }),
     ApiUnauthorizedResponse({
       description: 'Authentication is required.',
+      type: ErrorResponseDocs,
     }),
     ApiForbiddenResponse({
       description: 'Only admins can access contact requests.',
+      type: ErrorResponseDocs,
     }),
     ApiNotFoundResponse({
       description: 'Contact request with the provided id was not found.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -212,15 +221,19 @@ export function ContactRequestUpdateDocs() {
     }),
     ApiBadRequestResponse({
       description: 'Contact request id or request body is invalid.',
+      type: ErrorResponseDocs,
     }),
     ApiUnauthorizedResponse({
       description: 'Authentication is required.',
+      type: ErrorResponseDocs,
     }),
     ApiForbiddenResponse({
       description: 'Only admins can update contact requests.',
+      type: ErrorResponseDocs,
     }),
     ApiNotFoundResponse({
       description: 'Contact request with the provided id was not found.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -244,15 +257,19 @@ export function ContactRequestDeleteDocs() {
     }),
     ApiBadRequestResponse({
       description: 'Contact request id has an invalid format.',
+      type: ErrorResponseDocs,
     }),
     ApiUnauthorizedResponse({
       description: 'Authentication is required.',
+      type: ErrorResponseDocs,
     }),
     ApiForbiddenResponse({
       description: 'Only admins can delete contact requests.',
+      type: ErrorResponseDocs,
     }),
     ApiNotFoundResponse({
       description: 'Contact request with the provided id was not found.',
+      type: ErrorResponseDocs,
     }),
   )
 }

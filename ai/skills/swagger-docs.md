@@ -21,6 +21,7 @@ Docs are **module-local wrappers**, not long inline decorator stacks on controll
 
 ## Rules
 
+- Every error response decorator (`ApiBadRequestResponse`, `ApiUnauthorizedResponse`, `ApiForbiddenResponse`, `ApiNotFoundResponse`, `ApiConflictResponse`, `ApiTooManyRequestsResponse`) must pass `type: ErrorResponseDocs` from `@common/errors` — it documents the canonical error envelope (`ai/rules/auth-and-api-contracts.md` → Error Response Contract). Keep the existing `description` text; only add `type`.
 - Document public **response shapes**, never raw Mongoose/persistence models. Reuse response docs like `UserResponseDocs` across modules.
 - Bearer auth for endpoints that read an access token from `Authorization`.
 - Refresh **cookie** auth only for endpoints that actually read the `refreshToken` cookie (`SWAGGER_REFRESH_TOKEN_AUTH_NAME`).

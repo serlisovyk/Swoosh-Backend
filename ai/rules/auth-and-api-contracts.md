@@ -41,7 +41,7 @@ These rules apply to auth behavior, Swagger, public request and response contrac
 - Use refresh cookie auth in Swagger only for endpoints that actually read the refresh cookie.
 - Do not expose passwords, reset tokens, hashed values, or internal-only fields in public responses or docs.
 
-## Error Response Contract (target)
+## Error Response Contract
 
 The canonical error shape for this API — the same shape used across the author's other backends:
 
@@ -61,7 +61,7 @@ The canonical error shape for this API — the same shape used across the author
 - `error.message` — a short human-readable summary, no internals leaked.
 - `error.fields` — per-field messages for field-level validation. Errors about the whole object (not a single field) go under the `_root` key inside `fields`.
 
-**Status — not yet implemented.** The backend currently returns Nest's default exception format; there is no global exception filter yet. Aligning the runtime to this contract (a global `AllExceptionsFilter` mapping Nest exceptions + `class-validator` errors into the shape above, plus Swagger error examples) is a **planned task**, not part of foundation work. Until then:
+**Implemented.** A global `AllExceptionsFilter` (`src/common/errors`) maps every thrown exception — Nest HTTP exceptions, `class-validator` errors, `ThrottlerException`, Passport's `UnauthorizedException` — into this shape and is wired in `main.ts`. Swagger error responses (`ApiBadRequestResponse`, `ApiUnauthorizedResponse`, etc.) document it via `ErrorResponseDocs` from `src/common/errors`.
 
-- Keep throwing built-in Nest HTTP exceptions from services — do **not** hand-roll a third, different error shape in individual endpoints.
-- When the alignment task lands, this section becomes the enforced contract and Swagger error responses must match it.
+- Keep throwing built-in Nest HTTP exceptions from services — do **not** hand-roll a different error shape in individual endpoints.
+- A field-validation 400 gets `code: "VALIDATION_ERROR"` and a `fields` map; every other 400 (e.g. Turnstile) gets `code: "BAD_REQUEST"` with no `fields`.

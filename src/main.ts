@@ -3,6 +3,11 @@ import { ConfigService } from '@nestjs/config'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import cookieParser from 'cookie-parser'
 import helmet from 'helmet'
+import {
+  AllExceptionsFilter,
+  ValidationFailedException,
+  flattenValidationErrors,
+} from '@common/errors'
 import { setupSwagger } from '@common/swagger'
 import { setupValidation } from '@shared/config'
 import { parseCorsDomainsConfigValue } from '@shared/utils'
@@ -15,7 +20,12 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService)
 
-  setupValidation(app)
+  setupValidation(
+    app,
+    (errors) => new ValidationFailedException(flattenValidationErrors(errors)),
+  )
+
+  app.useGlobalFilters(new AllExceptionsFilter())
 
   setupSwagger(app)
 
