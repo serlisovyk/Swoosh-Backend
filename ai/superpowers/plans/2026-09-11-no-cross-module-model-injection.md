@@ -1,7 +1,7 @@
 # Plan: stop favorites from accessing foreign models directly (MY-58)
 
 Issue: [MY-58](https://linear.app/my-workspace-5105/issue/MY-58/zapretit-pryamoj-dostup-k-chuzhim-modelyam-favorites)
-Branch: `my-58-no-cross-module-model-injection`
+Branch: `serlesovik/my-58-no-cross-module-model-injection`
 
 Spec: not needed — the `favorites` endpoint contract does not change, only the internal call structure.
 
