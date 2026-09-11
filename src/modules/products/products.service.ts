@@ -11,6 +11,7 @@ import { FindAllProductsDto } from './dto/find-all-products.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 import { buildProductListQueryOptions } from './products.utils'
 import {
+  FILTERS_METADATA_CACHE_TTL_MS,
   PRODUCT_CATEGORY_NOT_FOUND_ERROR,
   PRODUCT_NOT_FOUND_ERROR,
   PRODUCT_OLD_PRICE_LOWER_THAN_PRICE_ERROR,
@@ -18,6 +19,7 @@ import {
   updateProductOptions,
 } from './products.constants'
 import type {
+  FiltersMetadataCacheEntry,
   ProductCategoryModel,
   ProductFiltersMetadata,
   ProductModel,
@@ -36,6 +38,8 @@ export class ProductsService {
 
   private readonly productSelectFields = '-__v'
   private readonly categorySelectFields = '-__v'
+
+  private filtersMetadataCache: FiltersMetadataCacheEntry | null = null
 
   async findAll(dto: FindAllProductsDto) {
     const { excludeIds, filters, ids, limit, skip, sort } =
@@ -69,6 +73,13 @@ export class ProductsService {
   }
 
   async findFiltersMetadata(): Promise<ProductFiltersMetadata> {
+    if (
+      this.filtersMetadataCache &&
+      this.filtersMetadataCache.expiresAt > Date.now()
+    ) {
+      return this.filtersMetadataCache.data
+    }
+
     const getSizes = this.productModel.distinct('sizes')
     const getMaterials = this.productModel.distinct('material', {
       material: { $nin: ['', null] },
@@ -117,13 +128,20 @@ export class ProductsService {
       .sort({ name: 1 })
       .lean()
 
-    return {
+    const result: ProductFiltersMetadata = {
       sizes,
       materials,
       colors,
       categories,
       priceRange: [minPrice, maxPrice],
     }
+
+    this.filtersMetadataCache = {
+      data: result,
+      expiresAt: Date.now() + FILTERS_METADATA_CACHE_TTL_MS,
+    }
+
+    return result
   }
 
   async findById(id: string) {
