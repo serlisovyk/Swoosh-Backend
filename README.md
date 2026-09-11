@@ -28,7 +28,7 @@ Because refresh tokens are stateless, logout does not revoke already issued refr
 Install dependencies:
 
 ```bash
-npm install
+bun install
 ```
 
 Create `.env` from `.env.sample` and fill the backend values.
@@ -38,7 +38,7 @@ Mongo connection is a single `MONGO_URI` env var — paste the connection string
 Start development server:
 
 ```bash
-npm run start:dev
+bun run start:dev
 ```
 
 The API uses the global prefix `/api/v1`.
@@ -54,11 +54,13 @@ requires HTTP Basic auth — set `SWAGGER_USER`/`SWAGGER_PASSWORD`, or the app
 refuses to start. Set `SWAGGER_ENABLED=false` to turn the docs route off
 entirely (404 instead of a login prompt).
 
+`GET /api/v1` returns a welcome message; `GET /api/v1/health` is a public liveness check (`{ status: 'ok', timestamp }`, no dependency checks) — both unauthenticated and exempt from rate limiting, meant for uptime monitors and load balancers.
+
 ## Checks
 
 ```bash
-npm run lint
-npm run build
+bun run lint
+bun run build
 ```
 
 This backend has no automated test suite.

@@ -7,15 +7,20 @@ import {
   ApiOperation,
   ApiParam,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 import {
+  ApiAuthRequiredDocs,
+  ApiInvalidQueryDocs,
+  ApiNotFoundDocs,
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
+  QueryLimitPropertyDocs,
+  QueryPagePropertyDocs,
 } from '@common/swagger'
 import { ProductsListItemsPropertyDocs, ProductsResponseDocs } from '@modules/products/products.swagger'
 import {
   FAVORITES_DEFAULT_LIMIT,
+  FAVORITES_MAX_LIMIT,
   FAVORITES_MAX_PRODUCT_IDS,
   FAVORITES_PRODUCT_ID_EXAMPLE,
   FAVORITES_PRODUCT_IDS_EXAMPLE,
@@ -48,19 +53,14 @@ export const FavoritesTotalPropertyDocs = createPropertyDocsDecorator({
   example: 6,
 })
 
-export const FavoritesQueryPagePropertyDocs =
-  createOptionalPropertyDocsDecorator({
-    description: 'Page number for favorites pagination.',
-    example: 1,
-    minimum: 1,
-  })
+export const FavoritesQueryPagePropertyDocs = QueryPagePropertyDocs({
+  example: 1,
+})
 
-export const FavoritesQueryLimitPropertyDocs =
-  createOptionalPropertyDocsDecorator({
-    description: 'Maximum number of favorite products returned in one page.',
-    example: FAVORITES_DEFAULT_LIMIT,
-    minimum: 1,
-  })
+export const FavoritesQueryLimitPropertyDocs = QueryLimitPropertyDocs({
+  example: FAVORITES_DEFAULT_LIMIT,
+  maximum: FAVORITES_MAX_LIMIT,
+})
 
 export class FavoritesStateResponseDocs {
   @FavoritesProductIdsPropertyDocs()
@@ -89,18 +89,9 @@ export function FavoritesFindAllDocs() {
       description: 'Favorite products returned successfully.',
       type: FavoritesListResponseDocs,
     }),
-    ApiUnauthorizedResponse({
-      description: 'Authentication is required.',
-      type: ErrorResponseDocs,
-    }),
-    ApiBadRequestResponse({
-      description: 'One or more query parameters are invalid.',
-      type: ErrorResponseDocs,
-    }),
-    ApiNotFoundResponse({
-      description: 'User was not found.',
-      type: ErrorResponseDocs,
-    }),
+    ApiAuthRequiredDocs(),
+    ApiInvalidQueryDocs(),
+    ApiNotFoundDocs('User'),
   )
 }
 
@@ -118,10 +109,7 @@ export function FavoritesAddDocs() {
       description: 'Product added to favorites successfully.',
       type: FavoritesStateResponseDocs,
     }),
-    ApiUnauthorizedResponse({
-      description: 'Authentication is required.',
-      type: ErrorResponseDocs,
-    }),
+    ApiAuthRequiredDocs(),
     ApiBadRequestResponse({
       description: 'Product id has an invalid format or favorites limit was reached.',
       type: ErrorResponseDocs,
@@ -147,17 +135,11 @@ export function FavoritesRemoveDocs() {
       description: 'Product removed from favorites successfully.',
       type: FavoritesStateResponseDocs,
     }),
-    ApiUnauthorizedResponse({
-      description: 'Authentication is required.',
-      type: ErrorResponseDocs,
-    }),
+    ApiAuthRequiredDocs(),
     ApiBadRequestResponse({
       description: 'Product id has an invalid format.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundResponse({
-      description: 'User was not found.',
-      type: ErrorResponseDocs,
-    }),
+    ApiNotFoundDocs('User'),
   )
 }

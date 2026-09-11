@@ -23,6 +23,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `products` | catalog + list endpoint with filtering, sorting, pagination (**reference implementation**); exports `ProductsService` for other modules | `products.utils.ts` (`buildProductListQueryOptions`, regex helpers), `products.constants.ts` (`PRODUCT_SORT_MAP`, `DEFAULT_PRODUCTS_LIMIT`), `dto/find-all-products.dto.ts`, `models/{product,product-category,product-color}.model.ts` |
 | `favorites` | favorites list; no schema of its own — depends on `UserModule`/`ProductsModule` and calls `UserService`/`ProductsService`, never injects their models directly | `favorites.service.ts`, `favorites.utils.ts` (pagination/meta), `dto/find-all-favorites.dto.ts` |
 | `forms` | aggregator over three sub-modules: `contact-request`, `individual-order`, `newsletter-subscription` — each its own folder with the full anatomy (controller/service/module/dto/models/utils/types/constants/swagger) | `forms.module.ts` + one folder per form |
+| `system` | public root (`GET /api/v1`) and liveness health check (`GET /api/v1/health`); no schema, no auth, `@SkipThrottle()` on both | `system.controller.ts`, `system.service.ts`, `system.types.ts`, `system.swagger.ts` |
 
 ## Cross-cutting (`src/common`)
 
@@ -33,7 +34,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `email` | Resend + `@react-email/render`; templates in `templates/*.template.tsx` (currently `reset-password`) |
 | `errors` | canonical error envelope: `AllExceptionsFilter` (global, wired in `main.ts`), `ValidationFailedException` + `flattenValidationErrors` (used by the global `ValidationPipe`'s `exceptionFactory`), `ERROR_CODES`, `ErrorResponseDocs` for Swagger |
 | `mongo` | the single connection: `MongooseModule.forRootAsync` (`mongo.config.ts`) |
-| `swagger` | `config/swagger.config.ts` (DocumentBuilder, bearer + cookie auth, operationId, the `SWAGGER_ENABLED`/basic-auth gate outside dev), `utils/swagger.utils.ts` (`createPropertyDocsDecorator`, `createOptionalPropertyDocsDecorator`, `addSwaggerCookieAuth`), `utils/swagger-basic-auth.utils.ts` (`createSwaggerBasicAuthMiddleware`) |
+| `swagger` | `config/swagger.config.ts` (DocumentBuilder, bearer + cookie auth, operationId, the `SWAGGER_ENABLED`/basic-auth gate outside dev), `utils/swagger.utils.ts` (`createPropertyDocsDecorator`, `createOptionalPropertyDocsDecorator`, `addSwaggerCookieAuth`, `QueryPagePropertyDocs`/`QueryLimitPropertyDocs` — shared page/limit query-param docs, parametrized per module), `utils/swagger-basic-auth.utils.ts` (`createSwaggerBasicAuthMiddleware`), `common-responses.swagger.ts` (`ApiAuthRequiredDocs`, `ApiValidationErrorDocs`, `ApiInvalidQueryDocs`, `ApiNotFoundDocs` — shared helpers for repeated `Api*Response` text) |
 
 ## Shared (`src/shared`)
 
@@ -42,6 +43,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `config/validation.config.ts` | `setupValidation` — the global ValidationPipe: `whitelist`, `transform`, `forbidNonWhitelisted` |
 | `utils/query.utils.ts` | query-param coercion: `toStringArrayQueryParam`, `toNumberArrayQueryParam`, `toBooleanQueryParam`, `trimStringValue`, `normalizeEmailValue` |
 | `utils/{phone,env,app}.utils.ts` | `normalizePhoneValue`; `isDev` / `parseCorsDomainsConfigValue`; `noop` |
+| `utils/pagination.utils.ts` | `resolvePaginationOffset(page, limit)` + `DEFAULT_PAGE` — the shared offset formula used by `products` (Mongo `skip`/`limit`) and `favorites` (in-memory slice); each module keeps its own default `limit` and pagination mechanism |
 | `constants/env.constants.ts` | only the `NODE_ENV` as-const values — **not** a registry of env variable names |
 | `constants/time.constants.ts` | `THIRTY_MINUTES_IN_MS`, `ONE_HOUR_IN_MS`, `ONE_DAY_IN_MS` |
 
@@ -51,5 +53,5 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 - No dedicated logger — `AllExceptionsFilter` uses Nest's built-in `Logger` for 5xx errors, not a request-scoped one.
 - No automated tests — see [decisions/no-test-suite](decisions/2026-09-09-no-test-suite.md).
 - No `toJSON`/`transform` hooks on models — secrets are hidden with `select: false`, see [skills/mongoose-models](skills/mongoose-models.md).
-- No shared pagination-meta helper: `products` and `favorites` each compute it locally.
+- No shared pagination-**meta** helper: `products` and `favorites` each build their own list response (`{ products, total }` / `{ favoriteProductIds, total }`) locally — only the offset arithmetic is shared (`shared/utils/pagination.utils.ts`).
 - No central registry of env variable names. Each value is read where it is used via `configService.getOrThrow<T>('NAME')` with a literal string; `.env.sample` is the de-facto contract, so a new variable means updating it in the same change.

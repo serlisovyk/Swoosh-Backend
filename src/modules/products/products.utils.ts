@@ -1,3 +1,4 @@
+import { resolvePaginationOffset } from '@shared/utils'
 import { FindAllProductsDto } from './dto/find-all-products.dto'
 import {
   DEFAULT_PRODUCTS_LIMIT,
@@ -88,7 +89,7 @@ export function buildProductListQueryOptions(
 
   const limitOption = limit ?? DEFAULT_PRODUCTS_LIMIT
 
-  const skip = ((page ?? 1) - 1) * limitOption
+  const skip = resolvePaginationOffset(page, limitOption)
 
   return {
     filters,

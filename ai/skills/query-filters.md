@@ -23,10 +23,16 @@ Adding or changing a list/search endpoint, a query DTO, pagination, sort, or a M
 
 - Parse and validate query input in DTOs / dedicated query helpers, never ad hoc inside services.
 - Keep module-specific filter rules inside the module's `*.utils.ts`.
-- Sort maps and default page/limit live in `<feature>.constants.ts` (e.g. `PRODUCT_SORT_MAP`, `DEFAULT_PRODUCTS_LIMIT`); sort option enums in `<feature>.types.ts`.
+- Sort maps and default limit live in `<feature>.constants.ts` (e.g. `PRODUCT_SORT_MAP`, `DEFAULT_PRODUCTS_LIMIT`); sort option enums in `<feature>.types.ts`. The default limit **value** stays module-specific (18 for products, 12 for favorites) — only the offset arithmetic and the page default are shared, see below.
 - For text search, reuse the existing exact/escape-regex helpers rather than inlining new regex (see `createExactRegex` / `REGEX_SPECIAL_CHARACTERS` in products).
 - Never return unbounded lists — always apply pagination.
-- Keep the query DTO's Swagger property docs in the module `*.swagger.ts` (see `swagger-docs`).
+- Keep the query DTO's Swagger property docs in the module `*.swagger.ts` (see `swagger-docs`), but build them from `QueryPagePropertyDocs({ example })` / `QueryLimitPropertyDocs({ example, maximum })` (`@common/swagger`) rather than writing a parallel `ApiPropertyOptional` call per module.
+
+## Pagination: shared arithmetic, module-specific mechanism
+
+- `resolvePaginationOffset(page, limit)` (`@shared/utils`, backed by `DEFAULT_PAGE = 1`) is the one place that turns `page`/`limit` into a skip/offset. Both `products` (Mongo `skip`/`limit`) and `favorites` (in-memory array slice) call it — do not re-derive `(page - 1) * limit` locally.
+- This does **not** mean the two modules share a pagination mechanism: `products` still paginates in Mongo, `favorites` still slices an in-memory array of ids (see [decisions/shared-pagination-arithmetic](../decisions/2026-09-11-shared-pagination-arithmetic.md) for why). Only the arithmetic and the "page defaults to 1" rule are shared.
+- A module's default `limit` stays in its own `<feature>.constants.ts`; only pass it into `resolvePaginationOffset` and into `QueryLimitPropertyDocs({ example: <the module's default> })`.
 
 ## Verification
 

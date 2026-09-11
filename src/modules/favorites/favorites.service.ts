@@ -38,7 +38,6 @@ export class FavoritesService {
     userId: string,
     dto: FindAllFavoritesDto,
   ): Promise<FavoritesListResponse> {
-    const page = dto.page ?? 1
     const limit = dto.limit ?? FAVORITES_DEFAULT_LIMIT
 
     const favoriteProductIds = await this.getVisibleFavoriteProductIds(userId)
@@ -46,7 +45,7 @@ export class FavoritesService {
 
     const pageFavoriteProductIds = paginateFavoriteProductIds(
       favoriteProductIds,
-      page,
+      dto.page,
       limit,
     )
 

@@ -33,6 +33,18 @@ These rules apply to auth behavior, Swagger, public request and response contrac
 - `request-password-reset` should not reveal whether an email exists.
 - Keep password-reset DTOs, email template, service behavior, and Swagger docs aligned.
 
+## Public (Unauthenticated) Endpoints
+
+No `@Auth()` decorator, so no access token is required. Kept here as the single inventory — check it before assuming an endpoint is protected:
+
+- `POST /auth/register`, `POST /auth/login`, `POST /auth/new-tokens`, `POST /auth/logout` — auth flow itself.
+- `POST /auth/request-password-reset`, `POST /auth/reset-password` — password reset request/confirm.
+- `GET /products`, `GET /products/filters`, `GET /products/:id` — public catalog browsing.
+- `POST /forms/newsletter-subscriptions`, `POST /forms/individual-orders`, `POST /forms/contact-requests` — public form submission (their `GET`/`PUT`/`DELETE` counterparts are admin-only).
+- `GET /` (i.e. `GET /api/v1`), `GET /health` — `system` module; also `@SkipThrottle()`, since uptime monitors would otherwise burn the shared rate limit.
+
+Everything else requires `@Auth()`.
+
 ## Public API Contracts
 
 - Keep public request and response contracts explicit.
