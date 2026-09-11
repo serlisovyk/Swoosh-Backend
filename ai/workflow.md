@@ -10,8 +10,8 @@ End-to-end sequence for taking a backend task. `AGENTS.md` states the non-negoti
 
 ## 2. Branch
 
-- Branch off `main` using the branch name Linear already provides for the issue (`gitBranchName`, e.g. `serlesovik/my-39-<slug>`).
-- Linear derives `gitBranchName` from the issue title, which is often in Russian — this can produce a transliterated, non-English slug (Russian words spelled with Latin letters). Never use that as-is. If the slug isn't made of real English words, replace it with a short English slug you write yourself, keeping the `<username>/<issue-id>-<slug>` shape (e.g. `serlesovik/my-39-error-envelope`, not `serlesovik/my-39-privesti-oshibki-k-envelope`).
+- Branch off `main`, named `<issue-id>-<slug>` (e.g. `my-39-error-envelope`) — lowercase issue id, short English slug, no username prefix.
+- Linear's `gitBranchName` derives the slug from the issue title, which is often in Russian — this can produce a transliterated, non-English slug (Russian words spelled with Latin letters), and it prepends a username. Never use `gitBranchName` as-is: drop any username prefix, and if the slug isn't made of real English words, replace it with a short English slug you write yourself (e.g. `my-39-error-envelope`, not `serlesovik/my-39-privesti-oshibki-k-envelope`).
 - Never commit backend work directly on `main`.
 - Working on several issues at once: use a separate `git worktree` per issue (see "Parallel work" below) instead of stashing between branches in one working copy.
 
@@ -96,7 +96,7 @@ Running several issues at once means several agent sessions, each in its own `gi
 
 ### Setup
 
-- One worktree per issue, off `main`, named after the branch: `git worktree add ../swoosh-my-<n> <gitBranchName>`.
+- One worktree per issue, off `main`, named after the branch: `git worktree add ../swoosh-my-<n> my-<n>-<slug>` (see step 2 for the branch-name rule).
 - Each worktree needs its own `.env` (copy, don't symlink) and its own `node_modules`/install — they do not share a dev server or port.
 - Give each session only its own issue number. It must not read or touch other in-flight worktrees.
 

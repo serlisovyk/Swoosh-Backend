@@ -9,7 +9,7 @@ Pick up Linear issue **{ISSUE}**.
 First, set up the environment:
 
 - Fetch the issue from Linear, get its `gitBranchName`.
-- Create a worktree next to the current repo, named after the issue (e.g. `../swoosh-{issue-lowercased}`), on branch `gitBranchName`, off latest `main`: `git worktree add <path> <branch>`. If `gitBranchName` is a transliteration (Russian words spelled in Latin letters, not real English), don't use it — write your own short English slug instead, keeping the `<username>/<issue-id>-<slug>` shape.
+- Create a worktree next to the current repo, named after the issue (e.g. `../swoosh-{issue-lowercased}`), on branch `<issue-id>-<slug>` (lowercase, e.g. `my-39-error-envelope`, no username prefix), off latest `main`: `git worktree add <path> <branch>`. Don't use Linear's `gitBranchName` as-is — it prepends a username, and its slug is often a transliteration (Russian words spelled in Latin letters, not real English); write your own short English slug instead.
 - Copy `.env` into the worktree (not a symlink), install dependencies there.
 - Do all further work inside that worktree, not in the original repo copy.
 
@@ -24,11 +24,11 @@ Constraints:
 - Stop at the author-approval gate (workflow step 11): do not merge, do not mark the issue Done. When ready for review, comment on the issue with the SHAs + summary.
 - If the scope is ambiguous or conflicts with a rule/decision record, stop and ask — don't guess.
 
-Report back at the end, in Russian:
+Report back at the end, in Russian (this is chat, not a file):
 
-- **что сделано** — короткий список по пунктам, простым языком, без пересказа таски/плана и без необходимости лезть в diff, чтобы понять суть (например «дату истечения refresh-токена теперь читаем через getOrThrow», а не «поправил auth по плану»);
-- путь воркдри и ветка;
-- список коммитов, что каждый делает;
-- вывод lint/build;
-- находки self-review и что с ними сделано;
-- что осознанно оставлено вне скоупа.
+- **what was done** — a short plain-language bullet list, point by point, no retelling of the issue/plan, and no need to open the diff to get the point (e.g. "refresh-token expiry is now read via `getOrThrow`", not "fixed auth per the plan");
+- worktree path and branch;
+- commit list, what each one does;
+- lint/build output;
+- self-review findings and what was done about each;
+- anything deliberately left out of scope.
