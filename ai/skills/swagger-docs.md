@@ -30,6 +30,12 @@ Docs are **module-local wrappers**, not long inline decorator stacks on controll
 - Do not document removed features (OAuth, email verification, auth sessions).
 - When a request/response shape changes, update its Swagger in the **same** change.
 
+## Reaching the docs locally
+
+- Dev (`NODE_ENV=development`, the local default): `/api/v1/docs` is open, no credentials.
+- Any other `NODE_ENV`: set `SWAGGER_USER`/`SWAGGER_PASSWORD` in `.env` and send them as HTTP Basic — the app refuses to boot if `SWAGGER_ENABLED` isn't explicitly `"false"` and either is missing. `SWAGGER_ENABLED="false"` turns the route off entirely (404).
+- See `ai/rules/architecture.md` (Application Bootstrap) and [decisions/swagger-access-in-prod](../decisions/2026-09-11-swagger-access-in-prod.md).
+
 ## Verification
 
 - `npm run build`.

@@ -15,6 +15,7 @@ description: Use when reviewing Swoosh Server backend code for auth, authorizati
 - **Data exposure** — public responses never include passwords, reset tokens, hashed values, or internal-only fields; docs match (`*.swagger.ts`).
 - **CORS & config** — credentialed CORS restricted to expected origins; secrets read from env via `configService.getOrThrow<T>('NAME')` at the point of use, never hard-coded, and declared in `.env.sample`.
 - **Captcha / throttling** — Turnstile on public-credential endpoints; auth throttling stricter than global defaults.
+- **Docs accessibility** — `/api/v1/docs` (and its schema at `/api/v1/docs-json`) must not be reachable without credentials outside dev; flag `setupSwagger` being called unconditionally, or before `helmet`/`cookie-parser`/`enableCors` in `main.ts`, as a regression. `SWAGGER_USER`/`SWAGGER_PASSWORD` must be read with `getOrThrow`, not `get` — a `get` that resolves to `undefined` would serve the schema with no real password required. See [decisions/swagger-access-in-prod](../decisions/2026-09-11-swagger-access-in-prod.md).
 
 ## Current auth assumption
 

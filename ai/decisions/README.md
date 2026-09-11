@@ -29,3 +29,4 @@ Not decisions: one-off task details, plain current-state facts, or anything `ai/
 - [2026-09-09 — agent knowledge base lives in `ai/`](2026-09-09-ai-knowledge-base-layout.md)
 - [2026-09-11 — single MONGO_URI over six-part assembly](2026-09-11-single-mongo-uri.md)
 - [2026-09-11 — refresh-cookie cross-site `sameSite`/`secure` policy](2026-09-11-refresh-cookie-cross-site-policy.md)
+- [2026-09-11 — Swagger docs gated with basic auth, not disabled, outside dev](2026-09-11-swagger-access-in-prod.md)
