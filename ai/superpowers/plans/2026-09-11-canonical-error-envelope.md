@@ -1,6 +1,6 @@
 # Plan: canonical error envelope (MY-39)
 
-See spec: [2026-09-11-privesti-oshibki-api-k-canonical-error-envelope.md](../specs/2026-09-11-privesti-oshibki-api-k-canonical-error-envelope.md)
+See spec: [2026-09-11-canonical-error-envelope.md](../specs/2026-09-11-canonical-error-envelope.md)
 
 ## Commit breakdown
 
