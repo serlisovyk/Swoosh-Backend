@@ -103,6 +103,9 @@ breakdown:
 2. `fix(auth): unify refresh-token expiry, require expiresIn, fix cross-site cookie policy, timing-safe login` — `auth.service.ts`, `auth.constants.ts`, `.env.sample`.
 3. `fix(auth): HMAC-only atomic reset-token consumption; 409 on registration race` — `auth.utils.ts`, `auth-account.service.ts`, `user.service.ts`.
 4. `docs(ai): document auth fixes in decisions/rules/skills`.
+5. `docs(ai): translate spec and plan to English, rename to English slug`.
+6. `refactor(user): match duplicate-key check style used in newsletter-subscription` — matched the sibling module's existing `instanceof`-free pattern first, then replaced both the intent and the pattern with `error instanceof mongo.MongoServerError && error.code === 11000` per author feedback (the `typeof`/`in` version read badly). `newsletter-subscription.service.ts` still has the old pattern — flagged to the author as a candidate follow-up, not changed here since it's outside this issue's files.
+7. `refactor(auth): move the login-timing dummy hash into AUTH_DUMMY_PASSWORD_HASH env var` — per author feedback, a hardcoded hash string in `auth.constants.ts` read oddly; moved to env (`.env`, `.env.sample`), read via `configService.getOrThrow` like every other secret/config value in this module.
 
 Live manual verification over HTTP (register/login with a real Turnstile
 token) was not done: `CLOUDFLARE_TURNSTILE_SECRET_KEY` in `.env` is not a

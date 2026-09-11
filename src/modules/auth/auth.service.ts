@@ -17,7 +17,6 @@ import { AuthAccountService } from './auth-account/auth-account.service'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
 import {
-  DUMMY_PASSWORD_HASH,
   FAILED_TO_CREATE_USER_ERROR,
   INVALID_CREDENTIALS_ERROR,
   INVALID_REFRESH_TOKEN_ERROR,
@@ -138,7 +137,11 @@ export class AuthService {
     const user = await this.userService.getByEmailWithPassword(email)
 
     if (!user) {
-      await verify(DUMMY_PASSWORD_HASH, password)
+      const dummyPasswordHash = this.configService.getOrThrow<string>(
+        'AUTH_DUMMY_PASSWORD_HASH',
+      )
+
+      await verify(dummyPasswordHash, password)
       throw new UnauthorizedException(INVALID_CREDENTIALS_ERROR)
     }
 
