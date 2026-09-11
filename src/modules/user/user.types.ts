@@ -9,3 +9,10 @@ export const ROLES = {
 export type ROLES = (typeof ROLES)[keyof typeof ROLES]
 
 export type UserModel = Model<User>
+
+export interface CreateUserInput {
+  email: string
+  password: string
+  name?: string
+  phone?: string
+}

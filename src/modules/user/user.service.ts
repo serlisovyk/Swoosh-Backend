@@ -9,8 +9,7 @@ import { ConfigService } from '@nestjs/config'
 import { InjectModel } from '@nestjs/mongoose'
 import { mongo } from 'mongoose'
 import { hash, verify } from 'argon2'
-import { RegisterDto } from '@modules/auth/dto/register.dto'
-import { hashTokenWithSecret } from '@modules/auth/auth.utils'
+import { hashTokenWithSecret } from '@shared/utils'
 import { THIRTY_MINUTES_IN_MS } from '@shared/constants'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './models/user.model'
@@ -22,7 +21,7 @@ import {
   USER_PUBLIC_SELECT_FIELDS,
   WRONG_CURRENT_PASSWORD_ERROR,
 } from './user.constants'
-import { ROLES, type UserModel } from './user.types'
+import { ROLES, type CreateUserInput, type UserModel } from './user.types'
 
 @Injectable()
 export class UserService {
@@ -49,8 +48,8 @@ export class UserService {
       .lean()
   }
 
-  async create(dto: RegisterDto) {
-    const preparedEmail = dto.email.toLowerCase()
+  async create(input: CreateUserInput) {
+    const preparedEmail = input.email.toLowerCase()
 
     const isExisting = await this.getByEmail(preparedEmail)
 
@@ -58,11 +57,11 @@ export class UserService {
 
     try {
       const newUser = await this.userModel.create({
-        name: dto.name,
-        phone: dto.phone,
+        name: input.name,
+        phone: input.phone,
         email: preparedEmail,
         role: ROLES.USER,
-        password: await hash(dto.password),
+        password: await hash(input.password),
       })
 
       return this.getById(newUser._id)

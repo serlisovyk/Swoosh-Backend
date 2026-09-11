@@ -42,7 +42,12 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto, request: PreparedRequest) {
-    const createdUser = await this.userService.create(dto)
+    const createdUser = await this.userService.create({
+      email: dto.email,
+      password: dto.password,
+      name: dto.name,
+      phone: dto.phone,
+    })
 
     if (!createdUser) {
       throw new InternalServerErrorException(FAILED_TO_CREATE_USER_ERROR)
