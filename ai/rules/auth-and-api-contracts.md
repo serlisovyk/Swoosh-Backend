@@ -52,6 +52,7 @@ Everything else requires `@Auth()`.
 - Use Bearer auth in Swagger for protected access-token endpoints.
 - Use refresh cookie auth in Swagger only for endpoints that actually read the refresh cookie.
 - Do not expose passwords, reset tokens, hashed values, or internal-only fields in public responses or docs.
+- The Swagger UI/schema itself (`/api/v1/docs`) is not unconditionally public outside dev — it requires HTTP Basic auth (`SWAGGER_USER`/`SWAGGER_PASSWORD`) unless explicitly turned off with `SWAGGER_ENABLED="false"`. See [decisions/swagger-access-in-prod](../decisions/2026-09-11-swagger-access-in-prod.md).
 
 ## Error Response Contract
 

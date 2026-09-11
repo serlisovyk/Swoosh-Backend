@@ -49,6 +49,11 @@ Swagger is available at:
 http://localhost:4000/api/v1/docs
 ```
 
+In dev it's open. Outside dev (`NODE_ENV` other than `development`) it
+requires HTTP Basic auth — set `SWAGGER_USER`/`SWAGGER_PASSWORD`, or the app
+refuses to start. Set `SWAGGER_ENABLED=false` to turn the docs route off
+entirely (404 instead of a login prompt).
+
 `GET /api/v1` returns a welcome message; `GET /api/v1/health` is a public liveness check (`{ status: 'ok', timestamp }`, no dependency checks) — both unauthenticated and exempt from rate limiting, meant for uptime monitors and load balancers.
 
 ## Checks

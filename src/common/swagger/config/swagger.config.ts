@@ -1,6 +1,12 @@
 import { NestExpressApplication } from '@nestjs/platform-express'
+import { ConfigService } from '@nestjs/config'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
-import { addSwaggerCookieAuth, createSwaggerOperationId } from '../utils'
+import { isDev } from '@shared/utils'
+import {
+  addSwaggerCookieAuth,
+  createSwaggerBasicAuthMiddleware,
+  createSwaggerOperationId,
+} from '../utils'
 import {
   SWAGGER_ACCESS_TOKEN_AUTH_NAME,
   SWAGGER_REFRESH_TOKEN_AUTH_NAME,
@@ -10,7 +16,19 @@ import {
   SWAGGER_PATH,
 } from '../constants'
 
-export function setupSwagger(app: NestExpressApplication) {
+export function setupSwagger(
+  app: NestExpressApplication,
+  configService: ConfigService,
+) {
+  if (configService.get<string>('SWAGGER_ENABLED') === 'false') return
+
+  if (!isDev(configService)) {
+    const user = configService.getOrThrow<string>('SWAGGER_USER')
+    const password = configService.getOrThrow<string>('SWAGGER_PASSWORD')
+
+    app.use(createSwaggerBasicAuthMiddleware(`/${SWAGGER_PATH}`, user, password))
+  }
+
   const config = new DocumentBuilder()
     .setTitle(SWAGGER_SITE_TITLE)
     .setDescription(SWAGGER_DESCRIPTION)
@@ -38,5 +56,6 @@ export function setupSwagger(app: NestExpressApplication) {
   SwaggerModule.setup(SWAGGER_PATH, app, document, {
     customSiteTitle: SWAGGER_SITE_TITLE,
     explorer: true,
+    swaggerOptions: { persistAuthorization: true },
   })
 }
