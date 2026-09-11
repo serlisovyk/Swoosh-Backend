@@ -1,3 +1,4 @@
+import { ErrorResponseDocs } from '@common/errors'
 import { applyDecorators, Type } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -220,6 +221,7 @@ export function UserGetProfileDocs() {
     }),
     ApiUnauthorizedResponse({
       description: 'Authentication is required.',
+      type: ErrorResponseDocs,
     }),
   )
 }
@@ -234,9 +236,11 @@ export function UserUpdateProfileDocs() {
     ApiBadRequestResponse({
       description:
         'Request body is invalid, current password is missing, or email is already taken.',
+      type: ErrorResponseDocs,
     }),
     ApiUnauthorizedResponse({
       description: 'Authentication is required or current password is wrong.',
+      type: ErrorResponseDocs,
     }),
   )
 }
