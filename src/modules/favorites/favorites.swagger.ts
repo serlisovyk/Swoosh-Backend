@@ -7,9 +7,11 @@ import {
   ApiOperation,
   ApiParam,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 import {
+  ApiAuthRequiredDocs,
+  ApiInvalidQueryDocs,
+  ApiNotFoundDocs,
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
   QueryLimitPropertyDocs,
@@ -87,18 +89,9 @@ export function FavoritesFindAllDocs() {
       description: 'Favorite products returned successfully.',
       type: FavoritesListResponseDocs,
     }),
-    ApiUnauthorizedResponse({
-      description: 'Authentication is required.',
-      type: ErrorResponseDocs,
-    }),
-    ApiBadRequestResponse({
-      description: 'One or more query parameters are invalid.',
-      type: ErrorResponseDocs,
-    }),
-    ApiNotFoundResponse({
-      description: 'User was not found.',
-      type: ErrorResponseDocs,
-    }),
+    ApiAuthRequiredDocs(),
+    ApiInvalidQueryDocs(),
+    ApiNotFoundDocs('User'),
   )
 }
 
@@ -116,10 +109,7 @@ export function FavoritesAddDocs() {
       description: 'Product added to favorites successfully.',
       type: FavoritesStateResponseDocs,
     }),
-    ApiUnauthorizedResponse({
-      description: 'Authentication is required.',
-      type: ErrorResponseDocs,
-    }),
+    ApiAuthRequiredDocs(),
     ApiBadRequestResponse({
       description: 'Product id has an invalid format or favorites limit was reached.',
       type: ErrorResponseDocs,
@@ -145,17 +135,11 @@ export function FavoritesRemoveDocs() {
       description: 'Product removed from favorites successfully.',
       type: FavoritesStateResponseDocs,
     }),
-    ApiUnauthorizedResponse({
-      description: 'Authentication is required.',
-      type: ErrorResponseDocs,
-    }),
+    ApiAuthRequiredDocs(),
     ApiBadRequestResponse({
       description: 'Product id has an invalid format.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundResponse({
-      description: 'User was not found.',
-      type: ErrorResponseDocs,
-    }),
+    ApiNotFoundDocs('User'),
   )
 }

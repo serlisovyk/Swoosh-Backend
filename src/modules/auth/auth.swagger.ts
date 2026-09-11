@@ -13,6 +13,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 import {
+  ApiValidationErrorDocs,
   SWAGGER_REFRESH_TOKEN_AUTH_NAME,
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
@@ -105,10 +106,7 @@ export function AuthRegisterDocs() {
       description: 'User registered successfully.',
       type: AuthTokensResponseDocs,
     }),
-    ApiBadRequestResponse({
-      description: 'Request body validation failed.',
-      type: ErrorResponseDocs,
-    }),
+    ApiValidationErrorDocs(),
     ApiConflictResponse({
       description: 'User with this email already exists.',
       type: ErrorResponseDocs,
@@ -129,10 +127,7 @@ export function AuthLoginDocs() {
       description: 'User logged in successfully.',
       type: AuthTokensResponseDocs,
     }),
-    ApiBadRequestResponse({
-      description: 'Request body validation failed.',
-      type: ErrorResponseDocs,
-    }),
+    ApiValidationErrorDocs(),
     ApiUnauthorizedResponse({
       description: 'Email or password is invalid.',
       type: ErrorResponseDocs,
@@ -190,10 +185,7 @@ export function AuthRequestPasswordResetDocs() {
       description: 'Password reset request processed successfully.',
       schema: { type: 'boolean', example: true },
     }),
-    ApiBadRequestResponse({
-      description: 'Request body validation failed.',
-      type: ErrorResponseDocs,
-    }),
+    ApiValidationErrorDocs(),
   )
 }
 

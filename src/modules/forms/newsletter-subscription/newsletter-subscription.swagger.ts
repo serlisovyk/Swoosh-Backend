@@ -5,14 +5,16 @@ import {
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiForbiddenResponse,
-  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 import {
+  ApiAuthRequiredDocs,
+  ApiInvalidQueryDocs,
+  ApiNotFoundDocs,
+  ApiValidationErrorDocs,
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
 } from '@common/swagger'
@@ -129,10 +131,7 @@ export function NewsletterSubscriptionCreateDocs() {
         example: true,
       },
     }),
-    ApiBadRequestResponse({
-      description: 'Request body validation failed.',
-      type: ErrorResponseDocs,
-    }),
+    ApiValidationErrorDocs(),
   )
 }
 
@@ -147,14 +146,8 @@ export function NewsletterSubscriptionFindAllDocs() {
       description: 'Newsletter subscriptions returned successfully.',
       type: NewsletterSubscriptionListResponseDocs,
     }),
-    ApiBadRequestResponse({
-      description: 'One or more query parameters are invalid.',
-      type: ErrorResponseDocs,
-    }),
-    ApiUnauthorizedResponse({
-      description: 'Authentication is required.',
-      type: ErrorResponseDocs,
-    }),
+    ApiInvalidQueryDocs(),
+    ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
       description: 'Only admins can access newsletter subscriptions.',
       type: ErrorResponseDocs,
@@ -180,18 +173,12 @@ export function NewsletterSubscriptionFindByIdDocs() {
       description: 'Newsletter subscription id has an invalid format.',
       type: ErrorResponseDocs,
     }),
-    ApiUnauthorizedResponse({
-      description: 'Authentication is required.',
-      type: ErrorResponseDocs,
-    }),
+    ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
       description: 'Only admins can access newsletter subscriptions.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundResponse({
-      description: 'Newsletter subscription with the provided id was not found.',
-      type: ErrorResponseDocs,
-    }),
+    ApiNotFoundDocs('Newsletter subscription with the provided id'),
   )
 }
 
@@ -217,18 +204,12 @@ export function NewsletterSubscriptionUpdateDocs() {
       description: 'The provided email is already subscribed.',
       type: ErrorResponseDocs,
     }),
-    ApiUnauthorizedResponse({
-      description: 'Authentication is required.',
-      type: ErrorResponseDocs,
-    }),
+    ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
       description: 'Only admins can update newsletter subscriptions.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundResponse({
-      description: 'Newsletter subscription with the provided id was not found.',
-      type: ErrorResponseDocs,
-    }),
+    ApiNotFoundDocs('Newsletter subscription with the provided id'),
   )
 }
 
@@ -253,17 +234,11 @@ export function NewsletterSubscriptionDeleteDocs() {
       description: 'Newsletter subscription id has an invalid format.',
       type: ErrorResponseDocs,
     }),
-    ApiUnauthorizedResponse({
-      description: 'Authentication is required.',
-      type: ErrorResponseDocs,
-    }),
+    ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
       description: 'Only admins can delete newsletter subscriptions.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundResponse({
-      description: 'Newsletter subscription with the provided id was not found.',
-      type: ErrorResponseDocs,
-    }),
+    ApiNotFoundDocs('Newsletter subscription with the provided id'),
   )
 }

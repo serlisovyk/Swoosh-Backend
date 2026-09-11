@@ -30,6 +30,21 @@ Docs are **module-local wrappers**, not long inline decorator stacks on controll
 - Do not document removed features (OAuth, email verification, auth sessions).
 - When a request/response shape changes, update its Swagger in the **same** change.
 
+## Repeated responses
+
+Four shared helpers in `@common/swagger` (`src/common/swagger/common-responses.swagger.ts`) exist to remove byte-identical `Api*Response` text that was copy-pasted across modules — use them instead of retyping the same decorator:
+
+- `ApiAuthRequiredDocs()` → `ApiUnauthorizedResponse({ description: 'Authentication is required.' })` — any endpoint that requires a valid access token.
+- `ApiValidationErrorDocs()` → `ApiBadRequestResponse({ description: 'Request body validation failed.' })` — a request body failed DTO validation. Do not use it for query-parameter validation.
+- `ApiInvalidQueryDocs()` → `ApiBadRequestResponse({ description: 'One or more query parameters are invalid.' })` — a list endpoint's query DTO failed validation.
+- `ApiNotFoundDocs(entity: string)` → `ApiNotFoundResponse({ description: \`${entity} was not found.\` })` — pass the exact entity phrase needed for the existing text, including a suffix like `'with the provided id'` when that's part of the current wording (e.g. `ApiNotFoundDocs('Product with the provided id')` reproduces `'Product with the provided id was not found.'`). Never assume the shorter phrasing — check the byte-for-byte text you're replacing first.
+
+**When not to use them — do not force a match:**
+
+- Any text that differs from the helper's fixed string, even slightly, stays as a plain `Api*Response` call. Do not edit the wording to fit a helper — that changes the documented contract.
+- `ApiForbiddenResponse` has **no shared helper**. Every "Only admins can …" text in the repo is action- and entity-specific (`create products` vs `access contact requests` vs `update newsletter subscriptions`, …) — none of them literally read the same, so there is nothing to generalize into one fixed string. If a future change makes several `ApiForbiddenResponse` calls byte-identical, add a helper then — don't add one speculatively.
+- A single occurrence of a text is not a duplicate — leave it inline rather than routing it through a parameterized helper just for consistency.
+
 ## Verification
 
 - `npm run build`.

@@ -34,7 +34,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `email` | Resend + `@react-email/render`; templates in `templates/*.template.tsx` (currently `reset-password`) |
 | `errors` | canonical error envelope: `AllExceptionsFilter` (global, wired in `main.ts`), `ValidationFailedException` + `flattenValidationErrors` (used by the global `ValidationPipe`'s `exceptionFactory`), `ERROR_CODES`, `ErrorResponseDocs` for Swagger |
 | `mongo` | the single connection: `MongooseModule.forRootAsync` (`mongo.config.ts`) |
-| `swagger` | `config/swagger.config.ts` (DocumentBuilder, bearer + cookie auth, operationId), `utils/swagger.utils.ts` (`createPropertyDocsDecorator`, `createOptionalPropertyDocsDecorator`, `addSwaggerCookieAuth`, `QueryPagePropertyDocs`/`QueryLimitPropertyDocs` — shared page/limit query-param docs, parametrized per module) |
+| `swagger` | `config/swagger.config.ts` (DocumentBuilder, bearer + cookie auth, operationId), `utils/swagger.utils.ts` (`createPropertyDocsDecorator`, `createOptionalPropertyDocsDecorator`, `addSwaggerCookieAuth`, `QueryPagePropertyDocs`/`QueryLimitPropertyDocs` — shared page/limit query-param docs, parametrized per module), `common-responses.swagger.ts` (`ApiAuthRequiredDocs`, `ApiValidationErrorDocs`, `ApiInvalidQueryDocs`, `ApiNotFoundDocs` — shared helpers for repeated `Api*Response` text) |
 
 ## Shared (`src/shared`)
 
