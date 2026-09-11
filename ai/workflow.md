@@ -12,6 +12,7 @@ End-to-end sequence for taking a backend task. `AGENTS.md` states the non-negoti
 
 - Branch off `main` using the branch name Linear already provides for the issue (`gitBranchName`, e.g. `serlesovik/my-39-<slug>`).
 - Never commit backend work directly on `main`.
+- Working on several issues at once: use a separate `git worktree` per issue (see "Parallel work" below) instead of stashing between branches in one working copy.
 
 ## 3. Move the task to In Progress
 
@@ -85,6 +86,28 @@ Comment on the Linear issue: short SHAs plus what landed. Move the state to `In 
 ## 13. Merge
 
 Merge the branch into `main` only after step 11 approval.
+
+## Parallel work (worktrees)
+
+Running several issues at once means several agent sessions, each in its own `git worktree`, each on its own branch. This is an execution detail — every step above (spec+plan commit, docs, verify, DoD, self-review, author approval) still applies per issue, unchanged. Start each session with `ai/task-prompt-template.md`, filled in with just the issue number — the session sets up its own worktree and branch.
+
+### Setup
+
+- One worktree per issue, off `main`, named after the branch: `git worktree add ../swoosh-my-<n> <gitBranchName>`.
+- Each worktree needs its own `.env` (copy, don't symlink) and its own `node_modules`/install — they do not share a dev server or port.
+- Give each session only its own issue number. It must not read or touch other in-flight worktrees.
+
+### Picking a batch that parallelizes well
+
+- Prefer issues whose primary files don't overlap (different module folders, or module vs. `common`/`shared`). Two issues editing the same file is not forbidden, just extra merge work later — pick around it when a same-or-lower-priority alternative exists.
+- Never batch a foundational task with the tasks that depend on it (e.g. a shared-helper extraction with the per-module cleanup that will use it). Sequence those instead: land the foundation, then branch the dependents from the updated `main`.
+- Never batch a repo-wide gate or config change (anything touching `tsconfig.json`, `eslint.config.mjs`, or another file every other change must pass through) alongside content-heavy branches — it invites conflicts in every other worktree and should land alone, merged before or after the batch.
+
+### Merging back
+
+- Merge one worktree's branch into `main` at a time, each only after its own step 11 author approval.
+- After each merge, rebase the still-open worktrees onto the new `main` before continuing — don't let them drift for the whole batch.
+- Remove a worktree once its branch is merged: `git worktree remove ../swoosh-my-<n>`.
 
 ## Rules that never bend
 
