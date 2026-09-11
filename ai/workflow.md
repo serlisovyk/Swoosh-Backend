@@ -84,11 +84,13 @@ Then stop and wait. Silence, a neutral reply, or a question is not approval — 
 
 ## 12. Report on the task
 
-Comment on the Linear issue: short SHAs plus what landed. Move the state to `In Review` or `Done` per the author's instruction.
+Comment on the Linear issue: short SHAs plus what landed.
 
 ## 13. Merge
 
-Merge the branch into `main` only after step 11 approval.
+- Merge the branch into `main` only after step 11 approval.
+- After a successful merge, always move the Linear issue to `Done` — this is not conditional on the author repeating the instruction. Comment with the merge commit SHA.
+- Remove the worktree and delete the merged branch (`git worktree remove`, `git branch -d`) once merged.
 
 ## Parallel work (worktrees)
 

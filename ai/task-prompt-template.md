@@ -21,7 +21,7 @@ Constraints:
 - Spec and plan files are written in English regardless — same as code, comments, and commits. Only chat replies follow the author's language.
 - Touch only what this issue needs.
 - No test suite — do not add one, do not report its absence as a gap.
-- Stop at the author-approval gate (workflow step 11): do not merge, do not mark the issue Done. When ready for review, comment on the issue with the SHAs + summary.
+- Stop at the author-approval gate (workflow step 11): do not merge, do not mark the issue Done. When ready for review, comment on the issue with the SHAs + summary. Once the author approves and you merge (step 13), always move the Linear issue to `Done` — no need to ask again.
 - If the scope is ambiguous or conflicts with a rule/decision record, stop and ask — don't guess.
 
 Report back at the end, in Russian (this is chat, not a file):
