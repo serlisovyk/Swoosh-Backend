@@ -11,7 +11,7 @@ import {
   Query,
 } from '@nestjs/common'
 import { ParseObjectIdPipe } from '@nestjs/mongoose'
-import { Auth } from '@modules/auth/decorators/auth.decorator'
+import { Auth } from '@modules/auth'
 import { ROLES } from '@modules/user/user.types'
 import { CreateIndividualOrderDto } from './dto/create-individual-order.dto'
 import { FindAllIndividualOrdersDto } from './dto/find-all-individual-orders.dto'

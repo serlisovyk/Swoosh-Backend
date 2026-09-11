@@ -7,8 +7,7 @@ import {
   Query,
 } from '@nestjs/common'
 import { ParseObjectIdPipe } from '@nestjs/mongoose'
-import { Auth } from '@modules/auth/decorators/auth.decorator'
-import { CurrentUser } from '@modules/auth/decorators/user.decorator'
+import { Auth, CurrentUser } from '@modules/auth'
 import { FindAllFavoritesDto } from './dto/find-all-favorites.dto'
 import { FavoritesService } from './favorites.service'
 import {
