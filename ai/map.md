@@ -34,7 +34,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `email` | Resend + `@react-email/render`; templates in `templates/*.template.tsx` (currently `reset-password`) |
 | `errors` | canonical error envelope: `AllExceptionsFilter` (global, wired in `main.ts`), `ValidationFailedException` + `flattenValidationErrors` (used by the global `ValidationPipe`'s `exceptionFactory`), `ERROR_CODES`, `ErrorResponseDocs` for Swagger |
 | `mongo` | the single connection: `MongooseModule.forRootAsync` (`mongo.config.ts`) |
-| `swagger` | `config/swagger.config.ts` (DocumentBuilder, bearer + cookie auth, operationId), `utils/swagger.utils.ts` (`createPropertyDocsDecorator`, `createOptionalPropertyDocsDecorator`, `addSwaggerCookieAuth`) |
+| `swagger` | `config/swagger.config.ts` (DocumentBuilder, bearer + cookie auth, operationId), `utils/swagger.utils.ts` (`createPropertyDocsDecorator`, `createOptionalPropertyDocsDecorator`, `addSwaggerCookieAuth`, `QueryPagePropertyDocs`/`QueryLimitPropertyDocs` — shared page/limit query-param docs, parametrized per module) |
 
 ## Shared (`src/shared`)
 
@@ -43,6 +43,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `config/validation.config.ts` | `setupValidation` — the global ValidationPipe: `whitelist`, `transform`, `forbidNonWhitelisted` |
 | `utils/query.utils.ts` | query-param coercion: `toStringArrayQueryParam`, `toNumberArrayQueryParam`, `toBooleanQueryParam`, `trimStringValue`, `normalizeEmailValue` |
 | `utils/{phone,env,app}.utils.ts` | `normalizePhoneValue`; `isDev` / `parseCorsDomainsConfigValue`; `noop` |
+| `utils/pagination.utils.ts` | `resolvePaginationOffset(page, limit)` + `DEFAULT_PAGE` — the shared offset formula used by `products` (Mongo `skip`/`limit`) and `favorites` (in-memory slice); each module keeps its own default `limit` and pagination mechanism |
 | `constants/env.constants.ts` | only the `NODE_ENV` as-const values — **not** a registry of env variable names |
 | `constants/time.constants.ts` | `THIRTY_MINUTES_IN_MS`, `ONE_HOUR_IN_MS`, `ONE_DAY_IN_MS` |
 
@@ -52,5 +53,5 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 - No dedicated logger — `AllExceptionsFilter` uses Nest's built-in `Logger` for 5xx errors, not a request-scoped one.
 - No automated tests — see [decisions/no-test-suite](decisions/2026-09-09-no-test-suite.md).
 - No `toJSON`/`transform` hooks on models — secrets are hidden with `select: false`, see [skills/mongoose-models](skills/mongoose-models.md).
-- No shared pagination-meta helper: `products` and `favorites` each compute it locally.
+- No shared pagination-**meta** helper: `products` and `favorites` each build their own list response (`{ products, total }` / `{ favoriteProductIds, total }`) locally — only the offset arithmetic is shared (`shared/utils/pagination.utils.ts`).
 - No central registry of env variable names. Each value is read where it is used via `configService.getOrThrow<T>('NAME')` with a literal string; `.env.sample` is the de-facto contract, so a new variable means updating it in the same change.
