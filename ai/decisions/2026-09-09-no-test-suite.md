@@ -13,5 +13,5 @@ The repository has no automated tests. Changes are verified with `npm run lint` 
 ## Consequences
 
 - Do not add tests unless explicitly asked. Review must not require tests and must not report their absence as a finding.
-- `package.json` still carries jest scripts (`test`, `test:watch`, `test:cov`, `test:e2e`) and devDependencies (`jest`, `ts-jest`, `supertest`), but no spec files exist — so `npm test` runs nothing meaningful. This leftover is known, not a forgotten setup.
-- Bringing tests back is a new decision and a new record here.
+- The leftover jest scaffolding this record originally called out (`test`, `test:watch`, `test:cov`, `test:debug`, `test:e2e` scripts; `jest`, `ts-jest`, `@types/jest`, `supertest`, `@types/supertest`, `@nestjs/testing` devDependencies; `jest.config.ts`; the dead `test`/`apps`/`libs` path references in `tsconfig*.json` and the lint/format globs; `globals.jest` in `eslint.config.mjs`) has been removed — see MY-41. The repo no longer carries tooling for a suite that doesn't exist.
+- Bringing tests back is a new decision and a new record here — it would also mean re-adding this scaffolding, not just spec files.
