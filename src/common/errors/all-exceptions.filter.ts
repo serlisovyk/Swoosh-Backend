@@ -1,0 +1,120 @@
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  HttpStatus,
+  Logger,
+} from '@nestjs/common'
+import type { Request, Response } from 'express'
+import { ERROR_CODES, ErrorCode } from './error-codes.constants'
+import { INTERNAL_ERROR_MESSAGE } from './errors.constants'
+import { ErrorResponseBody } from './errors.types'
+import { ValidationFailedException } from './validation-failed.exception'
+
+const INTERNAL_SERVER_ERROR_STATUS: number = HttpStatus.INTERNAL_SERVER_ERROR
+
+const STATUS_TO_ERROR_CODE: Partial<Record<number, ErrorCode>> = {
+  [HttpStatus.UNAUTHORIZED]: ERROR_CODES.UNAUTHORIZED,
+  [HttpStatus.FORBIDDEN]: ERROR_CODES.FORBIDDEN,
+  [HttpStatus.NOT_FOUND]: ERROR_CODES.NOT_FOUND,
+  [HttpStatus.CONFLICT]: ERROR_CODES.CONFLICT,
+  [HttpStatus.TOO_MANY_REQUESTS]: ERROR_CODES.TOO_MANY_REQUESTS,
+}
+
+@Catch()
+export class AllExceptionsFilter implements ExceptionFilter {
+  private readonly logger = new Logger(AllExceptionsFilter.name)
+
+  catch(exception: unknown, host: ArgumentsHost) {
+    const ctx = host.switchToHttp()
+    const response = ctx.getResponse<Response>()
+    const request = ctx.getRequest<Request>()
+
+    const status = this.resolveStatus(exception)
+    const body = this.buildResponseBody(exception, status)
+
+    if (status >= INTERNAL_SERVER_ERROR_STATUS) {
+      this.logger.error(
+        `${request.method} ${request.originalUrl} -> ${status}`,
+        exception instanceof Error ? exception.stack : String(exception),
+      )
+    }
+
+    response.status(status).json(body)
+  }
+
+  private resolveStatus(exception: unknown): number {
+    if (exception instanceof HttpException) {
+      return exception.getStatus()
+    }
+
+    return HttpStatus.INTERNAL_SERVER_ERROR
+  }
+
+  private buildResponseBody(
+    exception: unknown,
+    status: number,
+  ): ErrorResponseBody {
+    if (status >= INTERNAL_SERVER_ERROR_STATUS) {
+      return {
+        error: {
+          code: ERROR_CODES.INTERNAL_ERROR,
+          message: INTERNAL_ERROR_MESSAGE,
+        },
+      }
+    }
+
+    if (exception instanceof ValidationFailedException) {
+      return {
+        error: {
+          code: ERROR_CODES.VALIDATION_ERROR,
+          message: exception.message,
+          fields: exception.fields,
+        },
+      }
+    }
+
+    if (exception instanceof HttpException) {
+      return {
+        error: {
+          code: STATUS_TO_ERROR_CODE[status] ?? ERROR_CODES.BAD_REQUEST,
+          message: this.extractMessage(exception),
+        },
+      }
+    }
+
+    return {
+      error: {
+        code: ERROR_CODES.INTERNAL_ERROR,
+        message: INTERNAL_ERROR_MESSAGE,
+      },
+    }
+  }
+
+  private extractMessage(exception: HttpException): string {
+    const response = exception.getResponse()
+
+    if (typeof response === 'string') {
+      return response
+    }
+
+    if (
+      typeof response === 'object' &&
+      response !== null &&
+      'message' in response
+    ) {
+      const { message } = response
+
+      if (typeof message === 'string') {
+        return message
+      }
+
+      if (Array.isArray(message)) {
+        return message.join('; ')
+      }
+    }
+
+    return exception.message
+  }
+}
