@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { EmailService } from '@common/email'
 import { AppEnv } from '@shared/config'
@@ -8,6 +8,8 @@ import { RESET_PASSWORD_URL } from './password-reset.constants'
 
 @Injectable()
 export class PasswordResetService {
+  private readonly logger = new Logger(PasswordResetService.name)
+
   constructor(
     private readonly configService: ConfigService<AppEnv, true>,
     private readonly usersService: UsersService,
@@ -20,18 +22,26 @@ export class PasswordResetService {
     if (!user) return true
 
     const resetToken = generateToken()
-
-    await this.usersService.setPasswordResetToken(String(user._id), resetToken)
-
     const clientUrl = getEnv(this.configService, 'app.CLIENT_URL')
-
     const resetUrl = `${clientUrl}${RESET_PASSWORD_URL}?token=${resetToken}`
 
-    try {
-      await this.emailService.sendResetPasswordEmail(user.email, resetUrl)
-    } catch {
-      // A send failure must not change this response — anti-enumeration.
-    }
+    // Neither call is awaited: response timing must not depend on whether
+    // the account exists, and the dominant cost here (a Resend network
+    // call) is too variable for a same-cost dummy op — see MY-80.
+    void this.usersService
+      .setPasswordResetToken(String(user._id), resetToken)
+      .catch((error: unknown) => {
+        this.logger.error(
+          `Failed to persist password reset token for user ${String(user._id)}`,
+          error instanceof Error ? error.stack : String(error),
+        )
+      })
+
+    void this.emailService
+      .sendResetPasswordEmail(user.email, resetUrl)
+      .catch(() => {
+        // Already logged inside EmailService; must not change this response.
+      })
 
     return true
   }
