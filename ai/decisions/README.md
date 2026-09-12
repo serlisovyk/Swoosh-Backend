@@ -31,3 +31,4 @@ Not decisions: one-off task details, plain current-state facts, or anything `ai/
 - [2026-09-11 — refresh-cookie cross-site `sameSite`/`secure` policy](2026-09-11-refresh-cookie-cross-site-policy.md)
 - [2026-09-11 — Swagger docs gated with basic auth, not disabled, outside dev](2026-09-11-swagger-access-in-prod.md)
 - [2026-09-12 — tsc-alias as a mandatory build step](2026-09-12-tsc-alias-for-prod-build.md)
+- [2026-09-12 — local pre-commit hook instead of CI](2026-09-12-precommit-hook-instead-of-ci.md)
