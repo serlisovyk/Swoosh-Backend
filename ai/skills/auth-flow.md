@@ -25,7 +25,7 @@ All auth orchestration stays under `src/modules/auth`. Other modules reach `Auth
 - Config/constants: `auth.constants.ts`, `auth.types.ts`; password-reset-only constants live in `password-reset/password-reset.constants.ts`. The `@nestjs/jwt` library wiring itself (`JwtModule.registerAsync`, its config factory) lives in `src/common/jwt`, not here — `auth.module.ts` just imports it.
 - Docs: `auth.swagger.ts` (register/login/new-tokens/logout — in Russian); `password-reset/password-reset.swagger.ts` (its two operations + its property docs — also in Russian).
 - Password-reset email: `src/common/email/templates/reset-password.template.tsx` via `src/common/email/email.service.ts`.
-- `user.service.ts` accepts `CreateUserInput` (`src/modules/user/user.types.ts`), not `auth`'s `RegisterDto` — `AuthService.register` maps one to the other. `user` never imports from `auth`.
+- `users.service.ts` accepts `CreateUserInput` (`src/modules/users/users.types.ts`), not `auth`'s `RegisterDto` — `AuthService.register` maps one to the other. `users` never imports from `auth`.
 
 ## Token model (do not drift)
 
@@ -37,7 +37,7 @@ All auth orchestration stays under `src/modules/auth`. Other modules reach `Auth
 
 ## Roles and access control (RBAC)
 
-- `ROLES` lives in `src/modules/user/user.types.ts` and is an **`as const` object with a derived union type**, not a TS `enum`: `{ USER: 'USER', ADMIN: 'ADMIN' }`. It is the single source of roles.
+- `ROLES` lives in `src/modules/users/users.types.ts` and is an **`as const` object with a derived union type**, not a TS `enum`: `{ USER: 'USER', ADMIN: 'ADMIN' }`. It is the single source of roles.
 - The user's role is persisted on the `User` model (`role`, defaulted to `ROLES.USER`, indexed) with allowed values from `Object.values(ROLES)`.
 - Protect routes with the composite `Auth()` decorator (`decorators/auth.decorator.ts`):
   - `@Auth()` — authentication only: applies `JwtAuthGuard` + `RolesGuard` with no role metadata, so any authenticated user passes.
@@ -51,7 +51,7 @@ All auth orchestration stays under `src/modules/auth`. Other modules reach `Auth
 ## Password reset
 
 - Reset tokens generated server-side (`generateToken`, `src/shared/utils/crypto.utils.ts`) and stored hashed with `hashTokenWithSecret` (same file; HMAC + `RESET_TOKEN_SECRET`) — the only accepted format. There is no legacy/plain fallback; don't reintroduce one without a decision record. Both are plain crypto helpers with no domain meaning — that's why they live in `shared`, not `auth`.
-- `UserService.consumePasswordResetToken` finds and clears the token in one atomic `findOneAndUpdate` — the lookup filter and the reset of `resetPasswordToken`/`resetPasswordTokenExpiresAt` happen in the same operation, so two concurrent requests for the same token cannot both succeed.
+- `UsersService.consumePasswordResetToken` finds and clears the token in one atomic `findOneAndUpdate` — the lookup filter and the reset of `resetPasswordToken`/`resetPasswordTokenExpiresAt` happen in the same operation, so two concurrent requests for the same token cannot both succeed.
 - `request-password-reset` must not reveal whether an email exists.
 - `PasswordResetService.requestPasswordReset` swallows any exception from `EmailService.sendResetPasswordEmail` on purpose and always returns `true`. `EmailService` already logs the failure (recipient, subject, provider error) before throwing `InternalServerErrorException(EMAIL_SEND_FAILED_ERROR)`; letting that exception reach the controller would turn the response into a 500 only when the email exists and Resend fails, which is itself an anti-enumeration leak. Do not remove the `try/catch` to "surface" send failures to the client.
 - Keep DTOs, `PasswordResetService`, email template, user token fields, and Swagger in sync in the same change.
