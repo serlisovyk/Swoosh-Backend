@@ -1,7 +1,6 @@
 import {
   ApiAuthRequiredDocs,
   ApiInvalidQueryDocs,
-  ApiNotFoundDocs,
   ApiValidationErrorDocs,
   ErrorResponseDocs,
 } from '@common/errors'
@@ -10,6 +9,7 @@ import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -33,29 +33,30 @@ export function IndividualOrderTagDocs() {
 }
 
 export const IndividualOrderNamePropertyDocs = createPropertyDocsDecorator({
-  description: 'Customer name.',
+  description: 'Имя клиента.',
   example: 'Ivan Petrov',
 })
 
 export const IndividualOrderPhonePropertyDocs = createPropertyDocsDecorator({
-  description: 'Customer phone number after server-side normalization.',
+  description: 'Номер телефона клиента после нормализации на сервере.',
   example: '+380501234567',
 })
 
 export const IndividualOrderEmailPropertyDocs = createPropertyDocsDecorator({
-  description: 'Customer email address.',
+  description: 'Email клиента.',
   example: 'ivan.petrov@example.com',
 })
 
 export const IndividualOrderMessagePropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Additional customer message or preferred contact details.',
+    description:
+      'Дополнительное сообщение клиента или предпочтительные способы связи.',
     example: 'Please contact me in Telegram after 18:00.',
   })
 
 export const IndividualOrderStatusPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Current processing status of the individual order.',
+    description: 'Текущий статус обработки индивидуального заказа.',
     enum: INDIVIDUAL_ORDER_STATUSES,
     enumName: 'IndividualOrderStatuses',
     example: INDIVIDUAL_ORDER_STATUSES.NEW,
@@ -63,7 +64,7 @@ export const IndividualOrderStatusPropertyDocs =
 
 export const IndividualOrderStatusRequiredPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Current processing status of the individual order.',
+    description: 'Текущий статус обработки индивидуального заказа.',
     enum: INDIVIDUAL_ORDER_STATUSES,
     enumName: 'IndividualOrderStatuses',
     example: INDIVIDUAL_ORDER_STATUSES.NEW,
@@ -71,20 +72,20 @@ export const IndividualOrderStatusRequiredPropertyDocs =
 
 export const IndividualOrderResponseIdPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Individual order identifier.',
+    description: 'Идентификатор индивидуального заказа.',
     example: INDIVIDUAL_ORDER_ID_EXAMPLE,
   })
 
 export const IndividualOrderCreatedAtPropertyDocs = createPropertyDocsDecorator(
   {
-    description: 'Creation timestamp.',
+    description: 'Время создания.',
     example: '2026-03-24T10:00:00.000Z',
   },
 )
 
 export const IndividualOrderUpdatedAtPropertyDocs = createPropertyDocsDecorator(
   {
-    description: 'Last update timestamp.',
+    description: 'Время последнего обновления.',
     example: '2026-03-24T10:15:00.000Z',
   },
 )
@@ -92,27 +93,27 @@ export const IndividualOrderUpdatedAtPropertyDocs = createPropertyDocsDecorator(
 export const IndividualOrderQuerySearchPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description:
-      'Free-text search by name, email, or phone. Available only for admins.',
+      'Полнотекстовый поиск по имени, email или телефону. Доступно только администраторам.',
     example: '38050',
   })
 
 export const IndividualOrderQueryStatusPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Filter by order status. Available only for admins.',
+    description: 'Фильтр по статусу заказа. Доступно только администраторам.',
     enum: INDIVIDUAL_ORDER_STATUSES,
     enumName: 'IndividualOrderStatusesFilter',
     example: INDIVIDUAL_ORDER_STATUSES.NEW,
   })
 
 export const IndividualOrderQueryLimitPropertyDocs = QueryLimitPropertyDocs({
-  description: 'Maximum number of orders returned per page.',
+  description: 'Максимальное количество заказов на странице.',
   example: DEFAULT_INDIVIDUAL_ORDERS_LIMIT,
   maximum: LIST_QUERY_MAX_LIMIT,
 })
 
 export const IndividualOrderQuerySortPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Sorting strategy for the orders list.',
+    description: 'Стратегия сортировки списка заказов.',
     enum: CREATED_AT_SORT_OPTIONS,
     enumName: 'IndividualOrderSortOptions',
     example: CREATED_AT_SORT_OPTIONS.NEWEST,
@@ -120,13 +121,13 @@ export const IndividualOrderQuerySortPropertyDocs =
 
 export function IndividualOrderListItemsPropertyDocs(model: Type<unknown>) {
   return createPropertyDocsDecorator({
-    description: 'Individual orders matching the current filters.',
+    description: 'Индивидуальные заказы, соответствующие текущим фильтрам.',
     type: [model],
   })()
 }
 
 export const IndividualOrderTotalPropertyDocs = createPropertyDocsDecorator({
-  description: 'Total number of matching individual orders.',
+  description: 'Общее количество найденных индивидуальных заказов.',
   example: 24,
 })
 
@@ -167,12 +168,13 @@ export class IndividualOrderListResponseDocs {
 export function IndividualOrderCreateDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Create individual order',
-      description: 'Public endpoint for submitting an individual order form.',
+      summary: 'Создать индивидуальный заказ',
+      description:
+        'Публичный эндпоинт для отправки формы индивидуального заказа.',
       security: [],
     }),
     ApiCreatedResponse({
-      description: 'Individual order created successfully.',
+      description: 'Индивидуальный заказ успешно создан.',
       schema: {
         type: 'boolean',
         example: true,
@@ -185,17 +187,19 @@ export function IndividualOrderCreateDocs() {
 export function IndividualOrderFindAllDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Get individual orders list',
-      description: 'Returns a paginated list of individual orders for admins.',
+      summary: 'Получить список индивидуальных заказов',
+      description:
+        'Возвращает постраничный список индивидуальных заказов для администраторов.',
     }),
     ApiOkResponse({
-      description: 'Individual orders returned successfully.',
+      description: 'Список индивидуальных заказов успешно получен.',
       type: IndividualOrderListResponseDocs,
     }),
     ApiInvalidQueryDocs(),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can access individual orders.',
+      description:
+        'Только администраторы могут просматривать индивидуальные заказы.',
       type: ErrorResponseDocs,
     }),
   )
@@ -204,83 +208,94 @@ export function IndividualOrderFindAllDocs() {
 export function IndividualOrderFindByIdDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Get individual order by id',
+      summary: 'Получить индивидуальный заказ по id',
     }),
     ApiParam({
       name: 'id',
-      description: 'MongoDB ObjectId of the individual order.',
+      description: 'MongoDB ObjectId индивидуального заказа.',
       example: INDIVIDUAL_ORDER_ID_EXAMPLE,
     }),
     ApiOkResponse({
-      description: 'Individual order returned successfully.',
+      description: 'Индивидуальный заказ успешно получен.',
       type: IndividualOrderResponseDocs,
     }),
     ApiBadRequestResponse({
-      description: 'Individual order id has an invalid format.',
+      description: 'Некорректный формат id индивидуального заказа.',
       type: ErrorResponseDocs,
     }),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can access individual orders.',
+      description:
+        'Только администраторы могут просматривать индивидуальные заказы.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundDocs('Individual order with the provided id'),
+    ApiNotFoundResponse({
+      description: 'Индивидуальный заказ с указанным id не найден.',
+      type: ErrorResponseDocs,
+    }),
   )
 }
 
 export function IndividualOrderUpdateDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Update individual order',
+      summary: 'Обновить индивидуальный заказ',
     }),
     ApiParam({
       name: 'id',
-      description: 'MongoDB ObjectId of the individual order.',
+      description: 'MongoDB ObjectId индивидуального заказа.',
       example: INDIVIDUAL_ORDER_ID_EXAMPLE,
     }),
     ApiOkResponse({
-      description: 'Individual order updated successfully.',
+      description: 'Индивидуальный заказ успешно обновлён.',
       type: IndividualOrderResponseDocs,
     }),
     ApiBadRequestResponse({
-      description: 'Individual order id or request body is invalid.',
+      description: 'Некорректный id индивидуального заказа или тело запроса.',
       type: ErrorResponseDocs,
     }),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can update individual orders.',
+      description:
+        'Только администраторы могут обновлять индивидуальные заказы.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundDocs('Individual order with the provided id'),
+    ApiNotFoundResponse({
+      description: 'Индивидуальный заказ с указанным id не найден.',
+      type: ErrorResponseDocs,
+    }),
   )
 }
 
 export function IndividualOrderDeleteDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Delete individual order',
+      summary: 'Удалить индивидуальный заказ',
     }),
     ApiParam({
       name: 'id',
-      description: 'MongoDB ObjectId of the individual order.',
+      description: 'MongoDB ObjectId индивидуального заказа.',
       example: INDIVIDUAL_ORDER_ID_EXAMPLE,
     }),
     ApiOkResponse({
-      description: 'Individual order deleted successfully.',
+      description: 'Индивидуальный заказ успешно удалён.',
       schema: {
         type: 'boolean',
         example: true,
       },
     }),
     ApiBadRequestResponse({
-      description: 'Individual order id has an invalid format.',
+      description: 'Некорректный формат id индивидуального заказа.',
       type: ErrorResponseDocs,
     }),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can delete individual orders.',
+      description: 'Только администраторы могут удалять индивидуальные заказы.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundDocs('Individual order with the provided id'),
+    ApiNotFoundResponse({
+      description: 'Индивидуальный заказ с указанным id не найден.',
+      type: ErrorResponseDocs,
+    }),
   )
 }
