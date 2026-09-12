@@ -7,43 +7,35 @@ import {
   UsersAddressStreetPropertyDocs,
   UsersAddressZipPropertyDocs,
 } from '../users.swagger'
-import {
-  ADDRESS_COMPANY_STRING_ERROR,
-  ADDRESS_REGION_STRING_ERROR,
-  ADDRESS_CITY_STRING_ERROR,
-  ADDRESS_STREET_STRING_ERROR,
-  ADDRESS_ZIP_STRING_ERROR,
-  ADDRESS_BUILDING_NUMBER_STRING_ERROR,
-} from '../users.constants'
 
 export class UpdateAddressDto {
   @UsersAddressCompanyPropertyDocs()
   @IsOptional()
-  @IsString({ message: ADDRESS_COMPANY_STRING_ERROR })
+  @IsString({ message: 'Компания должна быть строкой' })
   company?: string
 
   @UsersAddressRegionPropertyDocs()
   @IsOptional()
-  @IsString({ message: ADDRESS_REGION_STRING_ERROR })
+  @IsString({ message: 'Регион должен быть строкой' })
   region?: string
 
   @UsersAddressCityPropertyDocs()
   @IsOptional()
-  @IsString({ message: ADDRESS_CITY_STRING_ERROR })
+  @IsString({ message: 'Город должен быть строкой' })
   city?: string
 
   @UsersAddressStreetPropertyDocs()
   @IsOptional()
-  @IsString({ message: ADDRESS_STREET_STRING_ERROR })
+  @IsString({ message: 'Улица должна быть строкой' })
   street?: string
 
   @UsersAddressZipPropertyDocs()
   @IsOptional()
-  @IsString({ message: ADDRESS_ZIP_STRING_ERROR })
+  @IsString({ message: 'Почтовый индекс должен быть строкой' })
   zip?: string
 
   @UsersAddressBuildingNumberPropertyDocs()
   @IsOptional()
-  @IsString({ message: ADDRESS_BUILDING_NUMBER_STRING_ERROR })
+  @IsString({ message: 'Номер дома/квартиры должен быть строкой' })
   buildingNumber?: string
 }

@@ -16,44 +16,37 @@ import {
   UsersNewPasswordPropertyDocs,
   UsersPhonePropertyDocs,
 } from '../users.swagger'
-import {
-  EMAIL_STRING_ERROR,
-  EMAIL_FORMAT_ERROR,
-  NEW_PASSWORD_STRING_ERROR,
-  NEW_PASSWORD_LENGTH_ERROR,
-  NAME_STRING_ERROR,
-  PHONE_STRING_ERROR,
-  CURRENT_PASSWORD_STRING_ERROR,
-} from '../users.constants'
 
 export class UpdateUserDto {
   @UsersNamePropertyDocs()
   @IsOptional()
-  @IsString({ message: NAME_STRING_ERROR })
+  @IsString({ message: 'Имя должно быть строкой' })
   name?: string
 
   @UsersEmailPropertyDocs()
   @IsOptional()
   @Transform(({ value }) => normalizeEmailValue(value))
-  @IsString({ message: EMAIL_STRING_ERROR })
-  @IsEmail({}, { message: EMAIL_FORMAT_ERROR })
+  @IsString({ message: 'Email должен быть строкой' })
+  @IsEmail({}, { message: 'Некорректный формат email' })
   email?: string
 
   @UsersNewPasswordPropertyDocs()
   @IsOptional()
-  @IsString({ message: NEW_PASSWORD_STRING_ERROR })
-  @MinLength(6, { message: NEW_PASSWORD_LENGTH_ERROR })
+  @IsString({ message: 'Новый пароль должен быть строкой' })
+  @MinLength(6, {
+    message: 'Новый пароль должен содержать минимум 6 символов',
+  })
   newPassword?: string
 
   @UsersCurrentPasswordPropertyDocs()
   @IsOptional()
-  @IsString({ message: CURRENT_PASSWORD_STRING_ERROR })
+  @IsString({ message: 'Текущий пароль должен быть строкой' })
   currentPassword?: string
 
   @UsersPhonePropertyDocs()
   @IsOptional()
   @Transform(({ value }) => normalizePhoneValue(value))
-  @IsString({ message: PHONE_STRING_ERROR })
+  @IsString({ message: 'Телефон должен быть строкой' })
   phone?: string
 
   @UsersAddressOptionalPropertyDocs(UpdateAddressDto)
