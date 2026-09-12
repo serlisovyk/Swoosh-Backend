@@ -1,10 +1,6 @@
 import { randomUUID } from 'crypto'
-import { Logger } from '@nestjs/common'
+import { HttpStatus, Logger } from '@nestjs/common'
 import type { Request } from 'express'
-import {
-  BAD_REQUEST_STATUS,
-  INTERNAL_SERVER_ERROR_STATUS,
-} from '@common/errors'
 import {
   REQUEST_ID_HEADER,
   REQUEST_ID_PATTERN,
@@ -28,12 +24,12 @@ export function resolveRequestId(request: Request): string {
 export function logRequest(payload: RequestLogPayload) {
   const message = JSON.stringify(payload)
 
-  if (payload.statusCode >= INTERNAL_SERVER_ERROR_STATUS) {
+  if (payload.statusCode >= HttpStatus.INTERNAL_SERVER_ERROR) {
     logger.error(message)
     return
   }
 
-  if (payload.statusCode >= BAD_REQUEST_STATUS) {
+  if (payload.statusCode >= HttpStatus.BAD_REQUEST) {
     logger.warn(message)
     return
   }

@@ -1,7 +1,9 @@
+import type { HttpStatus } from '@nestjs/common'
+
 export interface RequestLogPayload {
   requestId: string
   method: string
   path: string
-  statusCode: number
+  statusCode: HttpStatus
   durationMs: number
 }

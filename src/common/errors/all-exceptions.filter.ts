@@ -7,11 +7,7 @@ import {
   Logger,
 } from '@nestjs/common'
 import type { Request, Response } from 'express'
-import {
-  ERROR_CODES,
-  INTERNAL_SERVER_ERROR_STATUS,
-  STATUS_TO_ERROR_CODE,
-} from './error-codes.constants'
+import { ERROR_CODES, STATUS_TO_ERROR_CODE } from './error-codes.constants'
 import { INTERNAL_ERROR_MESSAGE } from './errors.constants'
 import { ErrorResponseBody } from './errors.types'
 import { ValidationFailedException } from './validation-failed.exception'
@@ -29,7 +25,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const status = this.resolveStatus(exception)
     const body = this.buildResponseBody(exception, status)
 
-    if (status >= INTERNAL_SERVER_ERROR_STATUS) {
+    if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
       this.logger.error(
         `${request.method} ${request.originalUrl} -> ${status} (requestId=${request.requestId})`,
         exception instanceof Error ? exception.stack : String(exception),
@@ -39,7 +35,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     response.status(status).json(body)
   }
 
-  private resolveStatus(exception: unknown): number {
+  private resolveStatus(exception: unknown): HttpStatus {
     if (exception instanceof HttpException) {
       return exception.getStatus()
     }
@@ -49,7 +45,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   private buildResponseBody(
     exception: unknown,
-    status: number,
+    status: HttpStatus,
   ): ErrorResponseBody {
     if (exception instanceof ValidationFailedException) {
       return {
@@ -62,7 +58,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     }
 
     if (
-      status >= INTERNAL_SERVER_ERROR_STATUS ||
+      status >= HttpStatus.INTERNAL_SERVER_ERROR ||
       !(exception instanceof HttpException)
     ) {
       return {
