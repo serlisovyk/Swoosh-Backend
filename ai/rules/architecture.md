@@ -50,6 +50,8 @@ These rules apply to the Swoosh Server backend.
 
 ## Application Bootstrap (`src/main.ts`)
 
+- `app.use(requestLoggingMiddleware)` (`src/common/logging`) is the very first thing wired, before `cookie-parser`/`helmet`/`enableCors`, so the `x-request-id` header and the request timer cover the whole request. It assigns/echoes `x-request-id` on every response and logs method/path/status/duration once the response finishes (error for 5xx, warn for 4xx, debug otherwise); the two `system` module paths are skipped on a successful response to avoid uptime-monitor noise. See [decisions/request-logger-choice](../decisions/2026-09-12-request-logger-choice.md) for why this stays on Nest's built-in `Logger` instead of pino.
+- `Logger.overrideLogger(PRODUCTION_LOG_LEVELS)` is called right after `configService` is available, when `!isDev(configService)` — this drops `'debug'`/`'verbose'` outside development and is what actually keeps the per-request `debug`-level log line quiet in production, not the path-skip above.
 - Global route prefix is `api/v1`. Do not set per-controller prefixes that fight it.
 - A single global `ValidationPipe` is wired via `setupValidation` (`src/shared/config/validation.config.ts`) with `whitelist`, `transform`, and `forbidNonWhitelisted`: unknown properties are rejected and payloads are transformed to their DTO types. Rely on it — do not hand-validate shapes in services.
 - Swagger is served via `setupSwagger(app, configService)` at `/api/v1/docs`, called **after** `cookie-parser`/`helmet`/`enableCors` so those apply to docs responses too (Express matches middleware/routes in registration order — calling `setupSwagger` earlier, as this file used to, meant helmet's headers never reached the docs). `SwaggerModule.setup` mounts the docs UI on the raw HTTP adapter, outside Nest's request pipeline — `AllExceptionsFilter` does not (and will not) apply to it, including the basic-auth gate described below.
@@ -61,7 +63,7 @@ These rules apply to the Swoosh Server backend.
 ## Global Providers
 
 - `ThrottlerGuard` is registered globally as an `APP_GUARD` (`src/common/throttler`); tighten specific routes with `@Throttle`. Throttling is skipped in dev via `skipIf`, and `getThrottlerConfig` (the `ThrottlerModule` `useFactory`, run once at boot) logs a warning when it is — a prod host misconfigured with `NODE_ENV=development` shows up in the boot log instead of silently losing rate limiting.
-- `AllExceptionsFilter` (`src/common/errors`) is registered globally in `main.ts` via `app.useGlobalFilters`. There are still no global interceptors. If you add one, document it here and update the review/security skills in the same change.
+- `AllExceptionsFilter` (`src/common/errors`) is registered globally in `main.ts` via `app.useGlobalFilters`. Its 5xx log line includes `request.requestId` (set by `requestLoggingMiddleware`, see Application Bootstrap below) so a server error can be matched to its request-logging entry. There are still no global interceptors. If you add one, document it here and update the review/security skills in the same change.
 
 ## Persistence (Mongo)
 

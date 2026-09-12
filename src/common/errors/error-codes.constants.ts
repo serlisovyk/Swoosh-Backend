@@ -13,6 +13,8 @@ export const ERROR_CODES = {
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES]
 
+export const BAD_REQUEST_STATUS: number = HttpStatus.BAD_REQUEST
+
 export const INTERNAL_SERVER_ERROR_STATUS: number =
   HttpStatus.INTERNAL_SERVER_ERROR
 

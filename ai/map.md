@@ -20,8 +20,9 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 
 | File | What it does |
 |---|---|
-| `src/main.ts` | global prefix `api/v1`, `setupValidation` (global ValidationPipe), `setupSwagger`, `cookie-parser`, `helmet`, `enableCors` (origins from `CORS_DOMAINS`, credentials enabled), `x-powered-by` disabled, `PORT` via `getOrThrow` |
+| `src/main.ts` | `requestLoggingMiddleware` (first `app.use`), global prefix `api/v1`, `Logger.overrideLogger` to `PRODUCTION_LOG_LEVELS` outside dev, `setupValidation` (global ValidationPipe), `setupSwagger`, `cookie-parser`, `helmet`, `enableCors` (origins from `CORS_DOMAINS`, credentials enabled), `x-powered-by` disabled, `PORT` via `getOrThrow` |
 | `src/app.module.ts` | `ConfigModule` (global), `MongoModule`, `ThrottlerModule`, `CaptchaModule` + the feature modules |
+| `src/global.d.ts` | ambient-only: the `Express.Request.requestId` type augmentation `common/logging` relies on |
 
 ## Feature modules (`src/modules`)
 
@@ -44,7 +45,8 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `throttler` | global `ThrottlerGuard` registered as `APP_GUARD`; TTL/limit from env, `skipIf` in dev; tightened per route with `@Throttle` |
 | `email` | Resend + `@react-email/render`; templates in `templates/*.template.tsx` (currently `reset-password`), subjects in `email.constants.ts`; a send failure (provider error or rejected promise) is logged with recipient/subject/provider detail and rethrown as `InternalServerErrorException(EMAIL_SEND_FAILED_ERROR)` — callers never see the provider's own error |
 | `jwt` | wraps `@nestjs/jwt`: `JwtModule.registerAsync` + `jwt.config.ts` (reads `JWT_SECRET`). Same wrapper-over-a-library pattern as `mongo`/`captcha`/`email`/`throttler`. `auth` imports it for `JwtService`; `JwtStrategy` (domain logic — depends on `UsersService`) stays in `auth`, not here |
-| `errors` | canonical error envelope: `AllExceptionsFilter` (global, wired in `main.ts`), `ValidationFailedException` + `flattenValidationErrors` (used by the global `ValidationPipe`'s `exceptionFactory`), `ERROR_CODES`, `ErrorResponseDocs` for Swagger |
+| `errors` | canonical error envelope: `AllExceptionsFilter` (global, wired in `main.ts`; its 5xx log line includes `request.requestId` from `common/logging`), `ValidationFailedException` + `flattenValidationErrors` (used by the global `ValidationPipe`'s `exceptionFactory`), `ERROR_CODES`, `ErrorResponseDocs` for Swagger |
+| `logging` | `requestLoggingMiddleware` (`app.use`'d first in `main.ts`) assigns/echoes `x-request-id`; `request-logging.utils.ts` (`resolveRequestId`, `logRequest`) does the id validation and the per-status log call (error/warn/debug, using `@common/errors`'s `INTERNAL_SERVER_ERROR_STATUS`/`BAD_REQUEST_STATUS`); `request-logging.constants.ts` holds `REQUEST_ID_HEADER`, `REQUEST_ID_PATTERN`, `SKIP_LOGGING_PATHS`, `PRODUCTION_LOG_LEVELS` (applied via `Logger.overrideLogger` in `main.ts` when `!isDev`); `request-logging.types.ts` has `RequestLogPayload`. The `Express.Request.requestId` augmentation lives in `src/global.d.ts`, not here. See [decisions/request-logger-choice](decisions/2026-09-12-request-logger-choice.md) |
 | `mongo` | the single connection: `MongooseModule.forRootAsync` (`mongo.config.ts`) |
 | `swagger` | `config/swagger.config.ts` (`buildSwaggerDocument` — DocumentBuilder, bearer + cookie auth, operationId — plus `setupSwagger`, which adds the `SWAGGER_ENABLED`/basic-auth gate outside dev and mounts the built document), `utils/swagger.utils.ts` (`createPropertyDocsDecorator`, `createOptionalPropertyDocsDecorator`, `addSwaggerCookieAuth`, `QueryPagePropertyDocs`/`QueryLimitPropertyDocs` — shared page/limit query-param docs, parametrized per module), `utils/swagger-basic-auth.utils.ts` (`createSwaggerBasicAuthMiddleware`), `common-responses.swagger.ts` (`ApiAuthRequiredDocs`, `ApiValidationErrorDocs`, `ApiInvalidQueryDocs`, `ApiNotFoundDocs` — shared helpers for repeated `Api*Response` text). The docs mount path (`SWAGGER_DOCS_PATH`) and the `api/v1` prefix `main.ts` sets globally both come from `shared/constants/api.constants.ts`, not a local literal |
 
@@ -73,7 +75,6 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 ## What this project does NOT have (do not invent it)
 
 - No global interceptors — see [decisions/error-envelope-target](decisions/2026-09-09-error-envelope-target.md) (the global exception filter is implemented; interceptors are not).
-- No dedicated logger — `AllExceptionsFilter` uses Nest's built-in `Logger` for 5xx errors, not a request-scoped one.
 - No automated tests — see [decisions/no-test-suite](decisions/2026-09-09-no-test-suite.md).
 - No `toJSON`/`transform` hooks on models — secrets are hidden with `select: false`, see [skills/mongoose-models](skills/mongoose-models.md).
 - No shared pagination-**meta** helper: `products` and `favorites` each build their own list response (`{ products, total }` / `{ favoriteProductIds, total }`) locally — only the offset arithmetic is shared (`shared/utils/pagination.utils.ts`).
