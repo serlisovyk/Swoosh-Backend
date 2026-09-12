@@ -1,10 +1,7 @@
 import { IsEnum, IsOptional } from 'class-validator'
 import { ListQueryDto } from '@shared/dto'
 import { CREATED_AT_SORT_OPTIONS } from '@shared/types'
-import {
-  INDIVIDUAL_ORDER_SORT_ERROR,
-  INDIVIDUAL_ORDER_STATUS_ERROR,
-} from '../individual-order.constants'
+import { INDIVIDUAL_ORDER_STATUS_ERROR } from '../individual-order.constants'
 import {
   IndividualOrderQueryLimitPropertyDocs,
   IndividualOrderQuerySearchPropertyDocs,
@@ -30,7 +27,7 @@ export class FindAllIndividualOrdersDto extends ListQueryDto {
   @IndividualOrderQuerySortPropertyDocs()
   @IsOptional()
   @IsEnum(CREATED_AT_SORT_OPTIONS, {
-    message: INDIVIDUAL_ORDER_SORT_ERROR,
+    message: 'Некорректное значение сортировки',
   })
   sort?: CREATED_AT_SORT_OPTIONS
 }

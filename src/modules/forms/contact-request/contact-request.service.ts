@@ -19,8 +19,6 @@ export class ContactRequestService {
     private readonly contactRequestModel: ContactRequestModel,
   ) {}
 
-  private readonly selectFields = '-__v'
-
   async create(dto: CreateContactRequestDto) {
     await this.contactRequestModel.create(dto)
 
@@ -38,7 +36,7 @@ export class ContactRequestService {
       .sort(sort)
       .skip(skip)
       .limit(limit)
-      .select(this.selectFields)
+      .select('-__v')
       .lean()
 
     const count = this.contactRequestModel.countDocuments(filters)
@@ -51,7 +49,7 @@ export class ContactRequestService {
   async findById(id: string) {
     const contactRequest = await this.contactRequestModel
       .findById(id)
-      .select(this.selectFields)
+      .select('-__v')
       .lean()
 
     if (!contactRequest) {
@@ -64,7 +62,7 @@ export class ContactRequestService {
   async update(id: string, dto: UpdateContactRequestDto) {
     const contactRequest = await this.contactRequestModel
       .findByIdAndUpdate(id, dto, MONGOOSE_UPDATE_AFTER_OPTIONS)
-      .select(this.selectFields)
+      .select('-__v')
       .lean()
 
     if (!contactRequest) {
