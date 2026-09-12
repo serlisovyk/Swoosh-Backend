@@ -1,10 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
+import { MONGOOSE_UPDATE_AFTER_OPTIONS } from '@shared/constants'
 import { buildContactRequestListQueryOptions } from './contact-request.utils'
-import {
-  CONTACT_REQUEST_NOT_FOUND_ERROR,
-  updateContactRequestOptions,
-} from './contact-request.constants'
+import { CONTACT_REQUEST_NOT_FOUND_ERROR } from './contact-request.constants'
 import { CreateContactRequestDto } from './dto/create-contact-request.dto'
 import { FindAllContactRequestsDto } from './dto/find-all-contact-requests.dto'
 import { UpdateContactRequestDto } from './dto/update-contact-request.dto'
@@ -65,7 +63,7 @@ export class ContactRequestService {
 
   async update(id: string, dto: UpdateContactRequestDto) {
     const contactRequest = await this.contactRequestModel
-      .findByIdAndUpdate(id, dto, updateContactRequestOptions)
+      .findByIdAndUpdate(id, dto, MONGOOSE_UPDATE_AFTER_OPTIONS)
       .select(this.selectFields)
       .lean()
 
