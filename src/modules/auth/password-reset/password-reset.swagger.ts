@@ -1,6 +1,10 @@
 import { ErrorResponseDocs } from '@common/errors'
 import { applyDecorators } from '@nestjs/common'
-import { ApiBadRequestResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
+import {
+  ApiBadRequestResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger'
 import {
   ApiValidationErrorDocs,
   createPropertyDocsDecorator,

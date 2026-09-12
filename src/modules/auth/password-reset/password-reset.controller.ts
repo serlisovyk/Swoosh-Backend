@@ -4,7 +4,10 @@ import { TurnstileCaptcha as Captcha } from 'nest-cloudflare-turnstile'
 import { RequestPasswordResetDto } from './dto/request-password-reset.dto'
 import { ResetPasswordDto } from './dto/reset-password.dto'
 import { PasswordResetService } from './password-reset.service'
-import { AuthRequestPasswordResetDocs, AuthResetPasswordDocs } from './password-reset.swagger'
+import {
+  AuthRequestPasswordResetDocs,
+  AuthResetPasswordDocs,
+} from './password-reset.swagger'
 import {
   AUTH_PASSWORD_RESET_REQUEST_THROTTLE,
   AUTH_PASSWORD_RESET_THROTTLE,
