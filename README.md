@@ -63,4 +63,6 @@ bun run lint
 bun run build
 ```
 
+`bun run lint` enforces formatting (Prettier), no floating promises, no unsafe arguments, and no `any` as build-failing errors, not warnings. `bun run build` runs with TypeScript `strict` mode plus `noUncheckedIndexedAccess`.
+
 This backend has no automated test suite.

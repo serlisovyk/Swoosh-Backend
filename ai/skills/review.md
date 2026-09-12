@@ -13,7 +13,7 @@ description: Use when reviewing Swoosh Server backend changes for regressions, c
 4. **Module boundaries** — against `ai/rules/architecture.md`: controllers thin, services own logic, DTOs own validation, helpers not promoted to `src/shared` prematurely.
 5. **Doc/skill drift** — did README, AGENTS.md, CLAUDE.md, `ai/rules/*`, `ai/skills/*`, or `ai/map.md` become stale? A change that reshapes a pattern must update the matching skill in the same change; a change to modules, cross-cutting packages, or entry files must update `ai/map.md`.
 6. **Missing decision record** — did the change settle or reverse a durable decision (a standing constraint, a deliberate removal, a tradeoff over a named alternative) without a dated record in `ai/decisions/`? Flag it. Do not flag routine changes that settle nothing.
-7. **Verification gaps** — was `npm run lint` / `npm run build` warranted and done? (No test suite exists — do not flag missing tests.)
+7. **Verification gaps** — was `bun run lint` / `bun run build` warranted and done? (No test suite exists — do not flag missing tests.) Since MY-51, a green run already rules out unformatted code, floating promises, unsafe arguments, `any`, implicit `any`, unchecked null access, and unchecked array/index access — don't re-flag those as manual findings if lint/build passed; focus manual review on what the compiler and linter structurally cannot see (business logic, auth behavior, contract drift, doc staleness).
 
 ## Output
 
