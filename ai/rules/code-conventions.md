@@ -54,7 +54,7 @@
 ## Formatting
 
 - Formatting is owned by Prettier (`.prettierrc`): no semicolons, single quotes, trailing commas everywhere, 2-space indent, 80-column width, always-parenthesized arrow params, `endOfLine: "auto"` (accepts whichever line ending a file already has — a Windows checkout with `core.autocrlf=true` shouldn't fight the linter over CRLF vs LF). Do not hand-format against it.
-- `prettier/prettier` is `'error'` in `eslint.config.mjs` — `bun run lint` fails on unformatted code, it does not merely warn. Run `bun run format` / `bun run lint` — do not argue style in review when the linter is green.
+- `prettier/prettier` is `'error'` (the default from `eslint-plugin-prettier`'s `recommended` config, not overridden) — `bun run lint` fails on unformatted code, it does not merely warn. Run `bun run format` / `bun run lint` — do not argue style in review when the linter is green.
 
 ## Constants
 

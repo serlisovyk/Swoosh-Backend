@@ -24,10 +24,6 @@ export default defineConfig([
   },
   {
     rules: {
-      '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-floating-promises': 'error',
-      '@typescript-eslint/no-unsafe-argument': 'error',
-      'prettier/prettier': 'error',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {

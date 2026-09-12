@@ -22,14 +22,21 @@ and `tsconfig.json` never turned on `strict`.
   initializer; the field is populated by the schema/decorator, not the
   constructor. Turning this on would force every model field to `!` or a
   fake default, which is worse than the one targeted exception.
-- `eslint.config.mjs`: `no-floating-promises` and `no-unsafe-argument` are
-  now `'error'`. `no-explicit-any` went straight to `'error'` (not an
-  intermediate `'warn'`) — a repo-wide grep found zero `any` usage in
-  `src/`, so there was nothing to migrate gradually.
-- `prettier/prettier` is `'error'`, and `eslint-plugin-prettier` stays a
-  devDependency. The alternative the issue raised — drop the plugin and let
-  `bun run format` be the only format check — was rejected: a "gate" that
-  only runs when someone remembers to invoke it separately isn't a gate.
+- `eslint.config.mjs` no longer overrides `no-explicit-any`,
+  `no-floating-promises`, `no-unsafe-argument`, or `prettier/prettier` at
+  all — checked each against the base configs (`tseslint.configs.recommendedTypeChecked`,
+  `eslint-plugin-prettier`'s `recommended`) and all four are already
+  `'error'` there. The old config didn't set them to `'error'`; it
+  explicitly downgraded them to `'off'`/`'warn'`, fighting its own base
+  config. Deleting those overrides restores the base severity — no
+  redundant restatement to drift out of sync later, and no intermediate
+  `'warn'` step for `no-explicit-any` was needed either: a repo-wide grep
+  found zero `any` usage in `src/`.
+- `eslint-plugin-prettier` stays a devDependency and its `recommended`
+  config (which sets `prettier/prettier: 'error'`) stays wired in. The
+  alternative the issue raised — drop the plugin and let `bun run format`
+  be the only format check — was rejected: a "gate" that only runs when
+  someone remembers to invoke it separately isn't a gate.
 - `.prettierrc` gets `"endOfLine": "auto"`. Turning on `prettier/prettier:
   'error'` surfaced ~7200 lint errors, of which 7185 were CRLF line endings
   — an artifact of this machine's `core.autocrlf=true` git setting, not a
