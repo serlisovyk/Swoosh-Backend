@@ -1,6 +1,6 @@
 import { Schema, Prop } from '@nestjs/mongoose'
 
-@Schema({ timestamps: true })
+@Schema({ _id: false, versionKey: false })
 export class Address {
   @Prop({ default: '' })
   company?: string
