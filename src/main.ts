@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common'
+import { Logger, ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { ConfigService } from '@nestjs/config'
 import { NestExpressApplication } from '@nestjs/platform-express'
@@ -13,13 +13,17 @@ import {
   PRODUCTION_LOG_LEVELS,
   requestLoggingMiddleware,
 } from '@common/logging'
-import { AppEnv, setupSwagger, setupValidation } from '@shared/config'
+import { AppEnv, getValidationConfig, setupSwagger } from '@shared/config'
 import { API_PREFIX } from '@shared/constants'
 import { isDev } from '@shared/utils'
 import { AppModule } from './app.module'
 
+const logger = new Logger('Bootstrap')
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
+
+  app.enableShutdownHooks()
 
   app.use(requestLoggingMiddleware)
 
@@ -31,9 +35,13 @@ async function bootstrap() {
     Logger.overrideLogger(PRODUCTION_LOG_LEVELS)
   }
 
-  setupValidation(
-    app,
-    (errors) => new ValidationFailedException(flattenValidationErrors(errors)),
+  app.useGlobalPipes(
+    new ValidationPipe(
+      getValidationConfig(
+        (errors) =>
+          new ValidationFailedException(flattenValidationErrors(errors)),
+      ),
+    ),
   )
 
   app.useGlobalFilters(new AllExceptionsFilter())
@@ -47,8 +55,6 @@ async function bootstrap() {
     credentials: true,
   })
 
-  app.disable('x-powered-by')
-
   setupSwagger(app, configService)
 
   const port = configService.get('PORT', { infer: true })
@@ -56,4 +62,7 @@ async function bootstrap() {
   await app.listen(port)
 }
 
-void bootstrap()
+bootstrap().catch((error: unknown) => {
+  logger.error('Application failed to start', error)
+  process.exit(1)
+})

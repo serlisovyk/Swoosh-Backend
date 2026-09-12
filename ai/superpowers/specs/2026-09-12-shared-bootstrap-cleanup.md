@@ -13,10 +13,12 @@ so per `ai/workflow.md` step 5 a spec is required alongside the plan.
 - Before: `shared/config/validation.config.ts` exports
   `setupValidation(app, exceptionFactory)`, which calls
   `app.useGlobalPipes(new ValidationPipe({...}))` itself.
-- After: it exports `getValidationConfig(): ValidationPipeOptions`, returning
-  only `{ whitelist: true, transform: true, forbidNonWhitelisted: true }`.
-  `main.ts` constructs the `ValidationPipe` itself:
-  `new ValidationPipe({ ...getValidationConfig(), exceptionFactory })`.
+- After: it exports `getValidationConfig(exceptionFactory): ValidationPipeOptions`,
+  a pure function returning
+  `{ whitelist: true, transform: true, forbidNonWhitelisted: true, exceptionFactory }`.
+  `main.ts` passes its `exceptionFactory` straight in and hands the result to
+  `new ValidationPipe(...)` — no `app` argument, no spread/merge at the call
+  site.
 - Runtime behavior of the `ValidationPipe` is unchanged — same three options,
   same `exceptionFactory` wiring. Only the split between "what the options
   are" and "wiring it into the app" changes, matching every other

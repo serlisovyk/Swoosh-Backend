@@ -1,16 +1,12 @@
-import { ValidationError, ValidationPipe } from '@nestjs/common'
-import { NestExpressApplication } from '@nestjs/platform-express'
+import { ValidationError, ValidationPipeOptions } from '@nestjs/common'
 
-export function setupValidation(
-  app: NestExpressApplication,
+export function getValidationConfig(
   exceptionFactory: (errors: ValidationError[]) => unknown,
-) {
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      forbidNonWhitelisted: true,
-      exceptionFactory,
-    }),
-  )
+): ValidationPipeOptions {
+  return {
+    whitelist: true,
+    transform: true,
+    forbidNonWhitelisted: true,
+    exceptionFactory,
+  }
 }

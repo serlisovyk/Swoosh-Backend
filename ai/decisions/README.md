@@ -34,3 +34,4 @@ Not decisions: one-off task details, plain current-state facts, or anything `ai/
 - [2026-09-12 — local pre-commit hook instead of CI](2026-09-12-precommit-hook-instead-of-ci.md)
 - [2026-09-12 — request logger: Nest's built-in Logger, not pino](2026-09-12-request-logger-choice.md)
 - [2026-09-12 — public form `create()` always returns a bare boolean](2026-09-12-forms-create-response-is-boolean.md)
+- [2026-09-12 — `get*Config` returns options, `setup*(app)` mutates the app](2026-09-12-get-config-returns-options-setup-mutates-app.md)

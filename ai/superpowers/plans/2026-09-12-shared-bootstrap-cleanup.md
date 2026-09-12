@@ -37,13 +37,21 @@ barrel and the two moved/renamed files.
 ## Commit breakdown
 
 1. **docs**: this plan + spec (single commit, before any code).
-2. **refactor(shared/config)**: `setupValidation` → `getValidationConfig()`
-   (pure options, no `exceptionFactory` param); `main.ts` builds the
-   `ValidationPipe` itself, merging the returned options with its own
-   `exceptionFactory`. New decision record for the `get*Config` (returns
-   options) vs `setup*(app)` (mutates app) convention, since the issue itself
-   names and rejects an alternative (`APP_PIPE` registration). Architecture
-   rule added.
+2. **refactor(bootstrap)**: combines the validation-config and bootstrap
+   items since both land in `main.ts` and splitting them would mean staging
+   the same file twice for no benefit:
+   - `setupValidation` → `getValidationConfig(exceptionFactory)` (pure,
+     takes the factory as a parameter and returns it as part of the options
+     object); `main.ts` passes its `exceptionFactory` in and hands the whole
+     result straight to `new ValidationPipe(...)` — no `app` argument, no
+     spread/merge at the call site.
+   - `bootstrap().catch(...)` logs and `process.exit(1)` on startup failure;
+     `app.enableShutdownHooks()` added; redundant `app.disable('x-powered-by')`
+     removed (`helmet()` already sets `hidePoweredBy` by default).
+   - New decision record for the `get*Config` (returns options) vs
+     `setup*(app)` (mutates app) convention, since the issue itself names and
+     rejects an alternative (`APP_PIPE` registration). `ai/rules/architecture.md`
+     and `ai/map.md` updated.
 3. **refactor(shared/utils)**: split `query.utils.ts` (pure query-param
    parsing: `toStringArrayQueryParam` — renamed from the private
    `toQueryArray`, dropping the redundant alias layer — `toNumberArrayQueryParam`,
@@ -53,11 +61,6 @@ barrel and the two moved/renamed files.
    exports only. Update `ai/map.md` and `ai/skills/query-filters.md`.
 4. **refactor(auth)**: drop `noop(userPassword)` and its import; delete
    `src/shared/utils/app.utils.ts` and its barrel export (last usage).
-5. **fix(bootstrap)**: `bootstrap().catch(...)` logs and `process.exit(1)`
-   on startup failure; `app.enableShutdownHooks()` added; redundant
-   `app.disable('x-powered-by')` removed (`helmet()` already sets
-   `hidePoweredBy` by default). Update `ai/rules/architecture.md`'s
-   Application Bootstrap section and `ai/map.md`'s `main.ts` row.
 
 ## Verification
 

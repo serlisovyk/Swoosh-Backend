@@ -20,7 +20,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 
 | File | What it does |
 |---|---|
-| `src/main.ts` | `requestLoggingMiddleware` (first `app.use`), global prefix `api/v1`, `Logger.overrideLogger` to `PRODUCTION_LOG_LEVELS` outside dev, `setupValidation` (global ValidationPipe), `setupSwagger`, `cookie-parser`, `helmet`, `enableCors` (origins from `CORS_DOMAINS`, credentials enabled), `x-powered-by` disabled, `PORT` via `getOrThrow` |
+| `src/main.ts` | `app.enableShutdownHooks()`, `requestLoggingMiddleware` (first `app.use`), global prefix `api/v1`, `Logger.overrideLogger` to `PRODUCTION_LOG_LEVELS` outside dev, global `ValidationPipe` built from `getValidationConfig()` + `exceptionFactory`, `setupSwagger`, `cookie-parser`, `helmet` (its default `hidePoweredBy` is the only `x-powered-by` suppression), `enableCors` (origins from `CORS_DOMAINS`, credentials enabled), `PORT` read from env; `bootstrap().catch(...)` logs and `process.exit(1)` on startup failure |
 | `src/app.module.ts` | `ConfigModule` (global), `MongoModule`, `ThrottlerModule`, `CaptchaModule` + the feature modules |
 | `src/global.d.ts` | ambient-only: the `Express.Request.requestId` type augmentation `common/logging` relies on |
 
@@ -53,7 +53,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 
 | File | What it provides |
 |---|---|
-| `config/validation.config.ts` | `setupValidation` — the global ValidationPipe: `whitelist`, `transform`, `forbidNonWhitelisted` |
+| `config/validation.config.ts` | `getValidationConfig(exceptionFactory)` — returns the global `ValidationPipe` options: `whitelist`, `transform`, `forbidNonWhitelisted`, plus the passed-in `exceptionFactory`; `main.ts` passes the result straight to `new ValidationPipe(...)` |
 | `config/env.config.ts` | `AppEnv` (`class-validator`/`class-transformer` class, every `.env.sample` key) + `validateEnv` — `ConfigModule.forRoot`'s `validate`; `AppEnv` is also the type behind every `ConfigService<AppEnv, true>` injection. Source of truth for env shape, alongside `.env.sample` — see [decisions/env-validated-at-boot](decisions/2026-09-12-env-validated-at-boot.md) |
 | `config/swagger.config.ts` | `buildSwaggerDocument` (DocumentBuilder, bearer + cookie auth, operationId) and `setupSwagger` (adds the `SWAGGER_ENABLED`/basic-auth gate outside dev and mounts the built document) — a bootstrap function over `NestExpressApplication`, no DI, per [decisions/common-vs-shared-boundary](decisions/2026-09-12-common-vs-shared-boundary.md) |
 | `swagger/swagger.utils.ts` | `createPropertyDocsDecorator`, `createOptionalPropertyDocsDecorator`, `addSwaggerCookieAuth`, `createSwaggerOperationId`, `QueryPagePropertyDocs`/`QueryLimitPropertyDocs` — shared page/limit query-param docs, parametrized per module |
