@@ -30,7 +30,7 @@ These rules apply to auth behavior, Swagger, public request and response contrac
 - Keep password-reset tokens generated server-side.
 - Store password-reset tokens hashed with `hashTokenWithSecret` (HMAC + `RESET_TOKEN_SECRET`) before persistence — this is the only accepted format; do not add a second lookup format "for migration" without a decision record.
 - Look up and consume a reset token in a single atomic `findOneAndUpdate` (match on the hashed token + non-expired, clear `resetPasswordToken`/`resetPasswordTokenExpiresAt` in the same operation) so two concurrent requests for the same token cannot both succeed.
-- `request-password-reset` should not reveal whether an email exists.
+- `request-password-reset` should not reveal whether an email exists — including on an email-delivery failure. `EmailService` logs the failure and throws; `AuthAccountService` swallows it and still returns `true`. Never let a send failure change this endpoint's status code or body.
 - Keep password-reset DTOs, email template, service behavior, and Swagger docs aligned.
 
 ## Public (Unauthenticated) Endpoints

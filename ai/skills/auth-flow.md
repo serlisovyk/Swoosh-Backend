@@ -51,6 +51,7 @@ All auth orchestration stays under `src/modules/auth`.
 - Reset tokens generated server-side and stored hashed with `hashTokenWithSecret` (HMAC + `RESET_TOKEN_SECRET`) — the only accepted format. There is no legacy/plain fallback; don't reintroduce one without a decision record.
 - `UserService.consumePasswordResetToken` finds and clears the token in one atomic `findOneAndUpdate` — the lookup filter and the reset of `resetPasswordToken`/`resetPasswordTokenExpiresAt` happen in the same operation, so two concurrent requests for the same token cannot both succeed.
 - `request-password-reset` must not reveal whether an email exists.
+- `AuthAccountService.requestPasswordReset` swallows any exception from `EmailService.sendResetPasswordEmail` on purpose and always returns `true`. `EmailService` already logs the failure (recipient, subject, provider error) before throwing `InternalServerErrorException(EMAIL_SEND_FAILED_ERROR)`; letting that exception reach the controller would turn the response into a 500 only when the email exists and Resend fails, which is itself an anti-enumeration leak. Do not remove the `try/catch` to "surface" send failures to the client.
 - Keep DTOs, `AuthAccountService`, email template, user token fields, and Swagger in sync in the same change.
 
 ## Guardrails

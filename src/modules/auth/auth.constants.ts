@@ -19,7 +19,6 @@ export const INVALID_OR_EXPIRED_PASSWORD_RESET_TOKEN_ERROR =
   'Недействительная или просроченная ссылка для сброса пароля'
 
 export const RESET_PASSWORD_URL = '/auth/reset-password'
-export const RESET_PASSWORD_SUBJECT = 'Сброс пароля'
 
 export const AUTH_LOGIN_THROTTLE = {
   default: { limit: 5, ttl: 60_000 },
