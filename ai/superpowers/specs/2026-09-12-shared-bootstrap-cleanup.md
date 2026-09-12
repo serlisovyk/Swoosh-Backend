@@ -66,11 +66,13 @@ so per `ai/workflow.md` step 5 a spec is required alongside the plan.
   current caller already imports from `@shared/utils`, not a deep file path
   (verified by repo-wide grep before starting).
 - `noop` and `shared/utils/app.utils.ts` are removed; `auth.service.ts`'s
-  `validateUser` drops the now-pointless `noop(userPassword)` call. The
-  destructured-but-unused `userPassword` stays lint-clean because
-  `@typescript-eslint/no-unused-vars`'s default `ignoreRestSiblings: true`
-  (not overridden in `eslint.config.mjs`) already exempts a property
-  destructured alongside a rest sibling (`...safeUser`).
+  `validateUser` drops the now-pointless `noop(userPassword)` call and
+  renames the destructured, intentionally-unused property to `_password`.
+  Verified `ignoreRestSiblings` actually defaults to `false`, not `true` as
+  the issue assumed (lint failed on the bare removal otherwise) — the
+  existing `varsIgnorePattern: '^_'` (already in `eslint.config.mjs` for
+  args) already exempts this without any config change, so no
+  `ignoreRestSiblings` override was added.
 
 ## Public API impact
 

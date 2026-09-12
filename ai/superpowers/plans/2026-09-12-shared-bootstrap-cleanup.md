@@ -21,8 +21,13 @@ Remaining, verified against current `main.ts`/`src/shared`:
    private `toQueryArray`, and `shared/utils/index.ts` re-exports
    `query.utils.ts` via `export *` instead of named exports.
 3. `noop(userPassword)` in `auth.service.ts` is still there, guarding against
-   an unused-var lint rule that already ignores rest siblings by default
-   (`ignoreRestSiblings: true`, no override in `eslint.config.mjs`).
+   `@typescript-eslint/no-unused-vars` on a rest-sibling destructure. The
+   issue assumed `ignoreRestSiblings` defaults to `true`; verified by
+   deleting the call and running lint that it actually defaults to `false`
+   (fires `'userPassword' is assigned a value but never used`). Fix: rename
+   the destructured property to `_password` — the existing
+   `varsIgnorePattern: '^_'` (already in `eslint.config.mjs`, used for args)
+   already exempts it, no config change needed.
 4. `bootstrap()` still has no `.catch`/exit code, no
    `app.enableShutdownHooks()`, and `app.disable('x-powered-by')` still
    duplicates `helmet()`'s own default.
@@ -58,9 +63,11 @@ barrel and the two moved/renamed files.
    `toBooleanQueryParam`) from a new `sanitize.utils.ts` (`trimStringValue`,
    `trimStringArrayValue`, `normalizeEmailValue`, `normalizePhoneValue`,
    moved in from the deleted `phone.utils.ts`). Barrel switches to named
-   exports only. Update `ai/map.md` and `ai/skills/query-filters.md`.
-4. **refactor(auth)**: drop `noop(userPassword)` and its import; delete
-   `src/shared/utils/app.utils.ts` and its barrel export (last usage).
+   exports only. Folded into the same commit: drop `noop(userPassword)` in
+   `auth.service.ts` (renaming the destructured property to `_password`,
+   see Context item 3) and delete `src/shared/utils/app.utils.ts` (both touch
+   the same barrel file, so splitting further just means staging it twice).
+   Update `ai/map.md` and `ai/skills/query-filters.md`.
 
 ## Verification
 
