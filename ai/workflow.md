@@ -105,6 +105,7 @@ Running several issues at once means several agent sessions, each in its own `gi
 ### Setup
 
 - One worktree per issue, off `main`, named after the branch: `git worktree add ../swoosh-my-<n> my-<n>-<slug>` (see step 2 for the branch-name rule).
+- Right after creating it, call `EnterWorktree` with `path: ../swoosh-my-<n>` to switch the session into it. This registers the directory with the harness so file access there doesn't keep prompting for permission — a plain `cd` does not.
 - Each worktree needs its own `.env` (copy, don't symlink) and its own `node_modules`/install — they do not share a dev server or port.
 - Give each session only its own issue number. It must not read or touch other in-flight worktrees.
 

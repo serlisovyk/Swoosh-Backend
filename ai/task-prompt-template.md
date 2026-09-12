@@ -10,6 +10,7 @@ First, set up the environment:
 
 - Fetch the issue from Linear, get its `gitBranchName`.
 - Create a worktree next to the current repo, named after the issue (e.g. `../swoosh-{issue-lowercased}`), on branch `<issue-id>-<slug>` (lowercase, e.g. `my-39-error-envelope`, no username prefix), off latest `main`: `git worktree add <path> <branch>`. Don't use Linear's `gitBranchName` as-is — it prepends a username, and its slug is often a transliteration (Russian words spelled in Latin letters, not real English); write your own short English slug instead.
+- Right after that, call `EnterWorktree` with `path: <that same path>` to switch the session into it — this registers the directory with the harness so file access there doesn't keep prompting for permission.
 - Copy `.env` into the worktree (not a symlink), install dependencies there.
 - Do all further work inside that worktree, not in the original repo copy.
 
