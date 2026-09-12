@@ -45,7 +45,7 @@ export class ProductsService {
       buildProductListQueryOptions(dto)
 
     if (ids?.length) {
-      return this.findAllByIds(ids, filters, excludeIds)
+      return this.findAllByIds(ids, filters, excludeIds, skip, limit)
     }
 
     const queryFilters = excludeIds?.length
@@ -293,7 +293,9 @@ export class ProductsService {
   private async findAllByIds(
     productIds: string[],
     filters: Record<string, unknown>,
-    excludeIds?: string[],
+    excludeIds: string[] | undefined,
+    skip: number,
+    limit: number,
   ) {
     const filteredProductIds = excludeIds?.length
       ? productIds.filter((productId) => !excludeIds.includes(productId))
@@ -318,7 +320,7 @@ export class ProductsService {
     })
 
     return {
-      products: orderedProducts,
+      products: orderedProducts.slice(skip, skip + limit),
       total: orderedProducts.length,
     }
   }

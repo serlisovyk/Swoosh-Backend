@@ -14,6 +14,7 @@ export const PRODUCT_QUERY_IDS_ARRAY_ERROR =
   'Id товаров должно быть массивом и содержать валидные MongoDB ObjectId'
 export const PRODUCT_QUERY_IDS_FORMAT_ERROR =
   'Каждый id товара должен быть валидным MongoDB ObjectId'
+export const PRODUCT_QUERY_IDS_MAX_SIZE_ERROR = `Можно передать не более ${MAX_PRODUCTS_LIMIT} id одновременно`
 export const PRODUCT_QUERY_LIMIT_MAX_ERROR = `Лимит должен быть не больше ${MAX_PRODUCTS_LIMIT}`
 
 export const FILTERS_METADATA_CACHE_TTL_MS = 60_000

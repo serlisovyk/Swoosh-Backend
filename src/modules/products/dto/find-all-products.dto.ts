@@ -38,6 +38,7 @@ import {
   MAX_PRODUCTS_LIMIT,
   PRODUCT_QUERY_IDS_ARRAY_ERROR,
   PRODUCT_QUERY_IDS_FORMAT_ERROR,
+  PRODUCT_QUERY_IDS_MAX_SIZE_ERROR,
   PRODUCT_QUERY_LIMIT_MAX_ERROR,
 } from '../products.constants'
 import { PRODUCT_SORT_OPTIONS } from '../products.types'
@@ -49,6 +50,9 @@ export class FindAllProductsDto {
   @IsArray({ message: PRODUCT_QUERY_IDS_ARRAY_ERROR })
   @IsMongoId({ each: true, message: PRODUCT_QUERY_IDS_FORMAT_ERROR })
   @ArrayUnique()
+  @ArrayMaxSize(MAX_PRODUCTS_LIMIT, {
+    message: PRODUCT_QUERY_IDS_MAX_SIZE_ERROR,
+  })
   ids?: string[]
 
   @ProductsQueryExcludeIdsPropertyDocs()
@@ -57,6 +61,9 @@ export class FindAllProductsDto {
   @IsArray({ message: PRODUCT_QUERY_IDS_ARRAY_ERROR })
   @IsMongoId({ each: true, message: PRODUCT_QUERY_IDS_FORMAT_ERROR })
   @ArrayUnique()
+  @ArrayMaxSize(MAX_PRODUCTS_LIMIT, {
+    message: PRODUCT_QUERY_IDS_MAX_SIZE_ERROR,
+  })
   excludeIds?: string[]
 
   @ProductsQuerySizePropertyDocs()
