@@ -26,7 +26,7 @@ export function createOptionalPropertyDocsDecorator(
 
 export function QueryPagePropertyDocs(options: QueryPagePropertyDocsOptions) {
   return createOptionalPropertyDocsDecorator({
-    description: 'Results page number.',
+    description: options.description ?? 'Results page number.',
     example: options.example,
     minimum: 1,
   })
@@ -34,7 +34,8 @@ export function QueryPagePropertyDocs(options: QueryPagePropertyDocsOptions) {
 
 export function QueryLimitPropertyDocs(options: QueryLimitPropertyDocsOptions) {
   return createOptionalPropertyDocsDecorator({
-    description: 'Maximum number of items returned per page.',
+    description:
+      options.description ?? 'Maximum number of items returned per page.',
     example: options.example,
     minimum: 1,
     maximum: options.maximum,
