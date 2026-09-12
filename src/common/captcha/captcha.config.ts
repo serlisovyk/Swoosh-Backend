@@ -1,12 +1,9 @@
 import { ConfigService } from '@nestjs/config'
 import { ITurnstileOptions } from 'nest-cloudflare-turnstile'
 import { AppEnv } from '@shared/config'
-import {
-  createTurnstileException,
-  getTokenFromResponse,
-} from './turnstile.utils'
+import { createCaptchaException, getTokenFromResponse } from './captcha.utils'
 
-export function getTurnstileConfig(
+export function getCaptchaConfig(
   configService: ConfigService<AppEnv, true>,
 ): ITurnstileOptions {
   const secretKey = configService.get('CLOUDFLARE_TURNSTILE_SECRET_KEY', {
@@ -16,6 +13,6 @@ export function getTurnstileConfig(
   return {
     secretKey,
     tokenResponse: getTokenFromResponse,
-    exceptionFactory: createTurnstileException,
+    exceptionFactory: createCaptchaException,
   }
 }

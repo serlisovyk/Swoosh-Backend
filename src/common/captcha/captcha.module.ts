@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { TurnstileModule } from 'nest-cloudflare-turnstile'
-import { getTurnstileConfig } from './turnstile.config'
+import { getCaptchaConfig } from './captcha.config'
 
 @Module({
   imports: [
     TurnstileModule.forRootAsync({
-      useFactory: getTurnstileConfig,
+      useFactory: getCaptchaConfig,
       inject: [ConfigService],
     }),
   ],
