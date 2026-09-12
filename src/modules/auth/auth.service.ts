@@ -15,12 +15,7 @@ import { FavoritesService } from '@modules/favorites'
 import { UsersService } from '../users/users.service'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
-import {
-  FAILED_TO_CREATE_USER_ERROR,
-  INVALID_CREDENTIALS_ERROR,
-  INVALID_REFRESH_TOKEN_ERROR,
-  USER_NOT_FOUND_ERROR,
-} from './auth.constants'
+import { INVALID_CREDENTIALS_ERROR } from './auth.constants'
 import {
   AccessTokenPayload,
   AuthFavoriteAwareUser,
@@ -46,7 +41,7 @@ export class AuthService {
     })
 
     if (!createdUser) {
-      throw new InternalServerErrorException(FAILED_TO_CREATE_USER_ERROR)
+      throw new InternalServerErrorException('Не удалось создать пользователя')
     }
 
     const user = await this.mergeAuthFavorites(
@@ -72,13 +67,13 @@ export class AuthService {
     const verifiedRefreshToken = await this.verifyRefreshToken(refreshToken)
 
     if (!verifiedRefreshToken) {
-      throw new BadRequestException(INVALID_REFRESH_TOKEN_ERROR)
+      throw new BadRequestException('Неверный refresh токен')
     }
 
     const user = await this.usersService.getById(verifiedRefreshToken.id)
 
     if (!user) {
-      throw new NotFoundException(USER_NOT_FOUND_ERROR)
+      throw new NotFoundException('Пользователь с таким email не найден')
     }
 
     return this.createSession(user)

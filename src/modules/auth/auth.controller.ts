@@ -32,7 +32,6 @@ import {
   AUTH_LOGIN_THROTTLE,
   AUTH_REGISTER_THROTTLE,
   REFRESH_TOKEN_COOKIE_NAME,
-  REFRESH_TOKEN_MISSING_ERROR,
 } from './auth.constants'
 import type { PreparedRequest, RefreshTokenCookieOptions } from './auth.types'
 
@@ -104,7 +103,7 @@ export class AuthController {
     clearRefreshTokenCookie(res, this.refreshTokenCookieOptions)
 
     if (!initialRefreshToken) {
-      throw new BadRequestException(REFRESH_TOKEN_MISSING_ERROR)
+      throw new BadRequestException('Отсутствует refresh токен')
     }
 
     const { refreshToken, refreshTokenExpiresAt, ...response } =

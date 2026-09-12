@@ -10,11 +10,10 @@ import {
   createPropertyDocsDecorator,
 } from '@common/swagger'
 import { AuthCaptchaHeaderDocs } from '../auth.swagger'
-import { AUTH_RESET_TOKEN_EXAMPLE } from './password-reset.constants'
 
 export const AuthResetTokenPropertyDocs = createPropertyDocsDecorator({
   description: 'Токен сброса пароля, полученный по email.',
-  example: AUTH_RESET_TOKEN_EXAMPLE,
+  example: 'reset-token-example-123',
 })
 
 export const AuthNewPasswordPropertyDocs = createPropertyDocsDecorator({

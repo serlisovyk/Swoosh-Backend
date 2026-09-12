@@ -27,8 +27,6 @@ import {
   EMAIL_VALIDATION_ERROR,
   PASSWORD_STRING_ERROR,
   PASSWORD_MIN_LENGTH_ERROR,
-  NAME_STRING_ERROR,
-  PHONE_STRING_ERROR,
 } from '../auth.constants'
 
 export class RegisterDto {
@@ -44,13 +42,13 @@ export class RegisterDto {
 
   @AuthOptionalNamePropertyDocs()
   @IsOptional()
-  @IsString({ message: NAME_STRING_ERROR })
+  @IsString({ message: 'Имя должно быть строкой' })
   name?: string
 
   @AuthOptionalPhonePropertyDocs()
   @IsOptional()
   @Transform(({ value }) => normalizePhoneValue(value))
-  @IsString({ message: PHONE_STRING_ERROR })
+  @IsString({ message: 'Телефон должен быть строкой' })
   phone?: string
 
   @FavoritesOptionalProductIdsPropertyDocs()
