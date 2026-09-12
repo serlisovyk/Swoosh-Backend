@@ -42,7 +42,8 @@
 
 ## Documentation language
 
-- Swagger `description`/`summary` text is written in Russian; `ApiTags` category names, code, comments, and identifiers stay in English. This rolls out module by module as each is touched, not as a one-shot rewrite — `auth` is done (MY-54); other modules keep their existing English copy until their own change touches it. Don't half-translate a module: when you touch a module's Swagger for another reason, translate the rest of that file in the same change.
+- Swagger `description`/`summary` text is written in Russian; `ApiTags` category names, code, comments, and identifiers stay in English. `auth`/`password-reset` (MY-54), `favorites`, `products` (including `products/category`), `forms/contact-request`, `forms/individual-order`, `forms/newsletter-subscription`, and `users` (MY-65) are done. `system.swagger.ts` is the one remaining English file — not yet covered by any issue. Don't half-translate a module: when you touch a module's Swagger for another reason, translate the rest of that file in the same change.
+- A shared Swagger helper that renders a fixed English template from an argument (e.g. `ApiNotFoundDocs(entity: string)` in `@common/errors`) is not a translation target itself, but a module file calling it with an English argument still renders English text — replace the call with a direct decorator (`ApiNotFoundResponse({ description: '<russian text>', type: ErrorResponseDocs })`) instead of translating the argument in place. Argument-less shared helpers (`ApiAuthRequiredDocs`, `ApiValidationErrorDocs`, `ApiInvalidQueryDocs`) carry no per-file text and stay as-is.
 
 ## Error handling
 
