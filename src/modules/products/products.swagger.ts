@@ -23,9 +23,9 @@ import {
 } from '@common/swagger'
 import {
   DEFAULT_PRODUCTS_LIMIT,
+  MAX_PRODUCTS_LIMIT,
   PRODUCT_ID_EXAMPLE,
   PRODUCT_CATEGORY_ID_EXAMPLE,
-  PRODUCT_IMAGE_EXAMPLES,
 } from './products.constants'
 import { PRODUCT_SORT_OPTIONS } from './products.types'
 
@@ -61,7 +61,10 @@ export const ProductsDescriptionPropertyDocs = createPropertyDocsDecorator({
 
 export const ProductsImagesPropertyDocs = createPropertyDocsDecorator({
   description: 'List of product image URLs.',
-  example: PRODUCT_IMAGE_EXAMPLES,
+  example: [
+    'https://image-example.com/products/air-max-pulse/front.webp',
+    'https://image-example.com/products/air-max-pulse/side.webp',
+  ],
   type: [String],
   minItems: 1,
   uniqueItems: true,
@@ -220,7 +223,7 @@ export const ProductsQuerySearchPropertyDocs =
 
 export const ProductsQueryLimitPropertyDocs = QueryLimitPropertyDocs({
   example: DEFAULT_PRODUCTS_LIMIT,
-  maximum: 100,
+  maximum: MAX_PRODUCTS_LIMIT,
 })
 
 export const ProductsQueryPagePropertyDocs = QueryPagePropertyDocs({
@@ -451,7 +454,7 @@ export function ProductsFindAllDocs() {
     ApiOperation({
       summary: 'Get products list',
       description:
-        'Returns a filtered list of products with the total count. Supports catalog filters and free-text search. When ids are provided, the response preserves the same order as in the query.',
+        'Returns a filtered list of products with the total count. Supports catalog filters and free-text search. When ids are provided, the response preserves the same order as in the query. In that case, page, limit, and sort are ignored and every matching product is returned.',
       security: [],
     }),
     ApiOkResponse({

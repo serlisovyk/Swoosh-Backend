@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { EmailService } from '@common/email/email.service'
+import { EmailService } from '@common/email'
 import { AppEnv } from '@shared/config'
 import { generateToken } from '@shared/utils'
-import { UserService } from '../../user/user.service'
+import { UsersService } from '../../users/users.service'
 import {
   INVALID_OR_EXPIRED_PASSWORD_RESET_TOKEN_ERROR,
   RESET_PASSWORD_URL,
@@ -13,18 +13,18 @@ import {
 export class PasswordResetService {
   constructor(
     private readonly configService: ConfigService<AppEnv, true>,
-    private readonly userService: UserService,
+    private readonly usersService: UsersService,
     private readonly emailService: EmailService,
   ) {}
 
   async requestPasswordReset(email: string) {
-    const user = await this.userService.getByEmail(email.toLowerCase())
+    const user = await this.usersService.getByEmail(email.toLowerCase())
 
     if (!user) return true
 
     const resetToken = generateToken()
 
-    await this.userService.setPasswordResetToken(String(user._id), resetToken)
+    await this.usersService.setPasswordResetToken(String(user._id), resetToken)
 
     const clientUrl = this.configService.get('CLIENT_URL', { infer: true })
 
@@ -40,7 +40,7 @@ export class PasswordResetService {
   }
 
   async resetPassword(token: string, newPassword: string) {
-    const user = await this.userService.consumePasswordResetToken(token)
+    const user = await this.usersService.consumePasswordResetToken(token)
 
     if (!user) {
       throw new BadRequestException(
@@ -48,7 +48,7 @@ export class PasswordResetService {
       )
     }
 
-    await this.userService.resetPassword(String(user._id), newPassword)
+    await this.usersService.resetPassword(String(user._id), newPassword)
 
     return true
   }

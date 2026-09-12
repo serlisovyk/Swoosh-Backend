@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common'
 import { ParseObjectIdPipe } from '@nestjs/mongoose'
 import { Auth } from '@modules/auth'
-import { ROLES } from '@modules/user/user.types'
+import { ROLES } from '@modules/users/users.types'
 import { CreateIndividualOrderDto } from './dto/create-individual-order.dto'
 import { FindAllIndividualOrdersDto } from './dto/find-all-individual-orders.dto'
 import { UpdateIndividualOrderDto } from './dto/update-individual-order.dto'

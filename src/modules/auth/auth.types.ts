@@ -1,5 +1,5 @@
 import type { Request } from 'express'
-import { User } from '@modules/user/models/user.model'
+import { User } from '@modules/users/models/user.model'
 
 export interface JwtValidatePayload {
   id: string

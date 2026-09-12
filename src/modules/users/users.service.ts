@@ -21,11 +21,11 @@ import {
   USER_NOT_FOUND_ERROR,
   USER_PUBLIC_SELECT_FIELDS,
   WRONG_CURRENT_PASSWORD_ERROR,
-} from './user.constants'
-import { ROLES, type CreateUserInput, type UserModel } from './user.types'
+} from './users.constants'
+import { ROLES, type CreateUserInput, type UserModel } from './users.types'
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: UserModel,
     private readonly configService: ConfigService<AppEnv, true>,

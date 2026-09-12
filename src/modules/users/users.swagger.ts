@@ -13,7 +13,7 @@ import {
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
 } from '@common/swagger'
-import { FavoritesProductIdsPropertyDocs } from '@modules/favorites/favorites.swagger'
+import { FavoritesProductIdsPropertyDocs } from '@modules/favorites'
 import {
   USER_ADDRESS_BUILDING_NUMBER_EXAMPLE,
   USER_ADDRESS_CITY_EXAMPLE,
@@ -25,144 +25,150 @@ import {
   USER_ID_EXAMPLE,
   USER_NAME_EXAMPLE,
   USER_PHONE_EXAMPLE,
-} from './user.constants'
-import { ROLES } from './user.types'
+} from './users.constants'
+import { ROLES } from './users.types'
 
-export function UserTagDocs() {
+export function UsersTagDocs() {
   return ApiTags('Profile')
 }
 
-export const UserNamePropertyDocs = createOptionalPropertyDocsDecorator({
+export const UsersNamePropertyDocs = createOptionalPropertyDocsDecorator({
   description: 'User display name.',
   example: USER_NAME_EXAMPLE,
 })
 
-export const UserNameRequiredPropertyDocs = createPropertyDocsDecorator({
+export const UsersNameRequiredPropertyDocs = createPropertyDocsDecorator({
   description: 'User display name.',
   example: USER_NAME_EXAMPLE,
 })
 
-export const UserEmailPropertyDocs = createOptionalPropertyDocsDecorator({
+export const UsersEmailPropertyDocs = createOptionalPropertyDocsDecorator({
   description: 'User email address.',
   example: USER_EMAIL_EXAMPLE,
 })
 
-export const UserEmailRequiredPropertyDocs = createPropertyDocsDecorator({
+export const UsersEmailRequiredPropertyDocs = createPropertyDocsDecorator({
   description: 'User email address.',
   example: USER_EMAIL_EXAMPLE,
 })
 
-export const UserPhonePropertyDocs = createOptionalPropertyDocsDecorator({
+export const UsersPhonePropertyDocs = createOptionalPropertyDocsDecorator({
   description: 'User phone number.',
   example: USER_PHONE_EXAMPLE,
 })
 
-export const UserPhoneRequiredPropertyDocs = createPropertyDocsDecorator({
+export const UsersPhoneRequiredPropertyDocs = createPropertyDocsDecorator({
   description: 'User phone number.',
   example: USER_PHONE_EXAMPLE,
 })
 
-export const UserNewPasswordPropertyDocs = createOptionalPropertyDocsDecorator({
-  description:
-    'New password. When provided, currentPassword must also be sent.',
-  example: 'newSecret123',
-  minLength: 6,
-})
+export const UsersNewPasswordPropertyDocs = createOptionalPropertyDocsDecorator(
+  {
+    description:
+      'New password. When provided, currentPassword must also be sent.',
+    example: 'newSecret123',
+    minLength: 6,
+  },
+)
 
-export const UserCurrentPasswordPropertyDocs =
+export const UsersCurrentPasswordPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description: 'Current password used to confirm password change.',
     example: 'secret123',
   })
 
-export const UserRolePropertyDocs = createPropertyDocsDecorator({
+export const UsersRolePropertyDocs = createPropertyDocsDecorator({
   description: 'User role.',
   enum: ROLES,
   enumName: 'UserRoles',
   example: ROLES.USER,
 })
 
-export const UserIdPropertyDocs = createPropertyDocsDecorator({
+export const UsersIdPropertyDocs = createPropertyDocsDecorator({
   description: 'User identifier.',
   example: USER_ID_EXAMPLE,
 })
 
-export const UserAddressCompanyPropertyDocs =
+export const UsersAddressCompanyPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description: 'Company name for delivery details.',
     example: USER_ADDRESS_COMPANY_EXAMPLE,
   })
 
-export const UserAddressCompanyRequiredPropertyDocs =
+export const UsersAddressCompanyRequiredPropertyDocs =
   createPropertyDocsDecorator({
     description: 'Company name for delivery details.',
     example: USER_ADDRESS_COMPANY_EXAMPLE,
   })
 
-export const UserAddressRegionPropertyDocs =
+export const UsersAddressRegionPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description: 'Region for delivery details.',
     example: USER_ADDRESS_REGION_EXAMPLE,
   })
 
-export const UserAddressRegionRequiredPropertyDocs =
+export const UsersAddressRegionRequiredPropertyDocs =
   createPropertyDocsDecorator({
     description: 'Region for delivery details.',
     example: USER_ADDRESS_REGION_EXAMPLE,
   })
 
-export const UserAddressCityPropertyDocs = createOptionalPropertyDocsDecorator({
-  description: 'City for delivery details.',
-  example: USER_ADDRESS_CITY_EXAMPLE,
-})
+export const UsersAddressCityPropertyDocs = createOptionalPropertyDocsDecorator(
+  {
+    description: 'City for delivery details.',
+    example: USER_ADDRESS_CITY_EXAMPLE,
+  },
+)
 
-export const UserAddressCityRequiredPropertyDocs = createPropertyDocsDecorator({
-  description: 'City for delivery details.',
-  example: USER_ADDRESS_CITY_EXAMPLE,
-})
+export const UsersAddressCityRequiredPropertyDocs = createPropertyDocsDecorator(
+  {
+    description: 'City for delivery details.',
+    example: USER_ADDRESS_CITY_EXAMPLE,
+  },
+)
 
-export const UserAddressStreetPropertyDocs =
+export const UsersAddressStreetPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description: 'Street for delivery details.',
     example: USER_ADDRESS_STREET_EXAMPLE,
   })
 
-export const UserAddressStreetRequiredPropertyDocs =
+export const UsersAddressStreetRequiredPropertyDocs =
   createPropertyDocsDecorator({
     description: 'Street for delivery details.',
     example: USER_ADDRESS_STREET_EXAMPLE,
   })
 
-export const UserAddressZipPropertyDocs = createOptionalPropertyDocsDecorator({
+export const UsersAddressZipPropertyDocs = createOptionalPropertyDocsDecorator({
   description: 'Postal code for delivery details.',
   example: USER_ADDRESS_ZIP_EXAMPLE,
 })
 
-export const UserAddressZipRequiredPropertyDocs = createPropertyDocsDecorator({
+export const UsersAddressZipRequiredPropertyDocs = createPropertyDocsDecorator({
   description: 'Postal code for delivery details.',
   example: USER_ADDRESS_ZIP_EXAMPLE,
 })
 
-export const UserAddressBuildingNumberPropertyDocs =
+export const UsersAddressBuildingNumberPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description: 'Building or apartment number for delivery details.',
     example: USER_ADDRESS_BUILDING_NUMBER_EXAMPLE,
   })
 
-export const UserAddressBuildingNumberRequiredPropertyDocs =
+export const UsersAddressBuildingNumberRequiredPropertyDocs =
   createPropertyDocsDecorator({
     description: 'Building or apartment number for delivery details.',
     example: USER_ADDRESS_BUILDING_NUMBER_EXAMPLE,
   })
 
-export function UserAddressPropertyDocs(model: Type<unknown>) {
+export function UsersAddressPropertyDocs(model: Type<unknown>) {
   return ApiProperty({
     description: 'User delivery address.',
     type: model,
   })
 }
 
-export function UserAddressOptionalPropertyDocs(model: Type<unknown>) {
+export function UsersAddressOptionalPropertyDocs(model: Type<unknown>) {
   return ApiProperty({
     description: 'User delivery address.',
     type: model,
@@ -170,66 +176,66 @@ export function UserAddressOptionalPropertyDocs(model: Type<unknown>) {
   })
 }
 
-export class UserAddressResponseDocs {
-  @UserAddressCompanyRequiredPropertyDocs()
+export class UsersAddressResponseDocs {
+  @UsersAddressCompanyRequiredPropertyDocs()
   company?: string
 
-  @UserAddressRegionRequiredPropertyDocs()
+  @UsersAddressRegionRequiredPropertyDocs()
   region?: string
 
-  @UserAddressCityRequiredPropertyDocs()
+  @UsersAddressCityRequiredPropertyDocs()
   city?: string
 
-  @UserAddressStreetRequiredPropertyDocs()
+  @UsersAddressStreetRequiredPropertyDocs()
   street?: string
 
-  @UserAddressZipRequiredPropertyDocs()
+  @UsersAddressZipRequiredPropertyDocs()
   zip?: string
 
-  @UserAddressBuildingNumberRequiredPropertyDocs()
+  @UsersAddressBuildingNumberRequiredPropertyDocs()
   buildingNumber?: string
 }
 
-export class UserResponseDocs {
-  @UserIdPropertyDocs()
+export class UsersResponseDocs {
+  @UsersIdPropertyDocs()
   _id!: string
 
-  @UserEmailRequiredPropertyDocs()
+  @UsersEmailRequiredPropertyDocs()
   email!: string
 
-  @UserNameRequiredPropertyDocs()
+  @UsersNameRequiredPropertyDocs()
   name?: string
 
-  @UserPhoneRequiredPropertyDocs()
+  @UsersPhoneRequiredPropertyDocs()
   phone?: string
 
-  @UserRolePropertyDocs()
+  @UsersRolePropertyDocs()
   role!: ROLES
 
   @FavoritesProductIdsPropertyDocs()
   favoriteProductIds!: string[]
 
-  @UserAddressPropertyDocs(UserAddressResponseDocs)
-  address?: UserAddressResponseDocs
+  @UsersAddressPropertyDocs(UsersAddressResponseDocs)
+  address?: UsersAddressResponseDocs
 }
 
-export function UserGetProfileDocs() {
+export function UsersGetProfileDocs() {
   return applyDecorators(
     ApiOperation({ summary: 'Get current user profile' }),
     ApiOkResponse({
       description: 'Current user profile returned successfully.',
-      type: UserResponseDocs,
+      type: UsersResponseDocs,
     }),
     ApiAuthRequiredDocs(),
   )
 }
 
-export function UserUpdateProfileDocs() {
+export function UsersUpdateProfileDocs() {
   return applyDecorators(
     ApiOperation({ summary: 'Update current user profile' }),
     ApiOkResponse({
       description: 'Current user profile updated successfully.',
-      type: UserResponseDocs,
+      type: UsersResponseDocs,
     }),
     ApiBadRequestResponse({
       description:

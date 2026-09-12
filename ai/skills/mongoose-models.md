@@ -7,7 +7,7 @@ description: Use when adding or changing Swoosh Server Mongoose schemas, model f
 
 ## When to use
 
-Creating a collection, adding or changing a field, adding an index or reference, or deciding whether a field may reach a public response. Read `ai/rules/architecture.md` (Persistence) first. Reference implementations: `src/modules/products/models/product.model.ts` (richest) and `src/modules/user/models/user.model.ts` (sensitive fields).
+Creating a collection, adding or changing a field, adding an index or reference, or deciding whether a field may reach a public response. Read `ai/rules/architecture.md` (Persistence) first. Reference implementations: `src/modules/products/models/product.model.ts` (richest) and `src/modules/users/models/user.model.ts` (sensitive fields).
 
 ## File shape
 
@@ -42,7 +42,7 @@ export const ProductSchema = SchemaFactory.createForClass(Product)
 - **References**: `@Prop({ type: MongooseSchema.Types.ObjectId, ref: Product.name, ... })` — use `Model.name`, never a hardcoded string. Array refs use `type: [MongooseSchema.Types.ObjectId]`.
 - **Embedded subdocuments**: embed the generated schema (`type: [ProductColorSchema]`) for arrays; embed the class (`type: Address, default: {}`) for a single nested object.
 - Cross-module model imports use the `@modules/*` alias — but only to import the model **class** for typing or `ref:` (as `user.model.ts` does with `Product` and `auth.types.ts` does with `User`). This is not license to `@InjectModel` a foreign model into your service.
-- **A service injects `@InjectModel` only for models its own module owns.** Data another module owns is read/written only through that module's exported service — never via a direct `@InjectModel` of its model. See [decisions/no-cross-module-model-injection](../decisions/2026-09-11-no-cross-module-model-injection.md); `favorites` (now calling `UserService`/`ProductsService`) is the reference example — it was the one exception in the repo, and it was revoked, not extended.
+- **A service injects `@InjectModel` only for models its own module owns.** Data another module owns is read/written only through that module's exported service — never via a direct `@InjectModel` of its model. See [decisions/no-cross-module-model-injection](../decisions/2026-09-11-no-cross-module-model-injection.md); `favorites` (now calling `UsersService`/`ProductsService`) is the reference example — it was the one exception in the repo, and it was revoked, not extended.
 
 ## Sensitive fields — `select: false`
 
@@ -65,7 +65,7 @@ resetPasswordToken?: string | null
 
 - Add `index: true` only for a field a query actually filters or sorts on (`title`, `category`, `role`, `email`, `price`, `sizes`, `material`).
 - `unique: true` for natural keys (`user.email`, `newsletterSubscription.email`) — pair it with `index: true`.
-- A pre-check (`findOne` before `create`) is not enough to prevent a duplicate under concurrent requests — the unique index is the actual guarantee. Catch the driver's duplicate-key error (`code === 11000`) in the service and map it to `ConflictException`, so a race lands on the documented 409 instead of an unhandled 500 (see `UserService.create`).
+- A pre-check (`findOne` before `create`) is not enough to prevent a duplicate under concurrent requests — the unique index is the actual guarantee. Catch the driver's duplicate-key error (`code === 11000`) in the service and map it to `ConflictException`, so a race lands on the documented 409 instead of an unhandled 500 (see `UsersService.create`).
 - When adding an index, name the query path that justifies it (a filter in `<feature>.utils.ts` or a service lookup). Unjustified indexes cost writes.
 - **Array/multikey fields** (e.g. `Product.sizes`, a `number[]`): `index: true` on the `@Prop` still works — Mongoose creates a multikey index, used by both `distinct()` and `$in` filters against the array.
 - **Fields inside an embedded subdocument array** (e.g. `Product.colors: ProductColor[]`): put `index: true` on the field inside the *subdocument's own* schema (`ProductColor.name`), not on the parent array prop. That produces the equivalent of a top-level `colors.name` index.
