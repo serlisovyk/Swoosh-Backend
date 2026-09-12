@@ -7,10 +7,9 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
-import { Response } from 'express'
 import { verify } from 'argon2'
 import ms, { StringValue } from 'ms'
-import { isDev, noop } from '@shared/utils'
+import { noop } from '@shared/utils'
 import { FavoritesService } from '@modules/favorites/favorites.service'
 import { UserService } from '../user/user.service'
 import { RegisterDto } from './dto/register.dto'
@@ -19,13 +18,11 @@ import {
   FAILED_TO_CREATE_USER_ERROR,
   INVALID_CREDENTIALS_ERROR,
   INVALID_REFRESH_TOKEN_ERROR,
-  REFRESH_TOKEN_COOKIE_NAME,
   USER_NOT_FOUND_ERROR,
 } from './auth.constants'
 import {
   AccessTokenPayload,
   AuthFavoriteAwareUser,
-  PreparedRequest,
   RefreshTokenPayload,
   UserWithoutPassword,
 } from './auth.types'
@@ -39,7 +36,7 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async register(dto: RegisterDto, request: PreparedRequest) {
+  async register(dto: RegisterDto) {
     const createdUser = await this.userService.create({
       email: dto.email,
       password: dto.password,
@@ -56,10 +53,10 @@ export class AuthService {
       dto.favoriteProductIds,
     )
 
-    return this.createSession(user, request)
+    return this.createSession(user)
   }
 
-  async login(dto: LoginDto, request: PreparedRequest) {
+  async login(dto: LoginDto) {
     const validatedUser = await this.validateUser(dto)
 
     const user = await this.mergeAuthFavorites(
@@ -67,32 +64,10 @@ export class AuthService {
       dto.favoriteProductIds,
     )
 
-    return this.createSession(user, request)
+    return this.createSession(user)
   }
 
-  logout(_refreshToken?: string) {
-    return true
-  }
-
-  setRefreshTokenCookie(response: Response, refreshToken: string | null) {
-    const defaultCookieOptions = {
-      httpOnly: true,
-      secure: !isDev(this.configService),
-      domain: this.configService.get<string>('COOKIE_DOMAIN'),
-      sameSite: isDev(this.configService) ? 'lax' : 'none',
-    } as const
-
-    response.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
-      ...defaultCookieOptions,
-      expires: refreshToken ? this.getRefreshTokenExpiresAt() : new Date(0),
-    })
-  }
-
-  clearRefreshTokenCookie(response: Response) {
-    this.setRefreshTokenCookie(response, null)
-  }
-
-  async getNewTokens(refreshToken: string, _request: PreparedRequest) {
+  async getNewTokens(refreshToken: string) {
     const verifiedRefreshToken = await this.verifyRefreshToken(refreshToken)
 
     if (!verifiedRefreshToken) {
@@ -105,23 +80,14 @@ export class AuthService {
       throw new NotFoundException(USER_NOT_FOUND_ERROR)
     }
 
-    const sessionTokens = this.generateSessionTokens(user)
-
-    return {
-      user,
-      accessToken: sessionTokens.accessToken,
-      refreshToken: sessionTokens.refreshToken,
-    }
+    return this.createSession(user)
   }
 
-  createSession(user: UserWithoutPassword, _request: PreparedRequest) {
-    const sessionTokens = this.generateSessionTokens(user)
+  createSession(user: UserWithoutPassword) {
+    const { accessToken, refreshToken, refreshTokenExpiresAt } =
+      this.generateSessionTokens(user)
 
-    return {
-      user,
-      accessToken: sessionTokens.accessToken,
-      refreshToken: sessionTokens.refreshToken,
-    }
+    return { user, accessToken, refreshToken, refreshTokenExpiresAt }
   }
 
   private async verifyRefreshToken(refreshToken?: string | null) {
@@ -187,7 +153,6 @@ export class AuthService {
   private generateSessionTokens(user: UserWithoutPassword) {
     const accessTokenPayload: AccessTokenPayload = {
       id: String(user._id),
-      role: user.role,
     }
 
     const refreshTokenPayload: RefreshTokenPayload = {

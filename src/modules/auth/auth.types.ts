@@ -1,6 +1,5 @@
 import type { Request } from 'express'
 import { User } from '@modules/user/models/user.model'
-import { ROLES } from '@modules/user/user.types'
 
 export interface JwtValidatePayload {
   id: string
@@ -8,7 +7,6 @@ export interface JwtValidatePayload {
 
 export interface AccessTokenPayload {
   id: string
-  role: ROLES
 }
 
 export interface RefreshTokenPayload {
@@ -29,3 +27,9 @@ export type UserWithoutPassword = Omit<User, UserPasswordAndSensitiveFields>
 
 type UserPasswordAndSensitiveFields =
   'password' | 'resetPasswordToken' | 'resetPasswordTokenExpiresAt'
+
+export interface RefreshTokenCookieOptions {
+  domain: string | undefined
+  secure: boolean
+  sameSite: 'lax' | 'none'
+}

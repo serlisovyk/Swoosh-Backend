@@ -19,6 +19,7 @@ All auth orchestration stays under `src/modules/auth`. Other modules reach `Auth
 ## Files that move together
 
 - Controllers/services: `auth.controller.ts` + `auth.service.ts`; `password-reset/password-reset.controller.ts` + `password-reset/password-reset.service.ts`.
+- Cookies: `auth.cookies.ts` (`buildRefreshTokenCookieOptions`, `setRefreshTokenCookie`, `clearRefreshTokenCookie` — plain functions, no DI). Setting/clearing the refresh cookie is `AuthController`'s job; `AuthService` returns tokens (plus `refreshTokenExpiresAt`) and never imports `express`.
 - Request shape: `dto/login.dto.ts`, `dto/register.dto.ts`, `password-reset/dto/request-password-reset.dto.ts`, `password-reset/dto/reset-password.dto.ts`.
 - Access-control: `guards/jwt.guard.ts`, `guards/roles.guard.ts`, `strategies/jwt.strategy.ts`, `decorators/auth.decorator.ts`, `decorators/roles.decorator.ts`, `decorators/user.decorator.ts`.
 - Config/constants: `auth.constants.ts`, `auth.types.ts`; password-reset-only constants live in `password-reset/password-reset.constants.ts`. The `@nestjs/jwt` library wiring itself (`JwtModule.registerAsync`, its config factory) lives in `src/common/jwt`, not here — `auth.module.ts` just imports it.
@@ -28,7 +29,7 @@ All auth orchestration stays under `src/modules/auth`. Other modules reach `Auth
 
 ## Token model (do not drift)
 
-- Access token: stateless JWT signed with `JWT_SECRET`, returned in the response body of register/login/new-tokens, consumed as `Authorization: Bearer <token>` and validated by `jwt.strategy.ts` + `jwt.guard.ts`. `expiresIn` (`JWT_ACCESS_TOKEN_EXPIRES_IN`) is read with `getOrThrow` — never let it fall through to `undefined`, that issues a token with no expiry.
+- Access token: stateless JWT signed with `JWT_SECRET`, payload is `{ id }` only (no `role` — see below), returned in the response body of register/login/new-tokens, consumed as `Authorization: Bearer <token>` and validated by `jwt.strategy.ts` + `jwt.guard.ts`. `expiresIn` (`JWT_ACCESS_TOKEN_EXPIRES_IN`) is read with `getOrThrow` — never let it fall through to `undefined`, that issues a token with no expiry.
 - Refresh token: stateless JWT signed with a **separate** `JWT_REFRESH_SECRET`, stored only in the `refreshToken` HttpOnly cookie. `POST /auth/new-tokens` reads it from the cookie; `POST /auth/logout` clears the cookie.
 - The refresh token's lifetime has one source: `JWT_REFRESH_TOKEN_EXPIRES_IN` (`ms` format, e.g. `"1d"`, `getOrThrow`). It signs the JWT and — via `ms()` — derives the cookie's `expires` date. Do not add a second, days-based env var for the cookie.
 - The `refreshToken` cookie uses `sameSite: 'none'` + `secure: true` in production and `sameSite: 'lax'` + `secure: false` in dev — the frontend and API are on different sites in production but share `localhost` in dev. See [decisions/refresh-cookie-cross-site-policy](../decisions/2026-09-11-refresh-cookie-cross-site-policy.md).
@@ -42,7 +43,7 @@ All auth orchestration stays under `src/modules/auth`. Other modules reach `Auth
   - `@Auth()` — authentication only: applies `JwtAuthGuard` + `RolesGuard` with no role metadata, so any authenticated user passes.
   - `@Auth(ROLES.ADMIN)` — attaches `Roles(...)` metadata plus both guards.
   - Do not hand-stack `UseGuards(JwtAuthGuard, RolesGuard)` on controllers; use `Auth()`.
-- `RolesGuard` reads `roles` metadata via `Reflector.getAllAndOverride` (handler overrides class), allows the request when no roles are required, denies when the request has no `user.role`, and **lets `ROLES.ADMIN` through every role check**.
+- `RolesGuard` reads `roles` metadata via `Reflector.getAllAndOverride` (handler overrides class), allows the request when no roles are required, denies when the request has no `user.role`, and **lets `ROLES.ADMIN` through every role check**. `user.role` comes from `JwtStrategy.validate`'s DB lookup, not from the access-token payload — see [decisions/access-token-role-stays-server-side](../decisions/2026-09-12-access-token-role-stays-server-side.md).
 - Consequence: there is no role that admin cannot access. If a route must exclude admins, that needs a different mechanism and a decision record — do not fake it with role lists.
 - The current user reaches handlers through the `user` param decorator (`decorators/user.decorator.ts`), populated by `jwt.strategy.ts`. Do not re-read the user from the request object manually.
 - Mark role-protected endpoints in Swagger so the required access level is visible (see `swagger-docs`).
