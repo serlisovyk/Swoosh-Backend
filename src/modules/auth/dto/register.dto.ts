@@ -1,21 +1,5 @@
 import { Transform } from 'class-transformer'
-import {
-  ArrayMaxSize,
-  ArrayUnique,
-  IsArray,
-  IsEmail,
-  IsMongoId,
-  IsOptional,
-  IsString,
-  MinLength,
-} from 'class-validator'
-import {
-  FAVORITES_PRODUCT_IDS_ARRAY_ERROR,
-  FAVORITES_PRODUCT_ID_FORMAT_ERROR,
-  FAVORITES_PRODUCT_IDS_MAX_SIZE_ERROR,
-  FAVORITES_MAX_PRODUCT_IDS,
-  FavoritesOptionalProductIdsPropertyDocs,
-} from '@modules/favorites'
+import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator'
 import { normalizeEmailValue, normalizePhoneValue } from '@shared/utils'
 import {
   AuthEmailPropertyDocs,
@@ -28,8 +12,9 @@ import {
   PASSWORD_STRING_ERROR,
   PASSWORD_MIN_LENGTH_ERROR,
 } from '../auth.constants'
+import { FavoriteProductIdsDto } from './favorite-product-ids.dto'
 
-export class RegisterDto {
+export class RegisterDto extends FavoriteProductIdsDto {
   @AuthEmailPropertyDocs()
   @Transform(({ value }) => normalizeEmailValue(value))
   @IsEmail({}, { message: EMAIL_VALIDATION_ERROR })
@@ -50,14 +35,4 @@ export class RegisterDto {
   @Transform(({ value }) => normalizePhoneValue(value))
   @IsString({ message: 'Телефон должен быть строкой' })
   phone?: string
-
-  @FavoritesOptionalProductIdsPropertyDocs()
-  @IsOptional()
-  @IsArray({ message: FAVORITES_PRODUCT_IDS_ARRAY_ERROR })
-  @IsMongoId({ each: true, message: FAVORITES_PRODUCT_ID_FORMAT_ERROR })
-  @ArrayMaxSize(FAVORITES_MAX_PRODUCT_IDS, {
-    message: FAVORITES_PRODUCT_IDS_MAX_SIZE_ERROR,
-  })
-  @ArrayUnique()
-  favoriteProductIds?: string[]
 }
