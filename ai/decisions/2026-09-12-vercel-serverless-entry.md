@@ -32,11 +32,14 @@ import.
   auto-detects `api/*` as Node functions and would otherwise compile the
   `.ts` source itself (reintroducing the alias problem). The relative
   `../dist/serverless.js` import has no aliases left to resolve.
-- No `vercel.json` is committed to the repo — the build command
-  (`bun run build`) is set directly in the Vercel project's dashboard
-  settings instead, and no `builds`/`routes` config is needed either way.
-  Vercel runs the configured build command (which already produces
-  alias-free `dist/`) before it looks at `api/`.
+- The build command (`bun run build`) is set directly in the Vercel
+  project's dashboard settings, not via a committed `builds`/`routes`
+  config — Vercel runs it (producing alias-free `dist/`) before it looks at
+  `api/`.
+- `vercel.json` **is** committed, but only for one `rewrites` rule (see
+  below) — never a `builds`/`routes` block pointing at source files, which
+  is the pattern that reintroduces the alias problem this decision exists to
+  avoid.
 - `api/index.ts` is deliberately excluded from `tsconfig.json`'s and
   `tsconfig.build.json`'s program (its `rootDir` is `src`, and the file
   imports build output that doesn't exist pre-build) and from the `lint`
@@ -64,6 +67,15 @@ import.
   static output directory to exist even for a functions-only deploy; an
   empty `public/` (kept via `public/.gitkeep`) satisfies that with nothing
   actually served from it.
+- Vercel's filesystem routing maps `api/index.ts` to the exact path `/api`
+  only — it does **not** catch nested paths like `/api/v1/health` on its
+  own. Since this app's global prefix is `api/v1`
+  (`ai/rules/architecture.md`), every real route lives under `/api/v1/...`,
+  none of which Vercel would route to the function without help. `vercel.json`
+  therefore adds one `rewrites` rule (`"/(.*)" → "/api"`) so every incoming
+  path reaches the function with its original URL intact (a rewrite, not a
+  redirect — the app still sees `/api/v1/health`, not `/api`, and its own
+  Nest router does the rest).
 
 ## Consequences
 
