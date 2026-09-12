@@ -11,11 +11,10 @@ Adding or changing a list/search endpoint, a query DTO, pagination, sort, or a M
 
 ## The pipeline (follow it end to end)
 
-1. **DTO parses and normalizes raw query input.** `dto/find-all-<feature>.dto.ts` uses `class-validator` for rules and `@Transform` with the shared helpers from `@shared/utils` (`src/shared/utils/query.utils.ts`):
-   - `toStringArrayQueryParam` / `toNumberArrayQueryParam` — split `?x=a,b` and repeated params into arrays.
-   - `toBooleanQueryParam` — `"true"`/`"false"` → boolean.
-   - `trimStringValue`, `trimStringArrayValue`, `normalizeEmailValue`.
-   Do not re-implement these; extend the shared file if a new transform is genuinely reusable.
+1. **DTO parses and normalizes raw query input.** `dto/find-all-<feature>.dto.ts` uses `class-validator` for rules and `@Transform` with the shared helpers from `@shared/utils`, split by concern:
+   - Query-param parsing (`src/shared/utils/query.utils.ts`): `toStringArrayQueryParam` / `toNumberArrayQueryParam` — split `?x=a,b` and repeated params into arrays; `toBooleanQueryParam` — `"true"`/`"false"` → boolean.
+   - Value sanitizing (`src/shared/utils/sanitize.utils.ts`): `trimStringValue`, `trimStringArrayValue`, `normalizeEmailValue`, `normalizePhoneValue`.
+   Do not re-implement these; extend the matching shared file if a new transform is genuinely reusable.
 2. **A pure builder turns the DTO into Mongo query options.** `<feature>.utils.ts` exports `build<Feature>ListQueryOptions(dto)` returning `{ filters, sort, limit, page, ... }` typed in `<feature>.types.ts`. See `buildProductListQueryOptions` in `src/modules/products/products.utils.ts`.
 3. **The service runs the query** with those options; it does not parse raw query strings itself.
 

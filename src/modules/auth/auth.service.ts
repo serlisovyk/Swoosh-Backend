@@ -10,7 +10,6 @@ import { ConfigService } from '@nestjs/config'
 import { verify } from 'argon2'
 import ms, { StringValue } from 'ms'
 import { AppEnv } from '@shared/config'
-import { noop } from '@shared/utils'
 import { FavoritesService } from '@modules/favorites'
 import { UsersService } from '../users/users.service'
 import { RegisterDto } from './dto/register.dto'
@@ -117,9 +116,7 @@ export class AuthService {
       throw new UnauthorizedException(INVALID_CREDENTIALS_ERROR)
     }
 
-    const { password: userPassword, ...safeUser } = user
-
-    noop(userPassword)
+    const { password: _password, ...safeUser } = user
 
     return safeUser
   }
