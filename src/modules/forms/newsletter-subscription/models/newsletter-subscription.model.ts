@@ -17,3 +17,5 @@ export class NewsletterSubscription {
 export const NewsletterSubscriptionSchema = SchemaFactory.createForClass(
   NewsletterSubscription,
 )
+
+NewsletterSubscriptionSchema.index({ createdAt: -1 })
