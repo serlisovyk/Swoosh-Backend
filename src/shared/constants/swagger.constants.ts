@@ -1,4 +1,4 @@
-import { REFRESH_TOKEN_COOKIE_NAME } from '@shared/constants'
+import { REFRESH_TOKEN_COOKIE_NAME } from './cookie.constants'
 
 export const SWAGGER_ACCESS_TOKEN_AUTH_NAME = 'bearer' as const
 export const SWAGGER_REFRESH_TOKEN_AUTH_NAME = REFRESH_TOKEN_COOKIE_NAME

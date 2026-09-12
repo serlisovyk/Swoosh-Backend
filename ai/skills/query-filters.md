@@ -26,7 +26,7 @@ Adding or changing a list/search endpoint, a query DTO, pagination, sort, or a M
 - Sort maps and default limit live in `<feature>.constants.ts` (e.g. `PRODUCT_SORT_MAP`, `DEFAULT_PRODUCTS_LIMIT`); sort option enums in `<feature>.types.ts`. The default limit **value** stays module-specific (18 for products, 12 for favorites, 20 for the three form modules) — only the offset arithmetic and the page default are shared, see below.
 - For text search, reuse the shared regex helpers rather than inlining new regex: `escapeRegExp` / `createContainsRegex` / `createExactRegex` / `REGEX_SPECIAL_CHARACTERS` from `@shared/utils` (`src/shared/utils/regex.utils.ts`).
 - Never return unbounded lists — always apply pagination.
-- Keep the query DTO's Swagger property docs in the module `*.swagger.ts` (see `swagger-docs`), but build them from `QueryPagePropertyDocs({ example, description? })` / `QueryLimitPropertyDocs({ example, maximum, description? })` (`@common/swagger`) rather than writing a parallel `ApiPropertyOptional` call per module. `description` is optional and defaults to the generic products/favorites wording — pass it when a module's existing wording differs (e.g. "Available only for admins.").
+- Keep the query DTO's Swagger property docs in the module `*.swagger.ts` (see `swagger-docs`), but build them from `QueryPagePropertyDocs({ example, description? })` / `QueryLimitPropertyDocs({ example, maximum, description? })` (`@shared/swagger`) rather than writing a parallel `ApiPropertyOptional` call per module. `description` is optional and defaults to the generic products/favorites wording — pass it when a module's existing wording differs (e.g. "Available only for admins.").
 
 ## Pagination: shared arithmetic, module-specific mechanism
 

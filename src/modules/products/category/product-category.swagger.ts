@@ -1,4 +1,8 @@
-import { ErrorResponseDocs } from '@common/errors'
+import {
+  ApiAuthRequiredDocs,
+  ApiValidationErrorDocs,
+  ErrorResponseDocs,
+} from '@common/errors'
 import { applyDecorators } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -11,11 +15,7 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger'
-import {
-  ApiAuthRequiredDocs,
-  ApiValidationErrorDocs,
-  createPropertyDocsDecorator,
-} from '@common/swagger'
+import { createPropertyDocsDecorator } from '@shared/swagger'
 import { PRODUCT_CATEGORY_ID_EXAMPLE } from '../products.constants'
 import { ProductsCategoryResponseDocs } from '../products.swagger'
 

@@ -8,7 +8,7 @@ import {
   QueryLimitPropertyDocsOptions,
   QueryPagePropertyDocsOptions,
   SwaggerPropertyOptions,
-} from '../types'
+} from '@shared/types'
 
 export function createPropertyDocsDecorator(options: SwaggerPropertyOptions) {
   return function PropertyDocsDecorator() {

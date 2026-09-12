@@ -13,8 +13,7 @@ import {
   PRODUCTION_LOG_LEVELS,
   requestLoggingMiddleware,
 } from '@common/logging'
-import { setupSwagger } from '@common/swagger'
-import { AppEnv, setupValidation } from '@shared/config'
+import { AppEnv, setupSwagger, setupValidation } from '@shared/config'
 import { API_PREFIX } from '@shared/constants'
 import { isDev } from '@shared/utils'
 import { AppModule } from './app.module'

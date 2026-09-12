@@ -10,4 +10,11 @@ export {
   ValidationFailedException,
   flattenValidationErrors,
 } from './validation-failed.exception'
-export { ErrorBodyDocs, ErrorResponseDocs } from './errors.swagger'
+export {
+  ErrorBodyDocs,
+  ErrorResponseDocs,
+  ApiAuthRequiredDocs,
+  ApiValidationErrorDocs,
+  ApiInvalidQueryDocs,
+  ApiNotFoundDocs,
+} from './errors.swagger'

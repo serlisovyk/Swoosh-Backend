@@ -1,4 +1,9 @@
-import { ErrorResponseDocs } from '@common/errors'
+import {
+  ApiAuthRequiredDocs,
+  ApiInvalidQueryDocs,
+  ApiNotFoundDocs,
+  ErrorResponseDocs,
+} from '@common/errors'
 import { applyDecorators } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -9,14 +14,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import {
-  ApiAuthRequiredDocs,
-  ApiInvalidQueryDocs,
-  ApiNotFoundDocs,
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
   QueryLimitPropertyDocs,
   QueryPagePropertyDocs,
-} from '@common/swagger'
+} from '@shared/swagger'
 import {
   ProductsListItemsPropertyDocs,
   ProductsResponseDocs,

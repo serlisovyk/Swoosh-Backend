@@ -1,4 +1,4 @@
-import { QueryPagePropertyDocs } from '@common/swagger'
+import { QueryPagePropertyDocs } from './swagger.utils'
 
 export const ListQueryPagePropertyDocs = QueryPagePropertyDocs({
   example: 1,
