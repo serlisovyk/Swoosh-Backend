@@ -9,6 +9,8 @@
 - `@typescript-eslint/no-explicit-any` is `'error'` — `any` is not allowed, not just discouraged. If one is genuinely unavoidable, use a local `// eslint-disable-next-line @typescript-eslint/no-explicit-any` with a one-line reason, not a broader disable or a rule downgrade. Prefer narrowing (type guards, `unknown` + a check) over `any` or an `as` assertion.
 - Prefer `readonly` for injected dependencies and values that never reassign.
 - Prefer explicit names over abbreviations — e.g. `context`, not `ctx` (including Nest's `ArgumentsHost`/`ExecutionContext` locals).
+- Treat "prefer narrowing over an `as` assertion" as strict, not just for `no-explicit-any`: even a value already typed `any`/`unknown` (e.g. `class-transformer`'s `TransformFnParams.value`) gets a real type guard (`typeof`, `instanceof`, a predicate), not `value as SomeType` — see `src/shared/config/env/cors.env.ts`.
+- A function whose return type already includes `undefined` returns it with a bare `return`, not `return undefined` — see `parseCorsDomainsConfigValue` (`src/shared/utils/env.utils.ts`).
 
 ## Types
 
@@ -23,6 +25,7 @@
 
 - Comment only to explain **why** a non-obvious decision exists, not what the code does.
 - Keep comments rare and useful; delete stale ones with the code they described.
+- Default to no rationale comment at all — put durable "why" in `ai/decisions/`, not inline. When a comment would only exist to explain a convoluted interaction (e.g. two fields depending on each other across files), prefer restructuring the code so the explanation becomes unnecessary over writing the comment — see [decisions/env-config-nested-by-domain](../decisions/2026-09-12-env-config-nested-by-domain.md) (`CORS_DOMAINS`' cross-domain dependency was removed, not commented around).
 
 ## Naming
 
@@ -77,3 +80,6 @@
 - Keep feature-local helpers inside the feature module until reuse is real.
 - Do not create placeholder files just to mirror another module.
 - Keep generated output such as `dist` and `node_modules` out of edits.
+- Split a file the moment it holds more than one real responsibility — a schema/class, a data-shaping helper, an error-formatting helper, and an orchestrating function are separate files, not sections of one file. This is stricter than "keep feature-local helpers together until reuse is real" above — that rule is about *module* boundaries (don't promote to `shared/` too early); this is about *file* boundaries within a concern that already lives together. See `src/shared/config/env/` (one domain-config class per file) + `env-validation.utils.ts` (validation orchestration, separate from `env.config.ts`'s schema).
+- Don't change a shared, multi-caller helper to fit one new caller's special case (an extra default, an extra branch) — check every existing call site first, and if the special case would change their behavior, keep the shared helper as-is and add a small local wrapper for the one caller that needs it. See `src/shared/config/env/swagger.env.ts`'s `parseSwaggerEnabled` (wraps the unmodified, still query-DTO-shared `toBooleanQueryParam`).
+- Don't add a conditional, fallback, or stricter-than-needed validation rule for an edge case that isn't actually reachable given how the app is configured/used — check `.env`/`.env.sample` or the real call sites first. See [decisions/env-config-nested-by-domain](../decisions/2026-09-12-env-config-nested-by-domain.md) (`CORS_DOMAINS`' dev-only default and `MONGO_URI`'s format regex were both dropped, not preserved).
