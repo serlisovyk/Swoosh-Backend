@@ -26,8 +26,6 @@ export class NewsletterSubscriptionService {
     private readonly newsletterSubscriptionModel: NewsletterSubscriptionModel,
   ) {}
 
-  private readonly selectFields = '-__v'
-
   async create(dto: CreateNewsletterSubscriptionDto) {
     const isExisting = await this.newsletterSubscriptionModel.exists({
       email: dto.email,
@@ -56,7 +54,7 @@ export class NewsletterSubscriptionService {
       .sort(sort)
       .skip(skip)
       .limit(limit)
-      .select(this.selectFields)
+      .select('-__v')
       .lean()
 
     const count = this.newsletterSubscriptionModel.countDocuments(filters)
@@ -69,7 +67,7 @@ export class NewsletterSubscriptionService {
   async findById(id: string) {
     const newsletterSubscription = await this.newsletterSubscriptionModel
       .findById(id)
-      .select(this.selectFields)
+      .select('-__v')
       .lean()
 
     if (!newsletterSubscription) {
@@ -85,7 +83,7 @@ export class NewsletterSubscriptionService {
     try {
       const newsletterSubscription = await this.newsletterSubscriptionModel
         .findByIdAndUpdate(id, dto, MONGOOSE_UPDATE_AFTER_OPTIONS)
-        .select(this.selectFields)
+        .select('-__v')
         .lean()
 
       if (!newsletterSubscription) {
