@@ -64,3 +64,23 @@ bun run build
 ```
 
 This backend has no automated test suite.
+
+## Docker
+
+Build and run the app in a container:
+
+```bash
+docker build -t swoosh-server .
+docker compose up
+```
+
+`docker compose up` starts only the `app` service (`MONGO_URI` in `.env` already
+points at Atlas — no local database needed). An optional `mongo` service is
+available behind a Compose profile for local development without Atlas:
+
+```bash
+docker compose --profile local-db up
+```
+
+The image runs as the non-root `node` user; `.env` is never baked into the
+image (`.dockerignore`), only passed in at runtime via `env_file`.

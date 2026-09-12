@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    env_file: .env
+    ports:
+      - '3001:3001'
+
+  mongo:
+    image: mongo:7
+    profiles: ['local-db']
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
