@@ -19,7 +19,7 @@ import {
   createPropertyDocsDecorator,
 } from '@common/swagger'
 import { TURNSTILE_TOKEN_HEADER } from '@common/captcha'
-import { UserResponseDocs } from '../user/user.swagger'
+import { UsersResponseDocs } from '../users/users.swagger'
 import {
   AUTH_EMAIL_EXAMPLE,
   AUTH_NAME_EXAMPLE,
@@ -63,8 +63,8 @@ export function AuthUserPropertyDocs(model: Type<unknown>) {
 }
 
 export class AuthTokensResponseDocs {
-  @AuthUserPropertyDocs(UserResponseDocs)
-  user!: UserResponseDocs
+  @AuthUserPropertyDocs(UsersResponseDocs)
+  user!: UsersResponseDocs
 
   @ApiProperty({
     description:

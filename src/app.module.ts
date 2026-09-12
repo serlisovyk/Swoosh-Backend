@@ -4,7 +4,7 @@ import { validateEnv } from '@shared/config'
 import { MongoModule } from '@common/mongo'
 import { ThrottlerModule } from '@common/throttler'
 import { CaptchaModule } from '@common/captcha'
-import { UserModule } from './modules/user/user.module'
+import { UsersModule } from './modules/users/users.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { ProductsModule } from './modules/products/products.module'
 import { FavoritesModule } from './modules/favorites/favorites.module'
@@ -21,7 +21,7 @@ import { SystemModule } from './modules/system/system.module'
     MongoModule,
     ThrottlerModule,
     CaptchaModule,
-    UserModule,
+    UsersModule,
     AuthModule,
     ProductsModule,
     FavoritesModule,

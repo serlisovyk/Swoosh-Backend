@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { PassportModule } from '@nestjs/passport'
 import { JwtModule } from '@common/jwt'
-import { UserModule } from '@modules/user/user.module'
+import { UsersModule } from '@modules/users/users.module'
 import { FavoritesModule } from '@modules/favorites/favorites.module'
 import { EmailModule } from '@common/email/email.module'
 import { JwtStrategy } from './strategies/jwt.strategy'
@@ -14,7 +14,7 @@ import { AuthService } from './auth.service'
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule,
-    UserModule,
+    UsersModule,
     FavoritesModule,
     EmailModule,
   ],

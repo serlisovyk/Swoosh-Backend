@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
 import { ProductsModule } from '@modules/products/products.module'
-import { UserModule } from '@modules/user/user.module'
+import { UsersModule } from '@modules/users/users.module'
 import { FavoritesController } from './favorites.controller'
 import { FavoritesService } from './favorites.service'
 
 @Module({
-  imports: [UserModule, ProductsModule],
+  imports: [UsersModule, ProductsModule],
   controllers: [FavoritesController],
   providers: [FavoritesService],
   exports: [FavoritesService],

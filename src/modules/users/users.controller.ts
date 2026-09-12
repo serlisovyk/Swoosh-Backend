@@ -9,26 +9,26 @@ import {
 import { Auth, CurrentUser } from '@modules/auth'
 import type { UserWithoutPassword } from '@modules/auth'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { UserService } from './user.service'
+import { UsersService } from './users.service'
 import {
-  UserGetProfileDocs,
-  UserTagDocs,
-  UserUpdateProfileDocs,
-} from './user.swagger'
+  UsersGetProfileDocs,
+  UsersTagDocs,
+  UsersUpdateProfileDocs,
+} from './users.swagger'
 
-@UserTagDocs()
+@UsersTagDocs()
 @Controller('/profile')
-export class UserController {
-  constructor(private readonly usersService: UserService) {}
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
 
-  @UserGetProfileDocs()
+  @UsersGetProfileDocs()
   @Auth()
   @Get()
   getProfile(@CurrentUser() user: UserWithoutPassword) {
     return user
   }
 
-  @UserUpdateProfileDocs()
+  @UsersUpdateProfileDocs()
   @HttpCode(HttpStatus.OK)
   @Auth()
   @Put()

@@ -1,12 +1,12 @@
 import { IsOptional, IsString } from 'class-validator'
 import {
-  UserAddressBuildingNumberPropertyDocs,
-  UserAddressCityPropertyDocs,
-  UserAddressCompanyPropertyDocs,
-  UserAddressRegionPropertyDocs,
-  UserAddressStreetPropertyDocs,
-  UserAddressZipPropertyDocs,
-} from '../user.swagger'
+  UsersAddressBuildingNumberPropertyDocs,
+  UsersAddressCityPropertyDocs,
+  UsersAddressCompanyPropertyDocs,
+  UsersAddressRegionPropertyDocs,
+  UsersAddressStreetPropertyDocs,
+  UsersAddressZipPropertyDocs,
+} from '../users.swagger'
 import {
   ADDRESS_COMPANY_STRING_ERROR,
   ADDRESS_REGION_STRING_ERROR,
@@ -14,35 +14,35 @@ import {
   ADDRESS_STREET_STRING_ERROR,
   ADDRESS_ZIP_STRING_ERROR,
   ADDRESS_BUILDING_NUMBER_STRING_ERROR,
-} from '../user.constants'
+} from '../users.constants'
 
 export class UpdateAddressDto {
-  @UserAddressCompanyPropertyDocs()
+  @UsersAddressCompanyPropertyDocs()
   @IsOptional()
   @IsString({ message: ADDRESS_COMPANY_STRING_ERROR })
   company?: string
 
-  @UserAddressRegionPropertyDocs()
+  @UsersAddressRegionPropertyDocs()
   @IsOptional()
   @IsString({ message: ADDRESS_REGION_STRING_ERROR })
   region?: string
 
-  @UserAddressCityPropertyDocs()
+  @UsersAddressCityPropertyDocs()
   @IsOptional()
   @IsString({ message: ADDRESS_CITY_STRING_ERROR })
   city?: string
 
-  @UserAddressStreetPropertyDocs()
+  @UsersAddressStreetPropertyDocs()
   @IsOptional()
   @IsString({ message: ADDRESS_STREET_STRING_ERROR })
   street?: string
 
-  @UserAddressZipPropertyDocs()
+  @UsersAddressZipPropertyDocs()
   @IsOptional()
   @IsString({ message: ADDRESS_ZIP_STRING_ERROR })
   zip?: string
 
-  @UserAddressBuildingNumberPropertyDocs()
+  @UsersAddressBuildingNumberPropertyDocs()
   @IsOptional()
   @IsString({ message: ADDRESS_BUILDING_NUMBER_STRING_ERROR })
   buildingNumber?: string
