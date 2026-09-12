@@ -64,3 +64,10 @@ import.
   repo's own `bun run lint`/`bun run build` — it is a two-line re-export, and
   Vercel's own build step is what actually type-checks/bundles it at deploy
   time.
+- Vercel's own type-check of `api/index.ts` needs a `.d.ts` next to
+  `dist/serverless.js` to resolve the relative import — `tsconfig.build.json`
+  therefore sets `"declaration": true`, scoped to the build variant only.
+  The base `tsconfig.json` (dev/lint/IDE) keeps `declaration: false` from
+  [decisions/strict-ts-and-working-eslint](2026-09-12-strict-ts-and-working-eslint.md)
+  unchanged — this doesn't reverse that decision, it only adds declarations
+  to the shipped build output.
