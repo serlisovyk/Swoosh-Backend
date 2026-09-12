@@ -13,10 +13,10 @@ Any change to a public request/response contract, a new endpoint, or auth scheme
 
 Docs are **module-local wrappers**, not long inline decorator stacks on controllers.
 
-- Each module has `<feature>.swagger.ts` exporting named decorators (e.g. `AuthEmailPropertyDocs`, `AuthTagDocs`) built with the shared factories from `@common/swagger` (`src/common/swagger/utils/swagger.utils.ts`):
+- Each module has `<feature>.swagger.ts` exporting named decorators (e.g. `AuthEmailPropertyDocs`, `AuthTagDocs`) built with the shared factories from `@shared/swagger` (`src/shared/swagger/swagger.utils.ts`):
   - `createPropertyDocsDecorator` / `createOptionalPropertyDocsDecorator` — DTO property docs; examples come from `<feature>.constants.ts`.
   - operation wrappers compose `applyDecorators(ApiOperation, ApiOkResponse, ...)`.
-  - `addSwaggerCookieAuth`, `createSwaggerOperationId` — global config in `src/common/swagger/config`.
+  - `addSwaggerCookieAuth`, `createSwaggerOperationId` — global config in `src/shared/config/swagger.config.ts`.
 - Controllers and DTOs import these named decorators; keep the decorator bodies out of the controller.
 
 ## Rules
@@ -40,7 +40,7 @@ Docs are **module-local wrappers**, not long inline decorator stacks on controll
 
 ## Repeated responses
 
-Four shared helpers in `@common/swagger` (`src/common/swagger/common-responses.swagger.ts`) exist to remove byte-identical `Api*Response` text that was copy-pasted across modules — use them instead of retyping the same decorator:
+Four shared helpers in `@common/errors` (`src/common/errors/errors.swagger.ts`) exist to remove byte-identical `Api*Response` text that was copy-pasted across modules — use them instead of retyping the same decorator. They live in `common/errors`, not `shared/swagger`, because they're built on `ErrorResponseDocs` — see [decisions/common-vs-shared-boundary](../decisions/2026-09-12-common-vs-shared-boundary.md):
 
 - `ApiAuthRequiredDocs()` → `ApiUnauthorizedResponse({ description: 'Authentication is required.' })` — any endpoint that requires a valid access token.
 - `ApiValidationErrorDocs()` → `ApiBadRequestResponse({ description: 'Request body validation failed.' })` — a request body failed DTO validation. Do not use it for query-parameter validation.
