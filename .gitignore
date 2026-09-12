@@ -8,3 +8,6 @@ dist/
 !.env.sample
 
 *.tsbuildinfo
+
+api/*.js
+api/*.js.map

@@ -14,13 +14,15 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `docker-compose.yml` | `app` service (build + `env_file: .env` + port `3001`) is the default; an optional `mongo` service sits behind the `local-db` Compose profile for local dev without Atlas |
 | `.dockerignore` | keeps `node_modules`, `dist`, `*.tsbuildinfo`, `.env`, `.git`, `ai/`, `*.md` out of the build context/image |
 | `.husky/pre-commit` | `husky` git hook, provisioned by the `prepare` script on install; runs `lint-staged` |
-| `.lintstagedrc.json` | `lint-staged` config: `eslint --fix` on staged `*.ts` files |
+| `.lintstagedrc.json` | `lint-staged` config: `eslint --fix` on staged `src/**/*.ts` files (scoped to match `package.json`'s own `lint` script — `api/index.ts` is intentionally outside the `src/` TS program, see the Vercel row below) |
+| `api/index.ts` | Vercel's actual serverless function entry (no `vercel.json` committed — the build command is set in the Vercel project's dashboard, and Vercel auto-detects `api/index.ts` as the Node function after that build produces `dist/`). Re-exports `default` from the already-compiled `../dist/serverless.js` (plain relative import, no path aliases, so Vercel's own bundler never has to resolve `@common/*`/`@shared/*`). Deliberately outside `tsconfig.json`'s `src`-rooted program (excluded in both `tsconfig.json` and `tsconfig.build.json`) and outside the `lint` script's glob — see [decisions/vercel-serverless-entry](decisions/2026-09-12-vercel-serverless-entry.md) |
 
 ## App level
 
 | File | What it does |
 |---|---|
-| `src/main.ts` | `app.enableShutdownHooks()`, `requestLoggingMiddleware` (first `app.use`), global prefix `api/v1`, `Logger.overrideLogger` to `PRODUCTION_LOG_LEVELS` outside dev, global `ValidationPipe` built from `getValidationConfig()` + `exceptionFactory`, `setupSwagger`, `cookie-parser`, `helmet` (its default `hidePoweredBy` is the only `x-powered-by` suppression), `enableCors` (origins from `CORS_DOMAINS`, credentials enabled), `PORT` read from env; `bootstrap().catch(...)` logs and `process.exit(1)` on startup failure |
+| `src/main.ts` | thin bootstrap wrapper: `NestFactory.create`, `setupApp(app)` (`@shared/config`, does all the wiring below), reads `PORT` off the returned `ConfigService`, `app.listen(port)`; `bootstrap().catch(...)` logs and `process.exit(1)` on startup failure |
+| `src/serverless.ts` | Vercel entry point — `NestFactory.create` + the same `setupApp(app)`, then `app.init()` instead of `app.listen()`; caches the resulting Express handler (`app.getHttpAdapter().getInstance()`) at module scope so a warm Vercel function instance reuses one Nest app/Mongo connection across requests instead of rebuilding it per invocation. Exports `default handler(req, res)`, which `api/index.ts` re-exports. See [decisions/vercel-serverless-entry](decisions/2026-09-12-vercel-serverless-entry.md) |
 | `src/app.module.ts` | `ConfigModule` (global), `MongoModule`, `ThrottlerModule`, `CaptchaModule` + the feature modules |
 | `src/global.d.ts` | ambient-only: the `Express.Request.requestId` type augmentation `common/logging` relies on |
 
@@ -53,7 +55,8 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 
 | File | What it provides |
 |---|---|
-| `config/validation.config.ts` | `getValidationConfig(exceptionFactory)` — returns the global `ValidationPipe` options: `whitelist`, `transform`, `forbidNonWhitelisted`, plus the passed-in `exceptionFactory`; `main.ts` passes the result straight to `new ValidationPipe(...)` |
+| `config/app.config.ts` | `setupApp(app)` — all the bootstrap wiring shared by `src/main.ts` and `src/serverless.ts`: shutdown hooks, request logging middleware, global prefix, prod log-level override, global `ValidationPipe`, global exception filter, `cookie-parser`, `helmet`, CORS, `setupSwagger`. Returns the resolved `ConfigService<AppEnv, true>` so the caller can read `PORT` (only `main.ts` needs to) |
+| `config/validation.config.ts` | `getValidationConfig(exceptionFactory)` — returns the global `ValidationPipe` options: `whitelist`, `transform`, `forbidNonWhitelisted`, plus the passed-in `exceptionFactory`; `setupApp` passes the result straight to `new ValidationPipe(...)` |
 | `config/env.config.ts` | `AppEnv` only — nested by domain: `app`, `cors`, `jwt`, `captcha`, `swagger`, `mongo`, `email`, `throttler`, each `@ValidateNested() @Type(() => X)` against a class from `config/env/`. Also the type behind every `ConfigService<AppEnv, true>` injection, read via `getEnv`/`getEnvOrThrow` (`@shared/utils`), never `.get`/`.getOrThrow` directly. Source of truth for env shape, alongside `.env.sample` — see [decisions/env-config-nested-by-domain](decisions/2026-09-12-env-config-nested-by-domain.md) and [decisions/env-validated-at-boot](decisions/2026-09-12-env-validated-at-boot.md) |
 | `config/validate-env.ts` | `validateEnv` — `ConfigModule.forRoot`'s `validate`. Orchestrates `group-env-by-domain.utils.ts` (builds `AppEnv`'s nested plain object from the flat source config) + `class-validator`'s `validateSync` + `collect-constraint-messages.utils.ts` (recursively walks `@ValidateNested`'s per-domain `.children`, since a failing nested field's message lands there, not on the parent's own `.constraints`), then throws one aggregated startup error |
 | `config/group-env-by-domain.utils.ts` | `groupEnvByDomain` — pure data reshaping, flat `config` → one sub-object per `AppEnv` domain |
