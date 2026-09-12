@@ -29,110 +29,98 @@ import {
   ProductsSizesPropertyDocs,
   ProductsTitlePropertyDocs,
 } from '../products.swagger'
-import {
-  PRODUCT_CATEGORY_ID_ERROR,
-  PRODUCT_COLORS_ARRAY_ERROR,
-  PRODUCT_COLORS_MIN_SIZE_ERROR,
-  PRODUCT_DESCRIPTION_EMPTY_ERROR,
-  PRODUCT_DESCRIPTION_STRING_ERROR,
-  PRODUCT_IMAGES_ARRAY_ERROR,
-  PRODUCT_IMAGES_ITEM_EMPTY_ERROR,
-  PRODUCT_IMAGES_ITEM_STRING_ERROR,
-  PRODUCT_IMAGES_ITEM_URL_ERROR,
-  PRODUCT_IMAGES_MIN_SIZE_ERROR,
-  PRODUCT_IMAGES_UNIQUE_ERROR,
-  PRODUCT_IS_HIT_BOOLEAN_ERROR,
-  PRODUCT_IS_NEW_ARRIVAL_BOOLEAN_ERROR,
-  PRODUCT_MATERIAL_EMPTY_ERROR,
-  PRODUCT_MATERIAL_STRING_ERROR,
-  PRODUCT_OLD_PRICE_MIN_ERROR,
-  PRODUCT_OLD_PRICE_NUMBER_ERROR,
-  PRODUCT_PRICE_MIN_ERROR,
-  PRODUCT_PRICE_NUMBER_ERROR,
-  PRODUCT_SALE_CF_MIN_ERROR,
-  PRODUCT_SALE_CF_NUMBER_ERROR,
-  PRODUCT_SIZES_ARRAY_ERROR,
-  PRODUCT_SIZES_ITEM_NUMBER_ERROR,
-  PRODUCT_SIZES_MIN_SIZE_ERROR,
-  PRODUCT_SIZES_UNIQUE_ERROR,
-  PRODUCT_TITLE_EMPTY_ERROR,
-  PRODUCT_TITLE_STRING_ERROR,
-} from '../products.constants'
 
 export class CreateProductDto {
   @ProductsTitlePropertyDocs()
   @Type(() => String)
   @Transform(({ value }) => trimStringValue(value))
-  @IsString({ message: PRODUCT_TITLE_STRING_ERROR })
-  @IsNotEmpty({ message: PRODUCT_TITLE_EMPTY_ERROR })
+  @IsString({ message: 'Название товара должно быть строкой' })
+  @IsNotEmpty({ message: 'Название товара не должно быть пустым' })
   title!: string
 
   @ProductsPricePropertyDocs()
   @Type(() => Number)
-  @IsNumber({}, { message: PRODUCT_PRICE_NUMBER_ERROR })
-  @Min(0, { message: PRODUCT_PRICE_MIN_ERROR })
+  @IsNumber({}, { message: 'Цена товара должна быть числом' })
+  @Min(0, { message: 'Цена товара не может быть отрицательной' })
   price!: number
 
   @ProductsDescriptionPropertyDocs()
   @Type(() => String)
   @Transform(({ value }) => trimStringValue(value))
-  @IsString({ message: PRODUCT_DESCRIPTION_STRING_ERROR })
-  @IsNotEmpty({ message: PRODUCT_DESCRIPTION_EMPTY_ERROR })
+  @IsString({ message: 'Описание товара должно быть строкой' })
+  @IsNotEmpty({ message: 'Описание товара не должно быть пустым' })
   description!: string
 
   @ProductsImagesPropertyDocs()
   @Transform(({ value }) => trimStringArrayValue(value))
-  @IsArray({ message: PRODUCT_IMAGES_ARRAY_ERROR })
-  @ArrayMinSize(1, { message: PRODUCT_IMAGES_MIN_SIZE_ERROR })
-  @IsString({ each: true, message: PRODUCT_IMAGES_ITEM_STRING_ERROR })
-  @IsNotEmpty({ each: true, message: PRODUCT_IMAGES_ITEM_EMPTY_ERROR })
-  @IsUrl({}, { each: true, message: PRODUCT_IMAGES_ITEM_URL_ERROR })
-  @ArrayUnique({ message: PRODUCT_IMAGES_UNIQUE_ERROR })
+  @IsArray({ message: 'Изображения товара должны быть массивом' })
+  @ArrayMinSize(1, {
+    message: 'Нужно указать хотя бы одно изображение товара',
+  })
+  @IsString({
+    each: true,
+    message: 'Каждое изображение товара должно быть строкой',
+  })
+  @IsNotEmpty({
+    each: true,
+    message: 'Изображение товара не должно быть пустым',
+  })
+  @IsUrl(
+    {},
+    {
+      each: true,
+      message: 'Каждое изображение товара должно быть валидным URL',
+    },
+  )
+  @ArrayUnique({ message: 'Изображения товара не должны повторяться' })
   images!: string[]
 
   @ProductsOldPricePropertyDocs()
   @IsOptional()
   @Type(() => Number)
-  @IsNumber({}, { message: PRODUCT_OLD_PRICE_NUMBER_ERROR })
-  @Min(0, { message: PRODUCT_OLD_PRICE_MIN_ERROR })
+  @IsNumber({}, { message: 'Старая цена товара должна быть числом' })
+  @Min(0, { message: 'Старая цена товара не может быть отрицательной' })
   oldPrice?: number
 
   @ProductsSaleCFPropertyDocs()
   @IsOptional()
   @Type(() => Number)
-  @IsNumber({}, { message: PRODUCT_SALE_CF_NUMBER_ERROR })
-  @Min(0, { message: PRODUCT_SALE_CF_MIN_ERROR })
+  @IsNumber({}, { message: 'Коэффициент скидки должен быть числом' })
+  @Min(0, { message: 'Коэффициент скидки не может быть отрицательным' })
   saleCF?: number
 
   @ProductsSizesPropertyDocs()
-  @IsArray({ message: PRODUCT_SIZES_ARRAY_ERROR })
-  @ArrayMinSize(1, { message: PRODUCT_SIZES_MIN_SIZE_ERROR })
+  @IsArray({ message: 'Размеры товара должны быть массивом' })
+  @ArrayMinSize(1, { message: 'Нужно указать хотя бы один размер товара' })
   @Type(() => Number)
-  @IsNumber({}, { each: true, message: PRODUCT_SIZES_ITEM_NUMBER_ERROR })
-  @ArrayUnique({ message: PRODUCT_SIZES_UNIQUE_ERROR })
+  @IsNumber(
+    {},
+    { each: true, message: 'Каждый размер товара должен быть числом' },
+  )
+  @ArrayUnique({ message: 'Размеры товара не должны повторяться' })
   sizes!: number[]
 
   @ProductsMaterialPropertyDocs()
   @IsOptional()
   @Type(() => String)
   @Transform(({ value }) => trimStringValue(value))
-  @IsString({ message: PRODUCT_MATERIAL_STRING_ERROR })
-  @IsNotEmpty({ message: PRODUCT_MATERIAL_EMPTY_ERROR })
+  @IsString({ message: 'Материал должен быть строкой' })
+  @IsNotEmpty({ message: 'Материал не должен быть пустым' })
   material?: string
 
   @ProductsIsHitPropertyDocs()
   @IsOptional()
-  @IsBoolean({ message: PRODUCT_IS_HIT_BOOLEAN_ERROR })
+  @IsBoolean({ message: 'Поле isHit должно быть булевым значением' })
   isHit?: boolean
 
   @ProductsIsNewArrivalPropertyDocs()
   @IsOptional()
-  @IsBoolean({ message: PRODUCT_IS_NEW_ARRIVAL_BOOLEAN_ERROR })
+  @IsBoolean({ message: 'Поле isNewArrival должно быть булевым значением' })
   isNewArrival?: boolean
 
   @ProductsColorsPropertyDocs(CreateProductColorDto)
-  @IsArray({ message: PRODUCT_COLORS_ARRAY_ERROR })
-  @ArrayMinSize(1, { message: PRODUCT_COLORS_MIN_SIZE_ERROR })
+  @IsArray({ message: 'Цвета товара должны быть массивом' })
+  @ArrayMinSize(1, { message: 'Нужно указать хотя бы один цвет товара' })
   @ValidateNested({ each: true })
   @Type(() => CreateProductColorDto)
   colors!: CreateProductColorDto[]
@@ -140,6 +128,6 @@ export class CreateProductDto {
   @ProductsCategoryIdPropertyDocs()
   @Type(() => String)
   @Transform(({ value }) => trimStringValue(value))
-  @IsMongoId({ message: PRODUCT_CATEGORY_ID_ERROR })
+  @IsMongoId({ message: 'Категория товара должна быть валидным id' })
   categoryId!: string
 }
