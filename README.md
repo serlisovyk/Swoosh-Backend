@@ -94,6 +94,15 @@ docker compose --profile local-db up
 
 The image runs as the non-root `node` user; `.env` is never baked into the image (`.dockerignore`), only passed in at runtime via `env_file`.
 
+## ▲ Vercel
+
+The app can also be deployed as a Vercel serverless function, in addition to Docker:
+
+- No `vercel.json` is committed — set the build command (`bun run build`) directly in the Vercel project's dashboard settings.
+- `api/index.ts` is the function Vercel auto-detects; it re-exports the handler built in `src/serverless.ts`, which reuses the same `setupApp()` wiring as `src/main.ts` but calls `app.init()` instead of `app.listen()` and caches the Nest app across warm invocations.
+- Set every variable from `.env.sample` in the Vercel project's environment variables (dashboard or `vercel env add`) — nothing is read from a committed `.env` file.
+- See [decisions/vercel-serverless-entry](ai/decisions/2026-09-12-vercel-serverless-entry.md) for why the serverless entry is a separate file rather than a branch inside `main.ts`.
+
 ## 🚀 Scripts
 
 Install dependencies:
