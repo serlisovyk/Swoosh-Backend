@@ -1,4 +1,5 @@
-export const REFRESH_TOKEN_COOKIE_NAME = 'refreshToken' as const
+export { REFRESH_TOKEN_COOKIE_NAME } from '@shared/constants'
+
 export const INVALID_CREDENTIALS_ERROR = 'Неверный email или пароль'
 export const USER_NOT_FOUND_ERROR = 'Пользователь с таким email не найден'
 export const FAILED_TO_CREATE_USER_ERROR = 'Не удалось создать пользователя'
