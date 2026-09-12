@@ -19,5 +19,5 @@ export function createTurnstileException(reason: TurnstileExceptionReason) {
 export function getTokenFromResponse(request: Request): string {
   const token = request.headers[TURNSTILE_TOKEN_HEADER]
 
-  return Array.isArray(token) ? token[0] : token || ''
+  return Array.isArray(token) ? (token[0] ?? '') : token || ''
 }
