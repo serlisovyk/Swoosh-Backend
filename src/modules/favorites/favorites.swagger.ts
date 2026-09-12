@@ -20,7 +20,7 @@ import {
 import {
   ProductsListItemsPropertyDocs,
   ProductsResponseDocs,
-} from '@modules/products/products.swagger'
+} from '@modules/products'
 import {
   FAVORITES_DEFAULT_LIMIT,
   FAVORITES_MAX_LIMIT,

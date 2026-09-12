@@ -13,7 +13,7 @@ import {
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
 } from '@common/swagger'
-import { FavoritesProductIdsPropertyDocs } from '@modules/favorites/favorites.swagger'
+import { FavoritesProductIdsPropertyDocs } from '@modules/favorites'
 import {
   USER_ADDRESS_BUILDING_NUMBER_EXAMPLE,
   USER_ADDRESS_CITY_EXAMPLE,
