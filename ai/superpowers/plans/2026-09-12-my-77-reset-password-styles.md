@@ -22,12 +22,26 @@ internal refactor, so no spec is needed.
    there's no spec and the change is this small — plan still written and
    committed first, before the code, per workflow).
 
+## Addendum (author-requested, same session)
+
+Scope extended after initial review: wrap the template in its own folder and
+add a barrel, so the per-template shape is `templates/<name>/{template.tsx,
+styles.ts, index.ts}` rather than flat files — sets the convention future
+templates will follow.
+
+- Move `reset-password.template.tsx` → `reset-password/template.tsx`,
+  `reset-password.styles.ts` → `reset-password/styles.ts` (`git mv`).
+- Add `reset-password/index.ts`: `export { ResetPasswordEmail } from
+  './template'`.
+- `email.service.ts` now imports from `./templates/reset-password` (the
+  barrel), not the file path.
+- `ai/map.md`'s `email` row updated to describe the folder-per-template
+  shape and the barrel-import rule.
+
 ## Docs
 
-No `ai/map.md`/skill update needed: the `email` package's map entry already
-says templates live under `templates/*.template.tsx` and doesn't enumerate
-per-template internals; no new pattern is introduced (no other template
-exists yet to reflect a shared convention on).
+`ai/map.md` updated (see addendum) — the per-template folder/barrel shape is
+a new pattern, so the map's `email` row now documents it.
 
 ## Verification
 

@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config'
 import { ResendService } from 'nestjs-resend'
 import { render } from '@react-email/render'
 import { AppEnv } from '@shared/config'
-import { ResetPasswordEmail } from './templates/reset-password.template'
+import { ResetPasswordEmail } from './templates/reset-password'
 import {
   EMAIL_SEND_FAILED_ERROR,
   RESET_PASSWORD_EMAIL_SUBJECT,

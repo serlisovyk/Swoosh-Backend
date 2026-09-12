@@ -10,7 +10,7 @@ import {
   Button,
   Link,
 } from '@react-email/components'
-import { ResetPasswordEmailProps } from '../email.types'
+import { ResetPasswordEmailProps } from '../../email.types'
 import {
   body,
   container,
@@ -21,7 +21,7 @@ import {
   button,
   link,
   footer,
-} from './reset-password.styles'
+} from './styles'
 
 export function ResetPasswordEmail({
   url,
