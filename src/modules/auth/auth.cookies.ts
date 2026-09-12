@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config'
 import { Response } from 'express'
 import { AppEnv } from '@shared/config'
-import { isDev } from '@shared/utils'
+import { getEnv, isDev } from '@shared/utils'
 import { REFRESH_TOKEN_COOKIE_NAME } from './auth.constants'
 import { RefreshTokenCookieOptions } from './auth.types'
 
@@ -9,7 +9,7 @@ export function buildRefreshTokenCookieOptions(
   configService: ConfigService<AppEnv, true>,
 ): RefreshTokenCookieOptions {
   return {
-    domain: configService.get('COOKIE_DOMAIN', { infer: true }),
+    domain: getEnv(configService, 'cors.COOKIE_DOMAIN'),
     secure: !isDev(configService),
     sameSite: isDev(configService) ? 'lax' : 'none',
   }
