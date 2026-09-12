@@ -53,7 +53,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | File | What it provides |
 |---|---|
 | `config/validation.config.ts` | `setupValidation` — the global ValidationPipe: `whitelist`, `transform`, `forbidNonWhitelisted` |
-| `config/env.config.ts` | `envSchema` (zod, every `.env.sample` key) + `validateEnv` — `ConfigModule.forRoot`'s `validate`; `AppEnv` is the type behind every `ConfigService<AppEnv, true>` injection. Source of truth for env shape, alongside `.env.sample` — see [decisions/env-validated-at-boot](decisions/2026-09-12-env-validated-at-boot.md) |
+| `config/env.config.ts` | `AppEnv` (`class-validator`/`class-transformer` class, every `.env.sample` key) + `validateEnv` — `ConfigModule.forRoot`'s `validate`; `AppEnv` is also the type behind every `ConfigService<AppEnv, true>` injection. Source of truth for env shape, alongside `.env.sample` — see [decisions/env-validated-at-boot](decisions/2026-09-12-env-validated-at-boot.md) |
 | `utils/query.utils.ts` | query-param coercion: `toStringArrayQueryParam`, `toNumberArrayQueryParam`, `toBooleanQueryParam`, `trimStringValue`, `normalizeEmailValue` |
 | `utils/{phone,env,app}.utils.ts` | `normalizePhoneValue`; `isDev` / `isProd` / `parseCorsDomainsConfigValue`; `noop` |
 | `utils/pagination.utils.ts` | `resolvePaginationOffset(page, limit)` + `DEFAULT_PAGE` — the shared offset formula used by `products` (Mongo `skip`/`limit`) and `favorites` (in-memory slice); each module keeps its own default `limit` and pagination mechanism |
@@ -75,4 +75,4 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 - No automated tests — see [decisions/no-test-suite](decisions/2026-09-09-no-test-suite.md).
 - No `toJSON`/`transform` hooks on models — secrets are hidden with `select: false`, see [skills/mongoose-models](skills/mongoose-models.md).
 - No shared pagination-**meta** helper: `products` and `favorites` each build their own list response (`{ products, total }` / `{ favoriteProductIds, total }`) locally — only the offset arithmetic is shared (`shared/utils/pagination.utils.ts`).
-- No `AppConfigService` wrapper class. `src/shared/config/env.config.ts`'s zod schema is the source of truth for env shape (required/optional, type, format); `.env.sample` must stay in sync with it. Each value is still read where it is used, via `configService.get('NAME', { infer: true })` with a literal string key — a new variable means adding it to the schema and `.env.sample` in the same change.
+- No `AppConfigService` wrapper class. `src/shared/config/env.config.ts`'s `AppEnv` class (`class-validator`) is the source of truth for env shape (required/optional, type, format); `.env.sample` must stay in sync with it. Each value is still read where it is used, via `configService.get('NAME', { infer: true })` with a literal string key — a new variable means adding it to the schema and `.env.sample` in the same change.

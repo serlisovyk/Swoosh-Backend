@@ -43,7 +43,7 @@ These rules apply to the Swoosh Server backend.
 
 ## Configuration and Environment
 
-- `ConfigModule.forRoot` is wired with a zod schema (`src/shared/config/env.config.ts`, `validateEnv`) as its `validate` option, plus `cache: true`. A missing or malformed env var fails the whole boot with every offending key listed at once — do not read an env var with a bare `configService.get`/`getOrThrow` without first adding it to the schema.
+- `ConfigModule.forRoot` is wired with a `class-validator` schema (`src/shared/config/env.config.ts`, `AppEnv` class + `validateEnv`) as its `validate` option, plus `cache: true`. A missing or malformed env var fails the whole boot with every offending key listed at once — do not read an env var with a bare `configService.get`/`getOrThrow` without first adding it to the schema.
 - Inject `ConfigService<AppEnv, true>` (`AppEnv` from `@shared/config`), never a bare `ConfigService`, wherever env values are read. Read with `configService.get('KEY', { infer: true })` — no explicit `<T>` type argument; the type comes from the schema. Reserve `getOrThrow` for the few keys the schema itself leaves optional where the call site wants a hard crash on absence (e.g. `SWAGGER_USER`/`SWAGGER_PASSWORD` outside dev).
 - `CORS_DOMAINS` is the only key whose requiredness differs by environment: required in production, defaulted to a local origin in development. Any other env-conditional requirement follows the same pattern (schema-level, not a runtime `if` sprinkled at the read site) — see [decisions/env-validated-at-boot](../decisions/2026-09-12-env-validated-at-boot.md).
 - `cache: true` on `ConfigModule` means a running process does not pick up an env change without a restart — this is deliberate, not an oversight.

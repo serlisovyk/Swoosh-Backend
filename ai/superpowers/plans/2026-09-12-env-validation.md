@@ -17,6 +17,8 @@ See spec: `ai/superpowers/specs/2026-09-12-env-validation.md`.
 - `src/app.module.ts` — `ConfigModule.forRoot({ isGlobal: true, validate: validateEnv, cache: true })`.
 - `.env.sample` — no content change expected (schema already matches it); re-verify in this commit.
 
+**Superseded by commit 5** — `zod` was dropped for `class-validator`/`class-transformer` per author feedback (already dependencies, no reason for a second validation library). `AppEnv` is now a decorated class, not a zod schema + inferred type; the public shape (`ConfigService<AppEnv, true>`, `.get('KEY', { infer: true })`) is unchanged.
+
 ### 3. `refactor(config): drop lying ConfigService generics at every read site`
 
 Re-type every `ConfigService` injection as `ConfigService<AppEnv, true>` and switch reads from `getOrThrow<T>('KEY')` / `get<T>('KEY')` to `get('KEY', { infer: true })` (keeping `getOrThrow` only where a key is genuinely schema-optional and the call site wants a hard crash, i.e. `SWAGGER_USER`/`SWAGGER_PASSWORD` in `setupSwagger`):
@@ -43,7 +45,14 @@ Re-type every `ConfigService` injection as `ConfigService<AppEnv, true>` and swi
 - `README.md` — app refuses to start on incomplete/invalid env, lists every bad key.
 - `.env.sample` — sync comments/keys with the schema if anything drifted.
 
+### 5. `refactor(config): replace zod with class-validator for env schema`
+
+- `package.json` — remove `zod`.
+- `src/shared/config/env.config.ts` — rewrite `AppEnv` as a `class-validator` class (`@IsEnum`, `@IsUrl`, `@IsInt`/`@Type(() => Number)`, `@IsEmail`, `@Matches`, `@ValidateIf` for the prod-only `CORS_DOMAINS` requirement, `@Transform` for `CORS_DOMAINS`'s split/default and `SWAGGER_ENABLED`'s string→boolean coercion). `validateEnv()` now runs `plainToInstance` + `validateSync` instead of `envSchema.safeParse`; same "collect every issue in one pass" behavior. `CLIENT_URL`/`SERVER_URL` need `@IsUrl({ require_tld: false })` — `class-validator`'s `@IsUrl` rejects bare `http://localhost` otherwise, a gap `zod`'s `z.url()` didn't have.
+- No changes needed to any other file — every other file only ever imported `AppEnv` as a type and called `.get('KEY', { infer: true })`, both unchanged.
+
 ## Verification
 
 - `bun run lint`, `bun run build`.
 - Manual boot: valid `.env` → starts; delete a required key → fails with all-issues-listed error, non-zero exit; existing endpoints still respond after fixing env back.
+- Re-run after commit 5: same checks, plus `NODE_ENV=production` without `CORS_DOMAINS`, and `SWAGGER_ENABLED` set to a typo'd value, to confirm `class-validator` reports the same failures `zod` did.
