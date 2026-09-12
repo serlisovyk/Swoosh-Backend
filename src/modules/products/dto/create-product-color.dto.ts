@@ -5,25 +5,18 @@ import {
   ProductsColorHexPropertyDocs,
   ProductsColorNamePropertyDocs,
 } from '../products.swagger'
-import {
-  PRODUCT_COLOR_HEX_EMPTY_ERROR,
-  PRODUCT_COLOR_HEX_FORMAT_ERROR,
-  PRODUCT_COLOR_HEX_STRING_ERROR,
-  PRODUCT_COLOR_NAME_EMPTY_ERROR,
-  PRODUCT_COLOR_NAME_STRING_ERROR,
-} from '../products.constants'
 
 export class CreateProductColorDto {
   @ProductsColorNamePropertyDocs()
   @Transform(({ value }) => trimStringValue(value))
-  @IsString({ message: PRODUCT_COLOR_NAME_STRING_ERROR })
-  @IsNotEmpty({ message: PRODUCT_COLOR_NAME_EMPTY_ERROR })
+  @IsString({ message: 'Название цвета должно быть строкой' })
+  @IsNotEmpty({ message: 'Название цвета не должно быть пустым' })
   name!: string
 
   @ProductsColorHexPropertyDocs()
   @Transform(({ value }) => trimStringValue(value))
-  @IsString({ message: PRODUCT_COLOR_HEX_STRING_ERROR })
-  @IsNotEmpty({ message: PRODUCT_COLOR_HEX_EMPTY_ERROR })
-  @IsHexColor({ message: PRODUCT_COLOR_HEX_FORMAT_ERROR })
+  @IsString({ message: 'HEX цвета должен быть строкой' })
+  @IsNotEmpty({ message: 'HEX цвета не должен быть пустым' })
+  @IsHexColor({ message: 'HEX цвета должен быть валидным значением' })
   hex!: string
 }
