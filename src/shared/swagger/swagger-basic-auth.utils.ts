@@ -1,6 +1,6 @@
 import { timingSafeEqual } from 'crypto'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import { SWAGGER_BASIC_AUTH_REALM } from '../constants'
+import { SWAGGER_BASIC_AUTH_REALM } from '@shared/constants'
 
 function timingSafeStringEqual(a: string, b: string): boolean {
   const bufferA = Buffer.from(a)

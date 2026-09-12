@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { SWAGGER_REFRESH_TOKEN_AUTH_NAME } from '../constants'
+import { SWAGGER_REFRESH_TOKEN_AUTH_NAME } from '@shared/constants'
 
 export type SwaggerPropertyOptions = Parameters<typeof ApiProperty>[0]
 

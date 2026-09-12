@@ -1,21 +1,21 @@
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { ConfigService } from '@nestjs/config'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
-import { AppEnv } from '@shared/config'
 import { isDev } from '@shared/utils'
-import { SWAGGER_DOCS_PATH } from '@shared/constants'
 import {
-  addSwaggerCookieAuth,
-  createSwaggerBasicAuthMiddleware,
-  createSwaggerOperationId,
-} from '../utils'
-import {
+  SWAGGER_DOCS_PATH,
   SWAGGER_ACCESS_TOKEN_AUTH_NAME,
   SWAGGER_REFRESH_TOKEN_AUTH_NAME,
   SWAGGER_SITE_TITLE,
   SWAGGER_DESCRIPTION,
   SWAGGER_VERSION,
-} from '../constants'
+} from '@shared/constants'
+import {
+  addSwaggerCookieAuth,
+  createSwaggerBasicAuthMiddleware,
+  createSwaggerOperationId,
+} from '@shared/swagger'
+import { AppEnv } from './env.config'
 
 function buildSwaggerDocument(app: NestExpressApplication) {
   const config = new DocumentBuilder()
