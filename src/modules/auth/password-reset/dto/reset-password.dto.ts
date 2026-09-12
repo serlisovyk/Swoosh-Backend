@@ -4,18 +4,14 @@ import {
   AuthResetTokenPropertyDocs,
 } from '../password-reset.swagger'
 import {
-  TOKEN_NOT_EMPTY_ERROR,
-  TOKEN_STRING_ERROR,
-} from '../password-reset.constants'
-import {
   PASSWORD_MIN_LENGTH_ERROR,
   PASSWORD_STRING_ERROR,
 } from '../../auth.constants'
 
 export class ResetPasswordDto {
   @AuthResetTokenPropertyDocs()
-  @IsNotEmpty({ message: TOKEN_NOT_EMPTY_ERROR })
-  @IsString({ message: TOKEN_STRING_ERROR })
+  @IsNotEmpty({ message: 'Токен не должен быть пустым' })
+  @IsString({ message: 'Токен должен быть строкой' })
   token!: string
 
   @AuthNewPasswordPropertyDocs()

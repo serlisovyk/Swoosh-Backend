@@ -20,7 +20,7 @@ All auth orchestration stays under `src/modules/auth`. Other modules reach `Auth
 
 - Controllers/services: `auth.controller.ts` + `auth.service.ts`; `password-reset/password-reset.controller.ts` + `password-reset/password-reset.service.ts`.
 - Cookies: `auth.cookies.ts` (`buildRefreshTokenCookieOptions`, `setRefreshTokenCookie`, `clearRefreshTokenCookie` — plain functions, no DI). Setting/clearing the refresh cookie is `AuthController`'s job; `AuthService` returns tokens (plus `refreshTokenExpiresAt`) and never imports `express`.
-- Request shape: `dto/login.dto.ts`, `dto/register.dto.ts`, `password-reset/dto/request-password-reset.dto.ts`, `password-reset/dto/reset-password.dto.ts`.
+- Request shape: `dto/login.dto.ts`, `dto/register.dto.ts` (both extend `dto/favorite-product-ids.dto.ts`'s `FavoriteProductIdsDto` for the shared optional `favoriteProductIds` field — don't redeclare it on either), `password-reset/dto/request-password-reset.dto.ts`, `password-reset/dto/reset-password.dto.ts`.
 - Access-control: `guards/jwt.guard.ts`, `guards/roles.guard.ts`, `strategies/jwt.strategy.ts`, `decorators/auth.decorator.ts`, `decorators/roles.decorator.ts`, `decorators/user.decorator.ts`.
 - Config/constants: `auth.constants.ts`, `auth.types.ts`; password-reset-only constants live in `password-reset/password-reset.constants.ts`. The `@nestjs/jwt` library wiring itself (`JwtModule.registerAsync`, its config factory) lives in `src/common/jwt`, not here — `auth.module.ts` just imports it.
 - Docs: `auth.swagger.ts` (register/login/new-tokens/logout — in Russian); `password-reset/password-reset.swagger.ts` (its two operations + its property docs — also in Russian).

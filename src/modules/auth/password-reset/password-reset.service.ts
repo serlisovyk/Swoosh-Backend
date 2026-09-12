@@ -4,10 +4,7 @@ import { EmailService } from '@common/email'
 import { AppEnv } from '@shared/config'
 import { generateToken } from '@shared/utils'
 import { UsersService } from '../../users/users.service'
-import {
-  INVALID_OR_EXPIRED_PASSWORD_RESET_TOKEN_ERROR,
-  RESET_PASSWORD_URL,
-} from './password-reset.constants'
+import { RESET_PASSWORD_URL } from './password-reset.constants'
 
 @Injectable()
 export class PasswordResetService {
@@ -44,7 +41,7 @@ export class PasswordResetService {
 
     if (!user) {
       throw new BadRequestException(
-        INVALID_OR_EXPIRED_PASSWORD_RESET_TOKEN_ERROR,
+        'Недействительная или просроченная ссылка для сброса пароля',
       )
     }
 

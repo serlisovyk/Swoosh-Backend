@@ -20,12 +20,6 @@ import {
 } from '@common/swagger'
 import { CAPTCHA_TOKEN_HEADER } from '@common/captcha'
 import { UsersResponseDocs } from '../users/users.swagger'
-import {
-  AUTH_EMAIL_EXAMPLE,
-  AUTH_NAME_EXAMPLE,
-  AUTH_PASSWORD_EXAMPLE,
-  AUTH_PHONE_EXAMPLE,
-} from './auth.constants'
 
 export function AuthTagDocs() {
   return ApiTags('Auth')
@@ -33,26 +27,26 @@ export function AuthTagDocs() {
 
 export const AuthEmailPropertyDocs = createPropertyDocsDecorator({
   description: 'Email пользователя.',
-  example: AUTH_EMAIL_EXAMPLE,
+  example: 'john.swoosh@example.com',
 })
 
 export const AuthPasswordPropertyDocs = createPropertyDocsDecorator({
   description: 'Пароль пользователя.',
-  example: AUTH_PASSWORD_EXAMPLE,
+  example: 'secret123',
   minLength: 6,
 })
 
 export const AuthOptionalNamePropertyDocs = createOptionalPropertyDocsDecorator(
   {
     description: 'Отображаемое имя пользователя.',
-    example: AUTH_NAME_EXAMPLE,
+    example: 'John Doe',
   },
 )
 
 export const AuthOptionalPhonePropertyDocs =
   createOptionalPropertyDocsDecorator({
     description: 'Номер телефона пользователя.',
-    example: AUTH_PHONE_EXAMPLE,
+    example: '+380991112233',
   })
 
 export function AuthUserPropertyDocs(model: Type<unknown>) {
