@@ -1,7 +1,6 @@
 import { IsEnum, IsOptional } from 'class-validator'
 import { ListQueryDto } from '@shared/dto'
 import { CREATED_AT_SORT_OPTIONS } from '@shared/types'
-import { NEWSLETTER_SUBSCRIPTION_SORT_ERROR } from '../newsletter-subscription.constants'
 import {
   NewsletterSubscriptionQueryLimitPropertyDocs,
   NewsletterSubscriptionQuerySearchPropertyDocs,
@@ -18,7 +17,7 @@ export class FindAllNewsletterSubscriptionsDto extends ListQueryDto {
   @NewsletterSubscriptionQuerySortPropertyDocs()
   @IsOptional()
   @IsEnum(CREATED_AT_SORT_OPTIONS, {
-    message: NEWSLETTER_SUBSCRIPTION_SORT_ERROR,
+    message: 'Некорректное значение сортировки',
   })
   sort?: CREATED_AT_SORT_OPTIONS
 }

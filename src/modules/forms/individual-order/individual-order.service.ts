@@ -19,8 +19,6 @@ export class IndividualOrderService {
     private readonly individualOrderModel: IndividualOrderModel,
   ) {}
 
-  private readonly selectFields = '-__v'
-
   async findAll(
     dto: FindAllIndividualOrdersDto,
   ): Promise<IndividualOrderListResponse> {
@@ -32,7 +30,7 @@ export class IndividualOrderService {
       .sort(sort)
       .skip(skip)
       .limit(limit)
-      .select(this.selectFields)
+      .select('-__v')
       .lean()
 
     const count = this.individualOrderModel.countDocuments(filters)
@@ -45,7 +43,7 @@ export class IndividualOrderService {
   async findById(id: string) {
     const individualOrder = await this.individualOrderModel
       .findById(id)
-      .select(this.selectFields)
+      .select('-__v')
       .lean()
 
     if (!individualOrder) {
@@ -56,15 +54,15 @@ export class IndividualOrderService {
   }
 
   async create(dto: CreateIndividualOrderDto) {
-    const createdIndividualOrder = await this.individualOrderModel.create(dto)
+    await this.individualOrderModel.create(dto)
 
-    return this.findById(String(createdIndividualOrder._id))
+    return true
   }
 
   async update(id: string, dto: UpdateIndividualOrderDto) {
     const individualOrder = await this.individualOrderModel
       .findByIdAndUpdate(id, dto, MONGOOSE_UPDATE_AFTER_OPTIONS)
-      .select(this.selectFields)
+      .select('-__v')
       .lean()
 
     if (!individualOrder) {

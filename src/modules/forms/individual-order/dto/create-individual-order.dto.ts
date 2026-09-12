@@ -18,48 +18,37 @@ import {
   IndividualOrderNamePropertyDocs,
   IndividualOrderPhonePropertyDocs,
 } from '../individual-order.swagger'
-import {
-  INDIVIDUAL_ORDER_EMAIL_EMPTY_ERROR,
-  INDIVIDUAL_ORDER_EMAIL_FORMAT_ERROR,
-  INDIVIDUAL_ORDER_EMAIL_STRING_ERROR,
-  INDIVIDUAL_ORDER_MESSAGE_MAX_LENGTH_ERROR,
-  INDIVIDUAL_ORDER_MESSAGE_STRING_ERROR,
-  INDIVIDUAL_ORDER_NAME_EMPTY_ERROR,
-  INDIVIDUAL_ORDER_NAME_MAX_LENGTH_ERROR,
-  INDIVIDUAL_ORDER_NAME_STRING_ERROR,
-  INDIVIDUAL_ORDER_PHONE_EMPTY_ERROR,
-  INDIVIDUAL_ORDER_PHONE_FORMAT_ERROR,
-  INDIVIDUAL_ORDER_PHONE_STRING_ERROR,
-} from '../individual-order.constants'
 
 export class CreateIndividualOrderDto {
   @IndividualOrderNamePropertyDocs()
   @Transform(({ value }) => trimStringValue(value))
-  @IsString({ message: INDIVIDUAL_ORDER_NAME_STRING_ERROR })
-  @IsNotEmpty({ message: INDIVIDUAL_ORDER_NAME_EMPTY_ERROR })
-  @MaxLength(100, { message: INDIVIDUAL_ORDER_NAME_MAX_LENGTH_ERROR })
+  @IsString({ message: 'Имя должно быть строкой' })
+  @IsNotEmpty({ message: 'Имя обязательно' })
+  @MaxLength(100, { message: 'Имя не должно быть длиннее 100 символов' })
   name!: string
 
   @IndividualOrderPhonePropertyDocs()
   @Transform(({ value }) => normalizePhoneValue(value))
-  @IsString({ message: INDIVIDUAL_ORDER_PHONE_STRING_ERROR })
-  @IsNotEmpty({ message: INDIVIDUAL_ORDER_PHONE_EMPTY_ERROR })
+  @IsString({ message: 'Телефон должен быть строкой' })
+  @IsNotEmpty({ message: 'Телефон обязателен' })
   @Matches(/^\+?\d{10,15}$/, {
-    message: INDIVIDUAL_ORDER_PHONE_FORMAT_ERROR,
+    message: 'Телефон должен содержать от 10 до 15 цифр и может начинаться с +',
   })
   phone!: string
 
   @IndividualOrderEmailPropertyDocs()
   @Transform(({ value }) => normalizeEmailValue(value))
-  @IsString({ message: INDIVIDUAL_ORDER_EMAIL_STRING_ERROR })
-  @IsNotEmpty({ message: INDIVIDUAL_ORDER_EMAIL_EMPTY_ERROR })
-  @IsEmail({}, { message: INDIVIDUAL_ORDER_EMAIL_FORMAT_ERROR })
+  @IsString({ message: 'Email должен быть строкой' })
+  @IsNotEmpty({ message: 'Email обязателен' })
+  @IsEmail({}, { message: 'Некорректный формат email' })
   email!: string
 
   @IndividualOrderMessagePropertyDocs()
   @IsOptional()
   @Transform(({ value }) => trimStringValue(value))
-  @IsString({ message: INDIVIDUAL_ORDER_MESSAGE_STRING_ERROR })
-  @MaxLength(1000, { message: INDIVIDUAL_ORDER_MESSAGE_MAX_LENGTH_ERROR })
+  @IsString({ message: 'Сообщение должно быть строкой' })
+  @MaxLength(1000, {
+    message: 'Сообщение не должно быть длиннее 1000 символов',
+  })
   message?: string
 }

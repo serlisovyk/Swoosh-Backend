@@ -17,9 +17,8 @@ import { User } from './models/user.model'
 import {
   USER_ALREADY_EXISTS_ERROR,
   CURRENT_PASSWORD_REQUIRED_ERROR,
-  USER_BASE_SELECT_FIELDS,
   USER_NOT_FOUND_ERROR,
-  USER_PUBLIC_SELECT_FIELDS,
+  USER_SELECT_FIELDS,
   WRONG_CURRENT_PASSWORD_ERROR,
 } from './users.constants'
 import { ROLES, type CreateUserInput, type UserModel } from './users.types'
@@ -32,20 +31,17 @@ export class UsersService {
   ) {}
 
   getById(id: string) {
-    return this.userModel.findById(id).select(USER_PUBLIC_SELECT_FIELDS).lean()
+    return this.userModel.findById(id).select(USER_SELECT_FIELDS).lean()
   }
 
   getByEmail(email: string) {
-    return this.userModel
-      .findOne({ email })
-      .select(USER_PUBLIC_SELECT_FIELDS)
-      .lean()
+    return this.userModel.findOne({ email }).select(USER_SELECT_FIELDS).lean()
   }
 
   getByEmailWithPassword(email: string) {
     return this.userModel
       .findOne({ email })
-      .select(`+password ${USER_BASE_SELECT_FIELDS}`)
+      .select(`+password ${USER_SELECT_FIELDS}`)
       .lean()
   }
 
@@ -83,7 +79,7 @@ export class UsersService {
         returnDocument: 'after',
         runValidators: true,
       })
-      .select(USER_PUBLIC_SELECT_FIELDS)
+      .select(USER_SELECT_FIELDS)
       .lean()
 
     if (!updatedUser) {

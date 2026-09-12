@@ -13,19 +13,7 @@ import {
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
 } from '@common/swagger'
-import { FavoritesProductIdsPropertyDocs } from '@modules/favorites'
-import {
-  USER_ADDRESS_BUILDING_NUMBER_EXAMPLE,
-  USER_ADDRESS_CITY_EXAMPLE,
-  USER_ADDRESS_COMPANY_EXAMPLE,
-  USER_ADDRESS_REGION_EXAMPLE,
-  USER_ADDRESS_STREET_EXAMPLE,
-  USER_ADDRESS_ZIP_EXAMPLE,
-  USER_EMAIL_EXAMPLE,
-  USER_ID_EXAMPLE,
-  USER_NAME_EXAMPLE,
-  USER_PHONE_EXAMPLE,
-} from './users.constants'
+import { FavoritesProductIdsPropertyDocs } from '@modules/favorites/favorites.swagger'
 import { ROLES } from './users.types'
 
 export function UsersTagDocs() {
@@ -34,32 +22,32 @@ export function UsersTagDocs() {
 
 export const UsersNamePropertyDocs = createOptionalPropertyDocsDecorator({
   description: 'User display name.',
-  example: USER_NAME_EXAMPLE,
+  example: 'John Doe',
 })
 
 export const UsersNameRequiredPropertyDocs = createPropertyDocsDecorator({
   description: 'User display name.',
-  example: USER_NAME_EXAMPLE,
+  example: 'John Doe',
 })
 
 export const UsersEmailPropertyDocs = createOptionalPropertyDocsDecorator({
   description: 'User email address.',
-  example: USER_EMAIL_EXAMPLE,
+  example: 'john.swoosh@example.com',
 })
 
 export const UsersEmailRequiredPropertyDocs = createPropertyDocsDecorator({
   description: 'User email address.',
-  example: USER_EMAIL_EXAMPLE,
+  example: 'john.swoosh@example.com',
 })
 
 export const UsersPhonePropertyDocs = createOptionalPropertyDocsDecorator({
   description: 'User phone number.',
-  example: USER_PHONE_EXAMPLE,
+  example: '+380991112233',
 })
 
 export const UsersPhoneRequiredPropertyDocs = createPropertyDocsDecorator({
   description: 'User phone number.',
-  example: USER_PHONE_EXAMPLE,
+  example: '+380991112233',
 })
 
 export const UsersNewPasswordPropertyDocs = createOptionalPropertyDocsDecorator(
@@ -86,79 +74,79 @@ export const UsersRolePropertyDocs = createPropertyDocsDecorator({
 
 export const UsersIdPropertyDocs = createPropertyDocsDecorator({
   description: 'User identifier.',
-  example: USER_ID_EXAMPLE,
+  example: '65f1e8d3f9a2b56789c54321',
 })
 
 export const UsersAddressCompanyPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description: 'Company name for delivery details.',
-    example: USER_ADDRESS_COMPANY_EXAMPLE,
+    example: 'Swoosh',
   })
 
 export const UsersAddressCompanyRequiredPropertyDocs =
   createPropertyDocsDecorator({
     description: 'Company name for delivery details.',
-    example: USER_ADDRESS_COMPANY_EXAMPLE,
+    example: 'Swoosh',
   })
 
 export const UsersAddressRegionPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description: 'Region for delivery details.',
-    example: USER_ADDRESS_REGION_EXAMPLE,
+    example: 'Kyiv region',
   })
 
 export const UsersAddressRegionRequiredPropertyDocs =
   createPropertyDocsDecorator({
     description: 'Region for delivery details.',
-    example: USER_ADDRESS_REGION_EXAMPLE,
+    example: 'Kyiv region',
   })
 
 export const UsersAddressCityPropertyDocs = createOptionalPropertyDocsDecorator(
   {
     description: 'City for delivery details.',
-    example: USER_ADDRESS_CITY_EXAMPLE,
+    example: 'Kyiv',
   },
 )
 
 export const UsersAddressCityRequiredPropertyDocs = createPropertyDocsDecorator(
   {
     description: 'City for delivery details.',
-    example: USER_ADDRESS_CITY_EXAMPLE,
+    example: 'Kyiv',
   },
 )
 
 export const UsersAddressStreetPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description: 'Street for delivery details.',
-    example: USER_ADDRESS_STREET_EXAMPLE,
+    example: 'Khreshchatyk St',
   })
 
 export const UsersAddressStreetRequiredPropertyDocs =
   createPropertyDocsDecorator({
     description: 'Street for delivery details.',
-    example: USER_ADDRESS_STREET_EXAMPLE,
+    example: 'Khreshchatyk St',
   })
 
 export const UsersAddressZipPropertyDocs = createOptionalPropertyDocsDecorator({
   description: 'Postal code for delivery details.',
-  example: USER_ADDRESS_ZIP_EXAMPLE,
+  example: '01001',
 })
 
 export const UsersAddressZipRequiredPropertyDocs = createPropertyDocsDecorator({
   description: 'Postal code for delivery details.',
-  example: USER_ADDRESS_ZIP_EXAMPLE,
+  example: '01001',
 })
 
 export const UsersAddressBuildingNumberPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description: 'Building or apartment number for delivery details.',
-    example: USER_ADDRESS_BUILDING_NUMBER_EXAMPLE,
+    example: '15A',
   })
 
 export const UsersAddressBuildingNumberRequiredPropertyDocs =
   createPropertyDocsDecorator({
     description: 'Building or apartment number for delivery details.',
-    example: USER_ADDRESS_BUILDING_NUMBER_EXAMPLE,
+    example: '15A',
   })
 
 export function UsersAddressPropertyDocs(model: Type<unknown>) {

@@ -171,7 +171,10 @@ export function IndividualOrderCreateDocs() {
     }),
     ApiCreatedResponse({
       description: 'Individual order created successfully.',
-      type: IndividualOrderResponseDocs,
+      schema: {
+        type: 'boolean',
+        example: true,
+      },
     }),
     ApiValidationErrorDocs(),
   )
