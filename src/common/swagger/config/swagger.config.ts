@@ -17,23 +17,7 @@ import {
   SWAGGER_VERSION,
 } from '../constants'
 
-export function setupSwagger(
-  app: NestExpressApplication,
-  configService: ConfigService<AppEnv, true>,
-) {
-  if (!configService.get('SWAGGER_ENABLED', { infer: true })) return
-
-  if (!isDev(configService)) {
-    const user = configService.getOrThrow('SWAGGER_USER', { infer: true })
-    const password = configService.getOrThrow('SWAGGER_PASSWORD', {
-      infer: true,
-    })
-
-    app.use(
-      createSwaggerBasicAuthMiddleware(`/${SWAGGER_DOCS_PATH}`, user, password),
-    )
-  }
-
+function buildSwaggerDocument(app: NestExpressApplication) {
   const config = new DocumentBuilder()
     .setTitle(SWAGGER_SITE_TITLE)
     .setDescription(SWAGGER_DESCRIPTION)
@@ -54,9 +38,29 @@ export function setupSwagger(
     .addSecurityRequirements(SWAGGER_ACCESS_TOKEN_AUTH_NAME)
     .build()
 
-  const document = SwaggerModule.createDocument(app, swaggerConfig, {
+  return SwaggerModule.createDocument(app, swaggerConfig, {
     operationIdFactory: createSwaggerOperationId,
   })
+}
+
+export function setupSwagger(
+  app: NestExpressApplication,
+  configService: ConfigService<AppEnv, true>,
+) {
+  if (!configService.get('SWAGGER_ENABLED', { infer: true })) return
+
+  if (!isDev(configService)) {
+    const user = configService.getOrThrow('SWAGGER_USER', { infer: true })
+    const password = configService.getOrThrow('SWAGGER_PASSWORD', {
+      infer: true,
+    })
+
+    app.use(
+      createSwaggerBasicAuthMiddleware(`/${SWAGGER_DOCS_PATH}`, user, password),
+    )
+  }
+
+  const document = buildSwaggerDocument(app)
 
   SwaggerModule.setup(SWAGGER_DOCS_PATH, app, document, {
     customSiteTitle: SWAGGER_SITE_TITLE,

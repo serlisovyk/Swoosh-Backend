@@ -11,7 +11,7 @@ import {
 } from '../types'
 
 export function createPropertyDocsDecorator(options: SwaggerPropertyOptions) {
-  return function ProductsPropertyDocsDecorator() {
+  return function PropertyDocsDecorator() {
     return ApiProperty(options)
   }
 }
@@ -19,7 +19,7 @@ export function createPropertyDocsDecorator(options: SwaggerPropertyOptions) {
 export function createOptionalPropertyDocsDecorator(
   options: SwaggerPropertyOptions,
 ) {
-  return function ProductsOptionalPropertyDocsDecorator() {
+  return function OptionalPropertyDocsDecorator() {
     return ApiPropertyOptional(options)
   }
 }
