@@ -1,14 +1,11 @@
-import { ErrorResponseDocs } from '@common/errors'
+import { ApiValidationErrorDocs, ErrorResponseDocs } from '@common/errors'
 import { applyDecorators } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger'
-import {
-  ApiValidationErrorDocs,
-  createPropertyDocsDecorator,
-} from '@common/swagger'
+import { createPropertyDocsDecorator } from '@shared/swagger'
 import { AuthCaptchaHeaderDocs } from '../auth.swagger'
 
 export const AuthResetTokenPropertyDocs = createPropertyDocsDecorator({

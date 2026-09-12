@@ -1,4 +1,4 @@
-import { ErrorResponseDocs } from '@common/errors'
+import { ApiAuthRequiredDocs, ErrorResponseDocs } from '@common/errors'
 import { applyDecorators, Type } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -9,10 +9,9 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 import {
-  ApiAuthRequiredDocs,
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
-} from '@common/swagger'
+} from '@shared/swagger'
 import { FavoritesProductIdsPropertyDocs } from '@modules/favorites/favorites.swagger'
 import { ROLES } from './users.types'
 

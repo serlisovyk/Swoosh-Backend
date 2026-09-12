@@ -1,4 +1,4 @@
-import { ErrorResponseDocs } from '@common/errors'
+import { ApiValidationErrorDocs, ErrorResponseDocs } from '@common/errors'
 import { applyDecorators, Type } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -13,11 +13,10 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 import {
-  ApiValidationErrorDocs,
-  SWAGGER_REFRESH_TOKEN_AUTH_NAME,
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
-} from '@common/swagger'
+} from '@shared/swagger'
+import { SWAGGER_REFRESH_TOKEN_AUTH_NAME } from '@shared/constants'
 import { CAPTCHA_TOKEN_HEADER } from '@common/captcha'
 import { UsersResponseDocs } from '../users/users.swagger'
 
