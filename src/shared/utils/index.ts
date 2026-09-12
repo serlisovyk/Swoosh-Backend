@@ -10,7 +10,7 @@ export {
   normalizeEmailValue,
   normalizePhoneValue,
 } from './sanitize.utils'
-export { DEFAULT_PAGE, resolvePaginationOffset } from './pagination.utils'
+export { resolvePaginationOffset } from './pagination.utils'
 export { resolveListQueryOptions } from './list-query.utils'
 export {
   REGEX_SPECIAL_CHARACTERS,
