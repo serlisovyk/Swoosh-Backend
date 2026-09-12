@@ -1,10 +1,10 @@
-import { resolvePaginationOffset } from '@shared/utils'
-import { FindAllProductsDto } from './dto/find-all-products.dto'
 import {
-  DEFAULT_PRODUCTS_LIMIT,
-  PRODUCT_SORT_MAP,
-  REGEX_SPECIAL_CHARACTERS,
-} from './products.constants'
+  createContainsRegex,
+  createExactRegex,
+  resolvePaginationOffset,
+} from '@shared/utils'
+import { FindAllProductsDto } from './dto/find-all-products.dto'
+import { DEFAULT_PRODUCTS_LIMIT, PRODUCT_SORT_MAP } from './products.constants'
 import {
   type ProductListQueryOptions,
   PRODUCT_SORT_OPTIONS,
@@ -99,16 +99,4 @@ export function buildProductListQueryOptions(
     limit: limitOption,
     skip,
   }
-}
-
-function createExactRegex(value: string): RegExp {
-  return new RegExp(`^${escapeRegExp(value)}$`, 'i')
-}
-
-function createContainsRegex(value: string): RegExp {
-  return new RegExp(escapeRegExp(value), 'i')
-}
-
-function escapeRegExp(value: string): string {
-  return value.replace(REGEX_SPECIAL_CHARACTERS, '\\$&')
 }
