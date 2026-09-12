@@ -34,9 +34,13 @@
 
 ## Imports
 
-- Import shared helpers from their barrel (`index.ts`) when one exists, not the file directly.
+- Import shared helpers from their barrel (`index.ts`) when one exists, not the file directly. This applies to feature modules too, not just `common`/`shared` — a module another module needs to reach into (e.g. `src/modules/auth/index.ts`) exports a barrel; import from it (`@modules/auth`), never a deep path (`@modules/auth/decorators/auth.decorator`).
 - Use path aliases over relative chains that climb out of the module.
 - Do not fight the linter's import order — run `npm run lint` and take its ordering.
+
+## Documentation language
+
+- Swagger `description`/`summary` text is written in Russian; `ApiTags` category names, code, comments, and identifiers stay in English. This rolls out module by module as each is touched, not as a one-shot rewrite — `auth` is done (MY-54); other modules keep their existing English copy until their own change touches it. Don't half-translate a module: when you touch a module's Swagger for another reason, translate the rest of that file in the same change.
 
 ## Error handling
 

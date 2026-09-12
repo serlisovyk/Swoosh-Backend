@@ -11,7 +11,7 @@ Creating a new feature module, adding an endpoint, splitting a fat file, or alig
 
 ## Where code lives
 
-See `ai/map.md` for the current module list, cross-cutting packages, and entry files — it is the single place that inventory is maintained. In short: features in `src/modules/*`, shared infrastructure in `src/common/*` (each with an `index.ts` barrel), cross-cutting config/constants/utils in `src/shared/*`.
+See `ai/map.md` for the current module list, cross-cutting packages, and entry files — it is the single place that inventory is maintained. In short: features in `src/modules/*`, shared infrastructure in `src/common/*` (each with an `index.ts` barrel), cross-cutting config/constants/utils in `src/shared/*`. A feature module gets its own `index.ts` barrel too, once another module needs to import from it (see `src/modules/auth/index.ts`) — don't add one speculatively before that's true.
 
 Adding, removing, or renaming a module means updating `ai/map.md` in the same change.
 
@@ -28,7 +28,7 @@ Add only when the module needs them (copy the shape from an existing module such
 - `<feature>.types.ts` — module-local types.
 - `<feature>.utils.ts` — module-local helpers, e.g. Mongo filter builders (see `query-filters`).
 
-Sub-features nest as their own folder with the same anatomy: see `src/modules/auth/auth-account/` and `src/modules/forms/*`.
+Sub-features nest as their own folder with the same anatomy: see `src/modules/auth/password-reset/` and `src/modules/forms/*`.
 
 ## Responsibility boundaries
 
@@ -42,6 +42,7 @@ Sub-features nest as their own folder with the same anatomy: see `src/modules/au
 - Follow a nearby module before inventing a new layout.
 - Keep feature-local helpers/constants/types next to the module until reuse is real; do not promote to `src/shared` early.
 - Reuse existing helpers (`src/shared/utils`, module barrels) before adding parallel ones.
+- No bidirectional dependency between two feature modules (see `ai/rules/architecture.md`). If you find module B importing from module A while A already imports from B, that's the bug to fix, not a pattern to extend.
 - Do not create placeholder files just to mirror another module.
 - Remove stale constants/types after deleting a feature.
 
