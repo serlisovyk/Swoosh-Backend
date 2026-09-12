@@ -11,6 +11,9 @@ These rules apply to the Swoosh Server backend.
 - Keep shared infrastructure in `src/common`.
 - Keep shared config, constants, and helpers in `src/shared`.
 - Reuse existing helpers before creating parallel abstractions.
+- A third-party library's own registration/config (`X.registerAsync`/`X.forRootAsync`, its config factory) is a `src/common/<x>` wrapper module — same shape as `mongo`, `captcha`, `email`, `throttler`, `jwt`. Domain logic that happens to use that library (e.g. `JwtStrategy`, which answers "who is this user" and depends on `UserService`) stays in the feature module that owns the domain question, even though it touches the same library. Splitting on "library glue vs. domain logic", not on "everything JWT-related in one place", is what keeps `common` framework-only.
+- Feature modules (`src/modules/*`) must not depend on each other bidirectionally. If module A imports from module B (service, DTO, util, type), B must never import anything from A — pick one direction and map data across the boundary with a type A owns, don't reach into B's DTOs. See [decisions/no-user-auth-cycle](../decisions/2026-09-11-no-user-auth-cycle.md): `auth` depends on `user` (correct — `auth` orchestrates registration/login); `user` used to import `auth`'s `RegisterDto` and a crypto helper, which was the cycle. Fixed by giving `user` its own `CreateUserInput` and moving the crypto helper to `shared`.
+- A feature module that other modules need to reach into publicly exports a barrel (`<module>/index.ts`) — see `src/modules/auth/index.ts`. Other modules import from the barrel, never from the module's internal file paths (`@modules/auth`, not `@modules/auth/decorators/auth.decorator`).
 
 ## Module Structure
 

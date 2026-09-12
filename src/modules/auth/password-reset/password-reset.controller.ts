@@ -3,21 +3,18 @@ import { Throttle } from '@nestjs/throttler'
 import { TurnstileCaptcha as Captcha } from 'nest-cloudflare-turnstile'
 import { RequestPasswordResetDto } from './dto/request-password-reset.dto'
 import { ResetPasswordDto } from './dto/reset-password.dto'
-import { AuthAccountService } from './auth-account.service'
-import {
-  AuthRequestPasswordResetDocs,
-  AuthResetPasswordDocs,
-  AuthTagDocs,
-} from '../auth.swagger'
+import { PasswordResetService } from './password-reset.service'
+import { AuthRequestPasswordResetDocs, AuthResetPasswordDocs } from './password-reset.swagger'
 import {
   AUTH_PASSWORD_RESET_REQUEST_THROTTLE,
   AUTH_PASSWORD_RESET_THROTTLE,
-} from '../auth.constants'
+} from './password-reset.constants'
+import { AuthTagDocs } from '../auth.swagger'
 
 @AuthTagDocs()
 @Controller('auth')
-export class AuthAccountController {
-  constructor(private readonly authAccountService: AuthAccountService) {}
+export class PasswordResetController {
+  constructor(private readonly passwordResetService: PasswordResetService) {}
 
   @AuthRequestPasswordResetDocs()
   @Throttle(AUTH_PASSWORD_RESET_REQUEST_THROTTLE)
@@ -25,7 +22,7 @@ export class AuthAccountController {
   @HttpCode(HttpStatus.OK)
   @Post('request-password-reset')
   requestPasswordReset(@Body() dto: RequestPasswordResetDto) {
-    return this.authAccountService.requestPasswordReset(dto.email)
+    return this.passwordResetService.requestPasswordReset(dto.email)
   }
 
   @AuthResetPasswordDocs()
@@ -34,7 +31,6 @@ export class AuthAccountController {
   @HttpCode(HttpStatus.OK)
   @Post('reset-password')
   resetPassword(@Body() dto: ResetPasswordDto) {
-    return this.authAccountService.resetPassword(dto.token, dto.newPassword)
+    return this.passwordResetService.resetPassword(dto.token, dto.newPassword)
   }
-
 }

@@ -6,9 +6,8 @@ import {
   HttpStatus,
   Put,
 } from '@nestjs/common'
-import { Auth } from '@modules/auth/decorators/auth.decorator'
-import { CurrentUser } from '@modules/auth/decorators/user.decorator'
-import type { UserWithoutPassword } from '@modules/auth/auth.types'
+import { Auth, CurrentUser } from '@modules/auth'
+import type { UserWithoutPassword } from '@modules/auth'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UserService } from './user.service'
 import {

@@ -2,10 +2,12 @@ import { IsNotEmpty, IsString, MinLength } from 'class-validator'
 import {
   AuthNewPasswordPropertyDocs,
   AuthResetTokenPropertyDocs,
-} from '../../auth.swagger'
+} from '../password-reset.swagger'
 import {
   TOKEN_NOT_EMPTY_ERROR,
   TOKEN_STRING_ERROR,
+} from '../password-reset.constants'
+import {
   PASSWORD_MIN_LENGTH_ERROR,
   PASSWORD_STRING_ERROR,
 } from '../../auth.constants'

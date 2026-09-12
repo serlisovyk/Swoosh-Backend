@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common'
 import { ParseObjectIdPipe } from '@nestjs/mongoose'
-import { Auth } from '@modules/auth/decorators/auth.decorator'
+import { Auth } from '@modules/auth'
 import { ROLES } from '@modules/user/user.types'
 import { CreateNewsletterSubscriptionDto } from './dto/create-newsletter-subscription.dto'
 import { FindAllNewsletterSubscriptionsDto } from './dto/find-all-newsletter-subscriptions.dto'

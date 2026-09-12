@@ -13,7 +13,6 @@ import ms, { StringValue } from 'ms'
 import { isDev, noop } from '@shared/utils'
 import { FavoritesService } from '@modules/favorites/favorites.service'
 import { UserService } from '../user/user.service'
-import { AuthAccountService } from './auth-account/auth-account.service'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
 import {
@@ -38,11 +37,15 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly favoritesService: FavoritesService,
     private readonly configService: ConfigService,
-    private readonly authAccountService: AuthAccountService,
   ) {}
 
   async register(dto: RegisterDto, request: PreparedRequest) {
-    const createdUser = await this.userService.create(dto)
+    const createdUser = await this.userService.create({
+      email: dto.email,
+      password: dto.password,
+      name: dto.name,
+      phone: dto.phone,
+    })
 
     if (!createdUser) {
       throw new InternalServerErrorException(FAILED_TO_CREATE_USER_ERROR)

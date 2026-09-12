@@ -1,15 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { EmailService } from '@common/email/email.service'
+import { generateToken } from '@shared/utils'
 import { UserService } from '../../user/user.service'
-import { generateToken } from '../auth.utils'
 import {
   INVALID_OR_EXPIRED_PASSWORD_RESET_TOKEN_ERROR,
   RESET_PASSWORD_URL,
-} from '../auth.constants'
+} from './password-reset.constants'
 
 @Injectable()
-export class AuthAccountService {
+export class PasswordResetService {
   constructor(
     private readonly configService: ConfigService,
     private readonly userService: UserService,

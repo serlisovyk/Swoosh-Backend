@@ -29,6 +29,8 @@ Docs are **module-local wrappers**, not long inline decorator stacks on controll
 - Never expose passwords, reset tokens, hashed values, or internal-only fields in docs.
 - Do not document removed features (OAuth, email verification, auth sessions).
 - When a request/response shape changes, update its Swagger in the **same** change.
+- `description`/`summary` text is Russian, rolled out module by module — see `ai/rules/code-conventions.md` → Documentation language. `auth.swagger.ts` and `password-reset/password-reset.swagger.ts` are the reference example; other modules are still English until touched.
+- A sub-feature with its own controller (e.g. `auth/password-reset`) gets its own `<sub-feature>.swagger.ts` for its operations and property docs, not entries bolted onto the parent module's file — see `src/modules/auth/password-reset/password-reset.swagger.ts`. Only truly shared decorators (like the parent's `*TagDocs()`) stay imported from the parent file.
 
 ## Reaching the docs locally
 
