@@ -70,17 +70,19 @@ export const IndividualOrderResponseIdPropertyDocs =
     example: INDIVIDUAL_ORDER_ID_EXAMPLE,
   })
 
-export const IndividualOrderCreatedAtPropertyDocs =
-  createPropertyDocsDecorator({
+export const IndividualOrderCreatedAtPropertyDocs = createPropertyDocsDecorator(
+  {
     description: 'Creation timestamp.',
     example: '2026-03-24T10:00:00.000Z',
-  })
+  },
+)
 
-export const IndividualOrderUpdatedAtPropertyDocs =
-  createPropertyDocsDecorator({
+export const IndividualOrderUpdatedAtPropertyDocs = createPropertyDocsDecorator(
+  {
     description: 'Last update timestamp.',
     example: '2026-03-24T10:15:00.000Z',
-  })
+  },
+)
 
 export const IndividualOrderQuerySearchPropertyDocs =
   createOptionalPropertyDocsDecorator({

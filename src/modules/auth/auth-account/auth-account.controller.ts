@@ -36,5 +36,4 @@ export class AuthAccountController {
   resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authAccountService.resetPassword(dto.token, dto.newPassword)
   }
-
 }

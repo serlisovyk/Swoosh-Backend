@@ -52,5 +52,4 @@ export class AuthAccountService {
 
     return true
   }
-
 }

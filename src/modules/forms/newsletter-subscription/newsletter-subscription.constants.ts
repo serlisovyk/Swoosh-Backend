@@ -42,5 +42,4 @@ export const updateNewsletterSubscriptionOptions = {
   runValidators: true,
 }
 
-export const NEWSLETTER_SUBSCRIPTION_ID_EXAMPLE =
-  '65f1e8d3f9a2b56789c12347'
+export const NEWSLETTER_SUBSCRIPTION_ID_EXAMPLE = '65f1e8d3f9a2b56789c12347'

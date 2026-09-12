@@ -172,9 +172,8 @@ export class FavoritesService {
       const { favoriteProductIds, version } =
         await this.findUserFavoriteStateOrThrow(userId)
 
-      const visibleFavoriteProductIds = await this.filterExistingFavoriteProductIds(
-        favoriteProductIds,
-      )
+      const visibleFavoriteProductIds =
+        await this.filterExistingFavoriteProductIds(favoriteProductIds)
 
       const nextFavoriteProductIds = deduplicateFavoriteProductIds(
         normalizeFavoriteProductIds(
@@ -184,7 +183,9 @@ export class FavoritesService {
         ),
       ).slice(0, FAVORITES_MAX_PRODUCT_IDS)
 
-      if (areFavoriteProductIdsEqual(nextFavoriteProductIds, favoriteProductIds)) {
+      if (
+        areFavoriteProductIdsEqual(nextFavoriteProductIds, favoriteProductIds)
+      ) {
         return nextFavoriteProductIds
       }
 

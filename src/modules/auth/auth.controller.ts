@@ -85,8 +85,10 @@ export class AuthController {
       throw new BadRequestException(REFRESH_TOKEN_MISSING_ERROR)
     }
 
-    const { refreshToken, ...response } =
-      await this.authService.getNewTokens(initialRefreshToken, req)
+    const { refreshToken, ...response } = await this.authService.getNewTokens(
+      initialRefreshToken,
+      req,
+    )
 
     this.authService.setRefreshTokenCookie(res, refreshToken)
 

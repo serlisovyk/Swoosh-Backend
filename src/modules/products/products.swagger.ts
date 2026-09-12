@@ -235,13 +235,14 @@ export const ProductsQuerySortPropertyDocs =
     example: PRODUCT_SORT_OPTIONS.NEWEST,
   })
 
-export const ProductsQueryIdsPropertyDocs =
-  createOptionalPropertyDocsDecorator({
+export const ProductsQueryIdsPropertyDocs = createOptionalPropertyDocsDecorator(
+  {
     description:
       'Specific product ids to load. Accepts repeated query params or a comma-separated string.',
     example: [PRODUCT_ID_EXAMPLE, PRODUCT_CATEGORY_ID_EXAMPLE],
     type: [String],
-  })
+  },
+)
 
 export const ProductsQueryExcludeIdsPropertyDocs =
   createOptionalPropertyDocsDecorator({

@@ -32,9 +32,8 @@ export class ContactRequestService {
   async findAll(
     dto: FindAllContactRequestsDto,
   ): Promise<ContactRequestListResponse> {
-    const { filters, limit, skip, sort } = buildContactRequestListQueryOptions(
-      dto,
-    )
+    const { filters, limit, skip, sort } =
+      buildContactRequestListQueryOptions(dto)
 
     const data = this.contactRequestModel
       .find(filters)

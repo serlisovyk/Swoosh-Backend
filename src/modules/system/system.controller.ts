@@ -1,7 +1,11 @@
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common'
 import { SkipThrottle } from '@nestjs/throttler'
 import { SystemService } from './system.service'
-import { SystemHealthDocs, SystemHelloDocs, SystemTagDocs } from './system.swagger'
+import {
+  SystemHealthDocs,
+  SystemHelloDocs,
+  SystemTagDocs,
+} from './system.swagger'
 
 @SystemTagDocs()
 @Controller()

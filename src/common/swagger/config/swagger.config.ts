@@ -26,7 +26,9 @@ export function setupSwagger(
     const user = configService.getOrThrow<string>('SWAGGER_USER')
     const password = configService.getOrThrow<string>('SWAGGER_PASSWORD')
 
-    app.use(createSwaggerBasicAuthMiddleware(`/${SWAGGER_PATH}`, user, password))
+    app.use(
+      createSwaggerBasicAuthMiddleware(`/${SWAGGER_PATH}`, user, password),
+    )
   }
 
   const config = new DocumentBuilder()

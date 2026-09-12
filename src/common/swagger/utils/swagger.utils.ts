@@ -32,9 +32,7 @@ export function QueryPagePropertyDocs(options: QueryPagePropertyDocsOptions) {
   })
 }
 
-export function QueryLimitPropertyDocs(
-  options: QueryLimitPropertyDocsOptions,
-) {
+export function QueryLimitPropertyDocs(options: QueryLimitPropertyDocsOptions) {
   return createOptionalPropertyDocsDecorator({
     description: 'Maximum number of items returned per page.',
     example: options.example,
