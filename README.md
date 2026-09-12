@@ -35,7 +35,14 @@ This backend provides product catalog, favorites, authentication, and public for
 
 ```text
 src/
-  common/        Nest-wired infrastructure: mongo, captcha, email, throttler, errors, logging
+  common/
+    captcha/     Cloudflare Turnstile integration
+    email/       Resend email sending, templates
+    errors/      Global exception filter, canonical error envelope
+    jwt/         JWT module setup
+    logging/     Request logging, x-request-id
+    mongo/       Mongoose connection setup
+    throttler/   Rate limiting
   shared/        DI-free code: config, constants, types, utils, swagger factories
   modules/
     auth/        Login, register, tokens, password reset
@@ -121,11 +128,15 @@ Lint:
 bun run lint
 ```
 
+Enforces formatting (Prettier), no floating promises, no unsafe arguments, and no `any` as build-failing errors, not warnings. Build runs with TypeScript `strict` mode plus `noUncheckedIndexedAccess`.
+
 Format:
 
 ```bash
 bun run format
 ```
+
+There is no automated test suite; lint and build are the verification.
 
 ## 🔌 API Endpoints
 
@@ -233,14 +244,3 @@ Validation errors that relate to the whole object instead of a specific field ar
 - Every feature module keeps its own DTOs and a co-located `*.swagger.ts` next to the controller/service.
 - A global `AllExceptionsFilter` normalizes every thrown error into the canonical envelope above.
 - Every request gets an `x-request-id` (generated or forwarded), logged alongside method/path/status/duration and echoed back in the response.
-
-## Checks
-
-```bash
-bun run lint
-bun run build
-```
-
-`bun run lint` enforces formatting (Prettier), no floating promises, no unsafe arguments, and no `any` as build-failing errors, not warnings. `bun run build` runs with TypeScript `strict` mode plus `noUncheckedIndexedAccess`.
-
-This backend has no automated test suite.
