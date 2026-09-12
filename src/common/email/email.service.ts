@@ -6,6 +6,7 @@ import {
 import { ConfigService } from '@nestjs/config'
 import { ResendService } from 'nestjs-resend'
 import { render } from '@react-email/render'
+import { AppEnv } from '@shared/config'
 import { ResetPasswordEmail } from './templates/reset-password.template'
 import {
   EMAIL_SEND_FAILED_ERROR,
@@ -18,7 +19,7 @@ export class EmailService {
 
   constructor(
     private readonly resend: ResendService,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<AppEnv, true>,
   ) {}
 
   async sendResetPasswordEmail(to: string, url: string) {
@@ -61,10 +62,10 @@ export class EmailService {
   }
 
   private getAppName() {
-    return this.configService.getOrThrow<string>('APP_NAME')
+    return this.configService.get('APP_NAME', { infer: true })
   }
 
   private emailSender() {
-    return this.configService.getOrThrow<string>('EMAIL_SENDER')
+    return this.configService.get('EMAIL_SENDER', { infer: true })
   }
 }

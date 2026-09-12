@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { EmailService } from '@common/email/email.service'
+import { AppEnv } from '@shared/config'
 import { generateToken } from '@shared/utils'
 import { UserService } from '../../user/user.service'
 import {
@@ -11,7 +12,7 @@ import {
 @Injectable()
 export class PasswordResetService {
   constructor(
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<AppEnv, true>,
     private readonly userService: UserService,
     private readonly emailService: EmailService,
   ) {}
@@ -25,7 +26,7 @@ export class PasswordResetService {
 
     await this.userService.setPasswordResetToken(String(user._id), resetToken)
 
-    const clientUrl = this.configService.getOrThrow<string>('CLIENT_URL')
+    const clientUrl = this.configService.get('CLIENT_URL', { infer: true })
 
     const resetUrl = `${clientUrl}${RESET_PASSWORD_URL}?token=${resetToken}`
 

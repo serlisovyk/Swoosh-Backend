@@ -12,6 +12,7 @@ import { Throttle } from '@nestjs/throttler'
 import { ConfigService } from '@nestjs/config'
 import { TurnstileCaptcha as Captcha } from 'nest-cloudflare-turnstile'
 import type { Response } from 'express'
+import { AppEnv } from '@shared/config'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
 import { AuthService } from './auth.service'
@@ -42,7 +43,7 @@ export class AuthController {
 
   constructor(
     private readonly authService: AuthService,
-    configService: ConfigService,
+    configService: ConfigService<AppEnv, true>,
   ) {
     this.refreshTokenCookieOptions =
       buildRefreshTokenCookieOptions(configService)
