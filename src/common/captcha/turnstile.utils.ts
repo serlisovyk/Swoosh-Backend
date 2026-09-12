@@ -16,7 +16,7 @@ export function createTurnstileException(reason: TurnstileExceptionReason) {
   return new BadRequestException(INVALID_CAPTCHA_TOKEN_ERROR)
 }
 
-export function getTokenFromResponse(request: Request): string {
+export function getCaptchaTokenFromRequest(request: Request): string {
   const token = request.headers[TURNSTILE_TOKEN_HEADER]
 
   return Array.isArray(token) ? (token[0] ?? '') : token || ''

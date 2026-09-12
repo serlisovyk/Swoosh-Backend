@@ -3,7 +3,7 @@ import { ITurnstileOptions } from 'nest-cloudflare-turnstile'
 import { AppEnv } from '@shared/config'
 import {
   createTurnstileException,
-  getTokenFromResponse,
+  getCaptchaTokenFromRequest,
 } from './turnstile.utils'
 
 export function getTurnstileConfig(
@@ -15,7 +15,7 @@ export function getTurnstileConfig(
 
   return {
     secretKey,
-    tokenResponse: getTokenFromResponse,
+    tokenResponse: getCaptchaTokenFromRequest,
     exceptionFactory: createTurnstileException,
   }
 }
