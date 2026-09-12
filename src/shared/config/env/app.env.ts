@@ -20,9 +20,6 @@ export class AppConfig {
   @IsUrl({ require_tld: false })
   CLIENT_URL!: string
 
-  @IsUrl({ require_tld: false })
-  SERVER_URL!: string
-
   @Type(() => Number)
   @IsInt()
   @IsPositive()

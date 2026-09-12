@@ -4,7 +4,6 @@ export function groupEnvByDomain(config: Record<string, unknown>) {
       NODE_ENV: config.NODE_ENV,
       APP_NAME: config.APP_NAME,
       CLIENT_URL: config.CLIENT_URL,
-      SERVER_URL: config.SERVER_URL,
       PORT: config.PORT,
     },
     cors: {
