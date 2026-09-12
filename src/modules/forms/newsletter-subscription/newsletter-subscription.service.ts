@@ -117,15 +117,14 @@ export class NewsletterSubscriptionService {
   }
 
   private async ensureEmailIsAvailable(id: string, email: string) {
-    const existingNewsletterSubscription = await this.newsletterSubscriptionModel
-      .findOne({ email, _id: { $ne: id } })
-      .select('_id')
-      .lean()
+    const existingNewsletterSubscription =
+      await this.newsletterSubscriptionModel
+        .findOne({ email, _id: { $ne: id } })
+        .select('_id')
+        .lean()
 
     if (existingNewsletterSubscription) {
-      throw new ConflictException(
-        NEWSLETTER_SUBSCRIPTION_ALREADY_EXISTS_ERROR,
-      )
+      throw new ConflictException(NEWSLETTER_SUBSCRIPTION_ALREADY_EXISTS_ERROR)
     }
   }
 

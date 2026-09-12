@@ -17,7 +17,10 @@ import {
   QueryLimitPropertyDocs,
   QueryPagePropertyDocs,
 } from '@common/swagger'
-import { ProductsListItemsPropertyDocs, ProductsResponseDocs } from '@modules/products/products.swagger'
+import {
+  ProductsListItemsPropertyDocs,
+  ProductsResponseDocs,
+} from '@modules/products/products.swagger'
 import {
   FAVORITES_DEFAULT_LIMIT,
   FAVORITES_MAX_LIMIT,
@@ -31,7 +34,8 @@ export function FavoritesTagDocs() {
 }
 
 export const FavoritesProductIdsPropertyDocs = createPropertyDocsDecorator({
-  description: 'Favorite product ids that should be merged into the account state.',
+  description:
+    'Favorite product ids that should be merged into the account state.',
   type: [String],
   example: FAVORITES_PRODUCT_IDS_EXAMPLE,
   uniqueItems: true,
@@ -111,7 +115,8 @@ export function FavoritesAddDocs() {
     }),
     ApiAuthRequiredDocs(),
     ApiBadRequestResponse({
-      description: 'Product id has an invalid format or favorites limit was reached.',
+      description:
+        'Product id has an invalid format or favorites limit was reached.',
       type: ErrorResponseDocs,
     }),
     ApiNotFoundResponse({

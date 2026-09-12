@@ -6,25 +6,19 @@ export const CONTACT_REQUEST_NAME_MAX_LENGTH_ERROR =
   'Имя не должно быть длиннее 100 символов'
 export const CONTACT_REQUEST_EMAIL_STRING_ERROR = 'Email должен быть строкой'
 export const CONTACT_REQUEST_EMAIL_EMPTY_ERROR = 'Email обязателен'
-export const CONTACT_REQUEST_EMAIL_FORMAT_ERROR =
-  'Некорректный формат email'
+export const CONTACT_REQUEST_EMAIL_FORMAT_ERROR = 'Некорректный формат email'
 export const CONTACT_REQUEST_MESSAGE_STRING_ERROR =
   'Текст вопроса должен быть строкой'
 export const CONTACT_REQUEST_MESSAGE_MAX_LENGTH_ERROR =
   'Текст вопроса не должен быть длиннее 1000 символов'
 export const CONTACT_REQUEST_SEARCH_STRING_ERROR =
   'Поисковая строка должна быть строкой'
-export const CONTACT_REQUEST_PAGE_NUMBER_ERROR =
-  'Страница должна быть числом'
-export const CONTACT_REQUEST_PAGE_MIN_ERROR =
-  'Страница должна быть не меньше 1'
+export const CONTACT_REQUEST_PAGE_NUMBER_ERROR = 'Страница должна быть числом'
+export const CONTACT_REQUEST_PAGE_MIN_ERROR = 'Страница должна быть не меньше 1'
 export const CONTACT_REQUEST_LIMIT_NUMBER_ERROR = 'Лимит должен быть числом'
-export const CONTACT_REQUEST_LIMIT_MIN_ERROR =
-  'Лимит должен быть не меньше 1'
-export const CONTACT_REQUEST_LIMIT_MAX_ERROR =
-  'Лимит должен быть не больше 100'
-export const CONTACT_REQUEST_SORT_ERROR =
-  'Некорректное значение сортировки'
+export const CONTACT_REQUEST_LIMIT_MIN_ERROR = 'Лимит должен быть не меньше 1'
+export const CONTACT_REQUEST_LIMIT_MAX_ERROR = 'Лимит должен быть не больше 100'
+export const CONTACT_REQUEST_SORT_ERROR = 'Некорректное значение сортировки'
 export const CONTACT_REQUEST_NOT_FOUND_ERROR =
   'Сообщение из формы контактов не найдено'
 

@@ -28,6 +28,4 @@ export interface PreparedRequest extends Request {
 export type UserWithoutPassword = Omit<User, UserPasswordAndSensitiveFields>
 
 type UserPasswordAndSensitiveFields =
-  | 'password'
-  | 'resetPasswordToken'
-  | 'resetPasswordTokenExpiresAt'
+  'password' | 'resetPasswordToken' | 'resetPasswordTokenExpiresAt'

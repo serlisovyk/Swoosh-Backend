@@ -51,5 +51,4 @@ export class PasswordResetService {
 
     return true
   }
-
 }

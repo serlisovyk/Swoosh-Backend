@@ -82,8 +82,7 @@ export function NewsletterSubscriptionListItemsPropertyDocs(
   model: Type<unknown>,
 ) {
   return createPropertyDocsDecorator({
-    description:
-      'Newsletter subscriptions matching the current admin filters.',
+    description: 'Newsletter subscriptions matching the current admin filters.',
     type: [model],
   })()
 }
@@ -109,7 +108,9 @@ export class NewsletterSubscriptionResponseDocs {
 }
 
 export class NewsletterSubscriptionListResponseDocs {
-  @NewsletterSubscriptionListItemsPropertyDocs(NewsletterSubscriptionResponseDocs)
+  @NewsletterSubscriptionListItemsPropertyDocs(
+    NewsletterSubscriptionResponseDocs,
+  )
   newsletterSubscriptions!: NewsletterSubscriptionResponseDocs[]
 
   @NewsletterSubscriptionTotalPropertyDocs()

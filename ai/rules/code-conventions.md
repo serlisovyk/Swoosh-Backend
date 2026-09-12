@@ -5,7 +5,8 @@
 - Prefer readable, explicit TypeScript over clever abstractions. Small, boring, easy-to-explain code over clever code.
 - Keep controller, service, DTO, model, Swagger, and utility responsibilities separate.
 - Use path aliases already configured by the project (`@modules/*`, `@common/*`, `@shared/*`) and module barrels over deep relative paths.
-- Avoid broad `any`; when unavoidable, keep it local and obvious. Prefer narrowing over `as` type assertions.
+- `tsconfig.json` has `strict: true` and `noUncheckedIndexedAccess: true` — both are enforced at `bun run build`, not just style advice. The one deliberate exception is `strictPropertyInitialization: false`, kept off because Mongoose schema classes declare fields (`@Prop() name: string`) with no constructor initializer by design — see [decisions/strict-ts-and-working-eslint](../decisions/2026-09-12-strict-ts-and-working-eslint.md).
+- `@typescript-eslint/no-explicit-any` is `'error'` — `any` is not allowed, not just discouraged. If one is genuinely unavoidable, use a local `// eslint-disable-next-line @typescript-eslint/no-explicit-any` with a one-line reason, not a broader disable or a rule downgrade. Prefer narrowing (type guards, `unknown` + a check) over `any` or an `as` assertion.
 - Prefer `readonly` for injected dependencies and values that never reassign.
 - Prefer explicit names over abbreviations — e.g. `context`, not `ctx` (including Nest's `ArgumentsHost`/`ExecutionContext` locals).
 
@@ -51,13 +52,13 @@
 
 ## Async
 
-- Use `async/await`; no floating promises (await it, or explicitly `void` it).
+- Use `async/await`; no floating promises (await it, or explicitly `void` it). `@typescript-eslint/no-floating-promises` is `'error'` — this fails `bun run lint`, it isn't just a style note.
 - Keep heavy synchronous work off request paths.
 
 ## Formatting
 
-- Formatting is owned by Prettier (`.prettierrc`): no semicolons, single quotes, trailing commas everywhere, 2-space indent, 80-column width, always-parenthesized arrow params. Do not hand-format against it.
-- Run `npm run format` / `npm run lint` — do not argue style in review when the linter is green.
+- Formatting is owned by Prettier (`.prettierrc`): no semicolons, single quotes, trailing commas everywhere, 2-space indent, 80-column width, always-parenthesized arrow params, `endOfLine: "auto"` (accepts whichever line ending a file already has — a Windows checkout with `core.autocrlf=true` shouldn't fight the linter over CRLF vs LF). Do not hand-format against it.
+- `prettier/prettier` is `'error'` (the default from `eslint-plugin-prettier`'s `recommended` config, not overridden) — `bun run lint` fails on unformatted code, it does not merely warn. Run `bun run format` / `bun run lint` — do not argue style in review when the linter is green.
 
 ## Constants
 

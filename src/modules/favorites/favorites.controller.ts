@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Put,
-  Query,
-} from '@nestjs/common'
+import { Controller, Delete, Get, Param, Put, Query } from '@nestjs/common'
 import { ParseObjectIdPipe } from '@nestjs/mongoose'
 import { Auth, CurrentUser } from '@modules/auth'
 import { FindAllFavoritesDto } from './dto/find-all-favorites.dto'

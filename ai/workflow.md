@@ -53,8 +53,8 @@ Do not explore `src/` from scratch when the map answers the question.
 
 ## 8. Verify
 
-- `npm run lint`.
-- `npm run build` — after deleting files, changing dependencies, or changing public contracts.
+- `bun run lint`.
+- `bun run build` — after deleting files, changing dependencies, or changing public contracts.
 - No test suite exists. Do not add tests, and do not report their absence as a gap.
 
 ## 9. Definition of Done gate
@@ -81,6 +81,12 @@ Hand over a short summary:
 - anything deliberately left out of scope.
 
 Then stop and wait. Silence, a neutral reply, or a question is not approval — only an explicit yes is. If changes are requested, apply them and return to step 8.
+
+**Fixing requested changes — amend, don't always add a commit:**
+
+- A small fix (typo, indentation, renaming, a missed edge case in code you just wrote, anything that doesn't change the shape of the change) belongs in the commit that introduced it, not a new one. Find that commit and fold the fix into it: amend it directly if it's the tip, or `git commit --fixup=<sha>` + `git rebase -i --autosquash` when it's further back.
+- A new commit is for something that earns its own line in history: a behavior change, a refactor, scope the author added during review.
+- This only rewrites commits on your own branch, pre-merge. Never rewrite anything already on `main`.
 
 ## 12. Report on the task
 
