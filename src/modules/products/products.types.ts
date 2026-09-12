@@ -1,4 +1,5 @@
 import { Model } from 'mongoose'
+import { SortMap } from '@shared/types'
 import { ProductCategory } from './category/models/product-category.model'
 import { Product } from './models/product.model'
 
@@ -11,7 +12,7 @@ export interface ProductListQueryOptions {
   excludeIds?: string[]
   limit: number
   skip: number
-  sort: Record<string, 1 | -1>
+  sort: SortMap
 }
 
 export interface ProductFiltersMetadata {

@@ -60,6 +60,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `swagger/swagger-basic-auth.utils.ts` | `createSwaggerBasicAuthMiddleware` — the HTTP Basic gate `setupSwagger` wraps the docs route in outside dev |
 | `constants/swagger.constants.ts` | `SWAGGER_ACCESS_TOKEN_AUTH_NAME`, `SWAGGER_REFRESH_TOKEN_AUTH_NAME` (derived from `cookie.constants.ts`'s `REFRESH_TOKEN_COOKIE_NAME`), `SWAGGER_BASIC_AUTH_REALM`, `SWAGGER_SITE_TITLE`/`SWAGGER_DESCRIPTION`/`SWAGGER_VERSION` — kept separate from `api.constants.ts` (different topic: document metadata, not the global prefix) |
 | `types/swagger.types.ts` | `SwaggerPropertyOptions`, `CookieToken`, `QueryPagePropertyDocsOptions`, `QueryLimitPropertyDocsOptions` |
+| `types/sort.types.ts` | `SortMap<TKey = string>` — the shared Mongo sort-map shape (`Record<TKey, 1 \| -1>`), used by `products` and the three form modules' sort maps/resolved sort objects |
 | `utils/query.utils.ts` | query-param parsing only: `toStringArrayQueryParam`, `toNumberArrayQueryParam`, `toBooleanQueryParam` |
 | `utils/sanitize.utils.ts` | value sanitizing/normalizing: `trimStringValue`, `trimStringArrayValue`, `normalizeEmailValue`, `normalizePhoneValue` |
 | `utils/env.utils.ts` | `isDev` / `isProd` / `parseCorsDomainsConfigValue` |

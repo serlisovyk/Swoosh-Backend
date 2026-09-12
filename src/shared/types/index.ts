@@ -9,3 +9,4 @@ export type {
   QueryPagePropertyDocsOptions,
   QueryLimitPropertyDocsOptions,
 } from './swagger.types'
+export type { SortMap } from './sort.types'
