@@ -14,3 +14,5 @@ export const AUTH_LOGIN_THROTTLE = {
 export const AUTH_REGISTER_THROTTLE = {
   default: { limit: 5, ttl: 300_000 },
 } as const
+
+export const ROLES_METADATA_KEY = 'roles'
