@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common'
 import { ProductsService } from '@modules/products/products.service'
 import { PRODUCT_NOT_FOUND_ERROR } from '@modules/products/products.constants'
-import { UserService } from '@modules/user/user.service'
-import { USER_NOT_FOUND_ERROR } from '@modules/user/user.constants'
+import { UsersService } from '@modules/users/users.service'
+import { USER_NOT_FOUND_ERROR } from '@modules/users/users.constants'
 import { FindAllFavoritesDto } from './dto/find-all-favorites.dto'
 import {
   areFavoriteProductIdsEqual,
@@ -30,7 +30,7 @@ import {
 @Injectable()
 export class FavoritesService {
   constructor(
-    private readonly userService: UserService,
+    private readonly usersService: UsersService,
     private readonly productsService: ProductsService,
   ) {}
 
@@ -141,7 +141,7 @@ export class FavoritesService {
 
   private async findUserFavoriteProductIdsOrThrow(userId: string) {
     const userFavoriteState =
-      await this.userService.getFavoriteProductIdsWithVersion(userId)
+      await this.usersService.getFavoriteProductIdsWithVersion(userId)
 
     if (!userFavoriteState) throw new NotFoundException(USER_NOT_FOUND_ERROR)
 
@@ -190,7 +190,7 @@ export class FavoritesService {
       }
 
       const updatedFavoriteProductIds =
-        await this.userService.updateFavoriteProductIdsIfVersionMatches(
+        await this.usersService.updateFavoriteProductIdsIfVersionMatches(
           userId,
           version,
           nextFavoriteProductIds,
@@ -208,7 +208,7 @@ export class FavoritesService {
 
   private async findUserFavoriteStateOrThrow(userId: string) {
     const userFavoriteState =
-      await this.userService.getFavoriteProductIdsWithVersion(userId)
+      await this.usersService.getFavoriteProductIdsWithVersion(userId)
 
     if (!userFavoriteState) throw new NotFoundException(USER_NOT_FOUND_ERROR)
 

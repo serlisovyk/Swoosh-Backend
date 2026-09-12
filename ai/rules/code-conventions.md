@@ -15,7 +15,7 @@
 - Prefer `interface` for object-shaped public contracts (DTO-adjacent shapes, response contracts).
 - Prefer `type` for unions, literal variants, and utility composition.
 - Do not inline an object type for a class field, cache entry, or function param/return shape — even when it's private/internal state, and even when it's a single-property options bag (`function f(options: { example: number })`). Name it and put it in `<feature>.types.ts` next to the other feature-local shapes (e.g. `FiltersMetadataCacheEntry` in `src/modules/products/products.types.ts`; `QueryLimitPropertyDocsOptions` in `src/common/swagger/types/swagger.types.ts`). An inline `{ ... }` type annotation cannot be reused, named in an error message, or found by searching for it.
-- Prefer an `as const` object with a derived union type over a TS `enum` — that is the established pattern here (`ROLES` in `src/modules/user/user.types.ts`).
+- Prefer an `as const` object with a derived union type over a TS `enum` — that is the established pattern here (`ROLES` in `src/modules/users/users.types.ts`).
 - Keep exported types and function names easy to explain out loud.
 - Don't nest an object literal type inside another interface's property (`{ error: { code: ...; message: ...; fields?: ... } }`). Extract the inner shape into its own named interface and reference it (`interface ErrorBody { code; message; fields? }`, then `interface ErrorResponseBody { error: ErrorBody }`) — see `src/common/errors/errors.types.ts`.
 
@@ -31,7 +31,8 @@
 - **Classes**: PascalCase. DTOs end in `Dto` (`CreateProductDto`); guards end in `Guard` (`JwtAuthGuard`); Mongoose schema classes match the collection name.
 - **Composite/param decorators**: PascalCase factory functions (`Auth`, `Captcha`).
 - **Exported constants**: UPPER_SNAKE_CASE for domain/config values (`DEFAULT_PRODUCTS_LIMIT`, `PRODUCT_SORT_MAP`, cookie names, throttle configs).
-- **Role / status sets**: an UPPER_SNAKE `as const` object plus a derived union of the same name — see `ROLES` in `src/modules/user/user.types.ts`. Do not introduce a TS `enum` as a competing style.
+- **Role / status sets**: an UPPER_SNAKE `as const` object plus a derived union of the same name — see `ROLES` in `src/modules/users/users.types.ts`. Do not introduce a TS `enum` as a competing style.
+- **Module/service/controller/file-prefix — plural; model/DTO/entity-derived type — singular.** A feature module's folder, its `*.module.ts`/`*.controller.ts`/`*.service.ts` file prefix, and the corresponding classes (`UsersModule`, `UsersController`, `UsersService`) are plural, even when a file documents or handles a single entity (`ProductsResponseDocs` describes one product; `UsersAddressResponseDocs` describes one address). The model class, its file, and anything typed directly off it — Mongoose model classes (`User`, `Product`), DTOs (`CreateProductDto`, `UpdateUserDto`), and derived types (`UserModel`, `ProductModel`) — stay singular. `products` and `users` are the reference pair for this split.
 
 ## Imports
 

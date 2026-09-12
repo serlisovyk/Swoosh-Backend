@@ -12,7 +12,7 @@ import ms, { StringValue } from 'ms'
 import { AppEnv } from '@shared/config'
 import { noop } from '@shared/utils'
 import { FavoritesService } from '@modules/favorites/favorites.service'
-import { UserService } from '../user/user.service'
+import { UsersService } from '../users/users.service'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
 import {
@@ -32,13 +32,13 @@ import {
 export class AuthService {
   constructor(
     private readonly jwt: JwtService,
-    private readonly userService: UserService,
+    private readonly usersService: UsersService,
     private readonly favoritesService: FavoritesService,
     private readonly configService: ConfigService<AppEnv, true>,
   ) {}
 
   async register(dto: RegisterDto) {
-    const createdUser = await this.userService.create({
+    const createdUser = await this.usersService.create({
       email: dto.email,
       password: dto.password,
       name: dto.name,
@@ -75,7 +75,7 @@ export class AuthService {
       throw new BadRequestException(INVALID_REFRESH_TOKEN_ERROR)
     }
 
-    const user = await this.userService.getById(verifiedRefreshToken.id)
+    const user = await this.usersService.getById(verifiedRefreshToken.id)
 
     if (!user) {
       throw new NotFoundException(USER_NOT_FOUND_ERROR)
@@ -104,7 +104,7 @@ export class AuthService {
   private async validateUser(data: LoginDto) {
     const { email, password } = data
 
-    const user = await this.userService.getByEmailWithPassword(email)
+    const user = await this.usersService.getByEmailWithPassword(email)
 
     if (!user) {
       const dummyPasswordHash = this.configService.get(

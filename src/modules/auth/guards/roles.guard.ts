@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { ROLES } from '@modules/user/user.types'
+import { ROLES } from '@modules/users/users.types'
 import { PreparedRequest } from '../auth.types'
 
 @Injectable()

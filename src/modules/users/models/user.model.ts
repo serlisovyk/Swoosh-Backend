@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Schema as MongooseSchema } from 'mongoose'
 import { Product } from '@modules/products/models/product.model'
 import { Address } from './user-address.model'
-import { ROLES } from '../user.types'
+import { ROLES } from '../users.types'
 
 @Schema({ timestamps: true })
 export class User {
