@@ -13,11 +13,6 @@ export const ERROR_CODES = {
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES]
 
-export const BAD_REQUEST_STATUS: number = HttpStatus.BAD_REQUEST
-
-export const INTERNAL_SERVER_ERROR_STATUS: number =
-  HttpStatus.INTERNAL_SERVER_ERROR
-
 export const STATUS_TO_ERROR_CODE: Partial<Record<number, ErrorCode>> = {
   [HttpStatus.UNAUTHORIZED]: ERROR_CODES.UNAUTHORIZED,
   [HttpStatus.FORBIDDEN]: ERROR_CODES.FORBIDDEN,

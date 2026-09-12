@@ -1,4 +1,4 @@
-import { BAD_REQUEST_STATUS } from '@common/errors'
+import { HttpStatus } from '@nestjs/common'
 import type { NextFunction, Request, Response } from 'express'
 import { logRequest, resolveRequestId } from './request-logging.utils'
 import {
@@ -19,11 +19,11 @@ export function requestLoggingMiddleware(
   const startTime = Date.now()
 
   response.on('finish', () => {
-    const statusCode = response.statusCode
+    const statusCode: HttpStatus = response.statusCode
 
     if (
       SKIP_LOGGING_PATHS.includes(request.path) &&
-      statusCode < BAD_REQUEST_STATUS
+      statusCode < HttpStatus.BAD_REQUEST
     ) {
       return
     }
