@@ -43,7 +43,7 @@ No `@Auth()` decorator, so no access token is required. Kept here as the single 
 - `POST /forms/newsletter-subscriptions`, `POST /forms/individual-orders`, `POST /forms/contact-requests` — public form submission (their `GET`/`PUT`/`DELETE` counterparts are admin-only).
 - `GET /` (i.e. `GET /api/v1`), `GET /health` — `system` module; also `@SkipThrottle()`, since uptime monitors would otherwise burn the shared rate limit.
 
-Everything else requires `@Auth()`.
+Everything else requires `@Auth()`. This includes `GET /products/categories` (and its `POST`/`PUT`/`DELETE` counterparts, `ROLES.ADMIN`) — it lists every category for admin management, unlike the public `GET /products/filters`, which only surfaces categories that currently have at least one product. Don't merge the two: they serve different purposes and both stay.
 
 ## Public API Contracts
 
