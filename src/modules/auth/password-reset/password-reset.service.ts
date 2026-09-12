@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { EmailService } from '@common/email/email.service'
+import { EmailService } from '@common/email'
 import { AppEnv } from '@shared/config'
 import { generateToken } from '@shared/utils'
 import { UserService } from '../../user/user.service'
