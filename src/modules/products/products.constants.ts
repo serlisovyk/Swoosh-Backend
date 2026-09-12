@@ -103,8 +103,6 @@ export const DEFAULT_PRODUCTS_LIMIT = 18
 
 export const FILTERS_METADATA_CACHE_TTL_MS = 60_000
 
-export const REGEX_SPECIAL_CHARACTERS = /[.*+?^${}()|[\]\\]/g
-
 export const PRODUCT_SORT_MAP: Record<
   PRODUCT_SORT_OPTIONS,
   Record<string, 1 | -1>
@@ -113,11 +111,6 @@ export const PRODUCT_SORT_MAP: Record<
   [PRODUCT_SORT_OPTIONS.OLDEST]: { createdAt: 1 },
   [PRODUCT_SORT_OPTIONS.PRICE_ASC]: { price: 1 },
   [PRODUCT_SORT_OPTIONS.PRICE_DESC]: { price: -1 },
-}
-
-export const updateProductOptions = {
-  returnDocument: 'after' as const,
-  runValidators: true,
 }
 
 export const PRODUCT_ID_EXAMPLE = '65f1e8d3f9a2b56789c12346'

@@ -17,9 +17,14 @@ import {
   ApiValidationErrorDocs,
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
+  QueryLimitPropertyDocs,
 } from '@common/swagger'
-import { NEWSLETTER_SUBSCRIPTION_ID_EXAMPLE } from './newsletter-subscription.constants'
-import { NEWSLETTER_SUBSCRIPTION_SORT_OPTIONS } from './newsletter-subscription.types'
+import { LIST_QUERY_MAX_LIMIT } from '@shared/constants'
+import { CREATED_AT_SORT_OPTIONS } from '@shared/types'
+import {
+  DEFAULT_NEWSLETTER_SUBSCRIPTIONS_LIMIT,
+  NEWSLETTER_SUBSCRIPTION_ID_EXAMPLE,
+} from './newsletter-subscription.constants'
 
 export function NewsletterSubscriptionTagDocs() {
   return ApiTags('Newsletter Subscriptions')
@@ -55,27 +60,19 @@ export const NewsletterSubscriptionQuerySearchPropertyDocs =
     example: 'john.swoosh',
   })
 
-export const NewsletterSubscriptionQueryPagePropertyDocs =
-  createOptionalPropertyDocsDecorator({
-    description: 'Results page number. Available only for admins.',
-    example: 1,
-    minimum: 1,
-  })
-
 export const NewsletterSubscriptionQueryLimitPropertyDocs =
-  createOptionalPropertyDocsDecorator({
+  QueryLimitPropertyDocs({
     description: 'Maximum number of subscriptions returned per page.',
-    example: 20,
-    minimum: 1,
-    maximum: 100,
+    example: DEFAULT_NEWSLETTER_SUBSCRIPTIONS_LIMIT,
+    maximum: LIST_QUERY_MAX_LIMIT,
   })
 
 export const NewsletterSubscriptionQuerySortPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description: 'Sorting strategy for the newsletter subscriptions list.',
-    enum: NEWSLETTER_SUBSCRIPTION_SORT_OPTIONS,
+    enum: CREATED_AT_SORT_OPTIONS,
     enumName: 'NewsletterSubscriptionSortOptions',
-    example: NEWSLETTER_SUBSCRIPTION_SORT_OPTIONS.NEWEST,
+    example: CREATED_AT_SORT_OPTIONS.NEWEST,
   })
 
 export function NewsletterSubscriptionListItemsPropertyDocs(

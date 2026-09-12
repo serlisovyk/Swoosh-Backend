@@ -4,11 +4,9 @@ import { IndividualOrder } from './models/individual-order.model'
 import { CreateIndividualOrderDto } from './dto/create-individual-order.dto'
 import { FindAllIndividualOrdersDto } from './dto/find-all-individual-orders.dto'
 import { UpdateIndividualOrderDto } from './dto/update-individual-order.dto'
+import { MONGOOSE_UPDATE_AFTER_OPTIONS } from '@shared/constants'
 import { buildIndividualOrderListQueryOptions } from './individual-order.utils'
-import {
-  INDIVIDUAL_ORDER_NOT_FOUND_ERROR,
-  updateIndividualOrderOptions,
-} from './individual-order.constants'
+import { INDIVIDUAL_ORDER_NOT_FOUND_ERROR } from './individual-order.constants'
 import type {
   IndividualOrderListResponse,
   IndividualOrderModel,
@@ -65,7 +63,7 @@ export class IndividualOrderService {
 
   async update(id: string, dto: UpdateIndividualOrderDto) {
     const individualOrder = await this.individualOrderModel
-      .findByIdAndUpdate(id, dto, updateIndividualOrderOptions)
+      .findByIdAndUpdate(id, dto, MONGOOSE_UPDATE_AFTER_OPTIONS)
       .select(this.selectFields)
       .lean()
 

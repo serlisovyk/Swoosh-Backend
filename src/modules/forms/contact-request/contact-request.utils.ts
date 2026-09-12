@@ -1,13 +1,9 @@
-import {
-  CONTACT_REQUEST_SORT_MAP,
-  DEFAULT_CONTACT_REQUESTS_LIMIT,
-  REGEX_SPECIAL_CHARACTERS,
-} from './contact-request.constants'
+import { createContainsRegex, resolveListQueryOptions } from '@shared/utils'
+import { CREATED_AT_SORT_MAP } from '@shared/constants'
+import { CREATED_AT_SORT_OPTIONS } from '@shared/types'
+import { DEFAULT_CONTACT_REQUESTS_LIMIT } from './contact-request.constants'
 import { FindAllContactRequestsDto } from './dto/find-all-contact-requests.dto'
-import {
-  CONTACT_REQUEST_SORT_OPTIONS,
-  type ContactRequestListQueryOptions,
-} from './contact-request.types'
+import type { ContactRequestListQueryOptions } from './contact-request.types'
 
 export function buildContactRequestListQueryOptions(
   dto: FindAllContactRequestsDto,
@@ -22,13 +18,18 @@ export function buildContactRequestListQueryOptions(
     filters.$or = [{ name: regex }, { email: regex }, { message: regex }]
   }
 
-  const limitOption = limit ?? DEFAULT_CONTACT_REQUESTS_LIMIT
-
-  const sortOption = sort
-    ? CONTACT_REQUEST_SORT_MAP[sort]
-    : CONTACT_REQUEST_SORT_MAP[CONTACT_REQUEST_SORT_OPTIONS.NEWEST]
-
-  const skip = ((page ?? 1) - 1) * limitOption
+  const {
+    skip,
+    limit: limitOption,
+    sort: sortOption,
+  } = resolveListQueryOptions({
+    page,
+    limit,
+    sort,
+    sortMap: CREATED_AT_SORT_MAP,
+    defaultSort: CREATED_AT_SORT_OPTIONS.NEWEST,
+    defaultLimit: DEFAULT_CONTACT_REQUESTS_LIMIT,
+  })
 
   return {
     filters,
@@ -36,12 +37,4 @@ export function buildContactRequestListQueryOptions(
     sort: sortOption,
     skip,
   }
-}
-
-function createContainsRegex(value: string): RegExp {
-  return new RegExp(escapeRegExp(value), 'i')
-}
-
-function escapeRegExp(value: string): string {
-  return value.replace(REGEX_SPECIAL_CHARACTERS, '\\$&')
 }

@@ -16,12 +16,15 @@ import {
   ApiValidationErrorDocs,
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
+  QueryLimitPropertyDocs,
 } from '@common/swagger'
-import { INDIVIDUAL_ORDER_ID_EXAMPLE } from './individual-order.constants'
+import { LIST_QUERY_MAX_LIMIT } from '@shared/constants'
+import { CREATED_AT_SORT_OPTIONS } from '@shared/types'
 import {
-  INDIVIDUAL_ORDER_SORT_OPTIONS,
-  INDIVIDUAL_ORDER_STATUSES,
-} from './individual-order.types'
+  DEFAULT_INDIVIDUAL_ORDERS_LIMIT,
+  INDIVIDUAL_ORDER_ID_EXAMPLE,
+} from './individual-order.constants'
+import { INDIVIDUAL_ORDER_STATUSES } from './individual-order.types'
 
 export function IndividualOrderTagDocs() {
   return ApiTags('Individual Orders')
@@ -99,27 +102,18 @@ export const IndividualOrderQueryStatusPropertyDocs =
     example: INDIVIDUAL_ORDER_STATUSES.NEW,
   })
 
-export const IndividualOrderQueryPagePropertyDocs =
-  createOptionalPropertyDocsDecorator({
-    description: 'Results page number. Available only for admins.',
-    example: 1,
-    minimum: 1,
-  })
-
-export const IndividualOrderQueryLimitPropertyDocs =
-  createOptionalPropertyDocsDecorator({
-    description: 'Maximum number of orders returned per page.',
-    example: 20,
-    minimum: 1,
-    maximum: 100,
-  })
+export const IndividualOrderQueryLimitPropertyDocs = QueryLimitPropertyDocs({
+  description: 'Maximum number of orders returned per page.',
+  example: DEFAULT_INDIVIDUAL_ORDERS_LIMIT,
+  maximum: LIST_QUERY_MAX_LIMIT,
+})
 
 export const IndividualOrderQuerySortPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description: 'Sorting strategy for the orders list.',
-    enum: INDIVIDUAL_ORDER_SORT_OPTIONS,
+    enum: CREATED_AT_SORT_OPTIONS,
     enumName: 'IndividualOrderSortOptions',
-    example: INDIVIDUAL_ORDER_SORT_OPTIONS.NEWEST,
+    example: CREATED_AT_SORT_OPTIONS.NEWEST,
   })
 
 export function IndividualOrderListItemsPropertyDocs(model: Type<unknown>) {

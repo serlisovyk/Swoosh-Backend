@@ -16,9 +16,14 @@ import {
   ApiValidationErrorDocs,
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
+  QueryLimitPropertyDocs,
 } from '@common/swagger'
-import { CONTACT_REQUEST_ID_EXAMPLE } from './contact-request.constants'
-import { CONTACT_REQUEST_SORT_OPTIONS } from './contact-request.types'
+import { LIST_QUERY_MAX_LIMIT } from '@shared/constants'
+import { CREATED_AT_SORT_OPTIONS } from '@shared/types'
+import {
+  CONTACT_REQUEST_ID_EXAMPLE,
+  DEFAULT_CONTACT_REQUESTS_LIMIT,
+} from './contact-request.constants'
 
 export function ContactRequestTagDocs() {
   return ApiTags('Contact Requests')
@@ -64,27 +69,18 @@ export const ContactRequestQuerySearchPropertyDocs =
     example: 'delivery',
   })
 
-export const ContactRequestQueryPagePropertyDocs =
-  createOptionalPropertyDocsDecorator({
-    description: 'Results page number. Available only for admins.',
-    example: 1,
-    minimum: 1,
-  })
-
-export const ContactRequestQueryLimitPropertyDocs =
-  createOptionalPropertyDocsDecorator({
-    description: 'Maximum number of contact requests returned per page.',
-    example: 20,
-    minimum: 1,
-    maximum: 100,
-  })
+export const ContactRequestQueryLimitPropertyDocs = QueryLimitPropertyDocs({
+  description: 'Maximum number of contact requests returned per page.',
+  example: DEFAULT_CONTACT_REQUESTS_LIMIT,
+  maximum: LIST_QUERY_MAX_LIMIT,
+})
 
 export const ContactRequestQuerySortPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description: 'Sorting strategy for the contact requests list.',
-    enum: CONTACT_REQUEST_SORT_OPTIONS,
+    enum: CREATED_AT_SORT_OPTIONS,
     enumName: 'ContactRequestSortOptions',
-    example: CONTACT_REQUEST_SORT_OPTIONS.NEWEST,
+    example: CREATED_AT_SORT_OPTIONS.NEWEST,
   })
 
 export function ContactRequestListItemsPropertyDocs(model: Type<unknown>) {

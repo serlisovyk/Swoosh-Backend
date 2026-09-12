@@ -14,11 +14,3 @@ export interface NewsletterSubscriptionListResponse {
   newsletterSubscriptions: NewsletterSubscription[]
   total: number
 }
-
-export const NEWSLETTER_SUBSCRIPTION_SORT_OPTIONS = {
-  NEWEST: 'NEWEST',
-  OLDEST: 'OLDEST',
-} as const
-
-export type NEWSLETTER_SUBSCRIPTION_SORT_OPTIONS =
-  (typeof NEWSLETTER_SUBSCRIPTION_SORT_OPTIONS)[keyof typeof NEWSLETTER_SUBSCRIPTION_SORT_OPTIONS]

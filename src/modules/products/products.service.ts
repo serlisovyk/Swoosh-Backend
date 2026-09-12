@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
+import { MONGOOSE_UPDATE_AFTER_OPTIONS } from '@shared/constants'
 import { ProductCategory } from './category/models/product-category.model'
 import { PRODUCT_CATEGORY_NOT_FOUND_ERROR } from './category/product-category.constants'
 import { Product } from './models/product.model'
@@ -16,7 +17,6 @@ import {
   PRODUCT_NOT_FOUND_ERROR,
   PRODUCT_OLD_PRICE_LOWER_THAN_PRICE_ERROR,
   PRODUCT_SALE_CF_REQUIRES_OLD_PRICE_ERROR,
-  updateProductOptions,
 } from './products.constants'
 import type {
   FiltersMetadataCacheEntry,
@@ -196,7 +196,7 @@ export class ProductsService {
     const payload = category ? { ...data, category: category._id } : data
 
     const updatedProduct = await this.productModel
-      .findByIdAndUpdate(id, payload, updateProductOptions)
+      .findByIdAndUpdate(id, payload, MONGOOSE_UPDATE_AFTER_OPTIONS)
       .select(this.productSelectFields)
       .populate('category', this.categorySelectFields)
       .lean()
