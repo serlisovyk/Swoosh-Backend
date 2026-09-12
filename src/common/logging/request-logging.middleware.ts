@@ -1,10 +1,10 @@
 import { BAD_REQUEST_STATUS } from '@common/errors'
 import type { NextFunction, Request, Response } from 'express'
+import { logRequest, resolveRequestId } from './request-logging.utils'
 import {
   REQUEST_ID_HEADER,
   SKIP_LOGGING_PATHS,
 } from './request-logging.constants'
-import { logRequest, resolveRequestId } from './request-logging.utils'
 
 export function requestLoggingMiddleware(
   request: Request,
