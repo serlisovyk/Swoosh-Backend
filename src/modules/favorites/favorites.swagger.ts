@@ -1,7 +1,6 @@
 import {
   ApiAuthRequiredDocs,
   ApiInvalidQueryDocs,
-  ApiNotFoundDocs,
   ErrorResponseDocs,
 } from '@common/errors'
 import { applyDecorators } from '@nestjs/common'
@@ -35,7 +34,7 @@ export function FavoritesTagDocs() {
 
 export const FavoritesProductIdsPropertyDocs = createPropertyDocsDecorator({
   description:
-    'Favorite product ids that should be merged into the account state.',
+    'Id избранных товаров, которые нужно объединить с текущим состоянием аккаунта.',
   type: [String],
   example: ['65f1e8d3f9a2b56789c12345', '65f1e8d3f9a2b56789c12346'],
   uniqueItems: true,
@@ -45,7 +44,7 @@ export const FavoritesProductIdsPropertyDocs = createPropertyDocsDecorator({
 export const FavoritesOptionalProductIdsPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description:
-      'Guest favorite product ids that will be merged with stored favorites.',
+      'Id избранных товаров гостя, которые будут объединены с сохранённым избранным.',
     type: [String],
     example: ['65f1e8d3f9a2b56789c12345', '65f1e8d3f9a2b56789c12346'],
     uniqueItems: true,
@@ -53,7 +52,7 @@ export const FavoritesOptionalProductIdsPropertyDocs =
   })
 
 export const FavoritesTotalPropertyDocs = createPropertyDocsDecorator({
-  description: 'Total number of favorite products stored for the user.',
+  description: 'Общее количество избранных товаров пользователя.',
   example: 6,
 })
 
@@ -85,42 +84,46 @@ export class FavoritesListResponseDocs {
 export function FavoritesFindAllDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Get favorite products',
+      summary: 'Получить избранные товары',
       description:
-        'Returns the current user favorites as a paginated product list.',
+        'Возвращает избранное текущего пользователя в виде постраничного списка товаров.',
     }),
     ApiOkResponse({
-      description: 'Favorite products returned successfully.',
+      description: 'Избранные товары успешно получены.',
       type: FavoritesListResponseDocs,
     }),
     ApiAuthRequiredDocs(),
     ApiInvalidQueryDocs(),
-    ApiNotFoundDocs('User'),
+    ApiNotFoundResponse({
+      description: 'Пользователь не найден.',
+      type: ErrorResponseDocs,
+    }),
   )
 }
 
 export function FavoritesAddDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Add product to favorites',
+      summary: 'Добавить товар в избранное',
     }),
     ApiParam({
       name: 'productId',
-      description: 'MongoDB ObjectId of the product to add to favorites.',
+      description:
+        'MongoDB ObjectId товара, который нужно добавить в избранное.',
       example: '65f1e8d3f9a2b56789c12345',
     }),
     ApiOkResponse({
-      description: 'Product added to favorites successfully.',
+      description: 'Товар успешно добавлен в избранное.',
       type: FavoritesStateResponseDocs,
     }),
     ApiAuthRequiredDocs(),
     ApiBadRequestResponse({
       description:
-        'Product id has an invalid format or favorites limit was reached.',
+        'Некорректный формат id товара либо достигнут лимит избранного.',
       type: ErrorResponseDocs,
     }),
     ApiNotFoundResponse({
-      description: 'User or product was not found.',
+      description: 'Пользователь или товар не найден.',
       type: ErrorResponseDocs,
     }),
   )
@@ -129,22 +132,26 @@ export function FavoritesAddDocs() {
 export function FavoritesRemoveDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Remove product from favorites',
+      summary: 'Удалить товар из избранного',
     }),
     ApiParam({
       name: 'productId',
-      description: 'MongoDB ObjectId of the product to remove from favorites.',
+      description:
+        'MongoDB ObjectId товара, который нужно удалить из избранного.',
       example: '65f1e8d3f9a2b56789c12345',
     }),
     ApiOkResponse({
-      description: 'Product removed from favorites successfully.',
+      description: 'Товар успешно удалён из избранного.',
       type: FavoritesStateResponseDocs,
     }),
     ApiAuthRequiredDocs(),
     ApiBadRequestResponse({
-      description: 'Product id has an invalid format.',
+      description: 'Некорректный формат id товара.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundDocs('User'),
+    ApiNotFoundResponse({
+      description: 'Пользователь не найден.',
+      type: ErrorResponseDocs,
+    }),
   )
 }
