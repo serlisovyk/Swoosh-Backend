@@ -8,11 +8,13 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common'
 import { ParseObjectIdPipe } from '@nestjs/mongoose'
 import { Auth } from '@modules/auth'
 import { ROLES } from '@modules/users/users.types'
 import { CreateProductCategoryDto } from './dto/create-product-category.dto'
+import { FindAllProductCategoriesDto } from './dto/find-all-product-categories.dto'
 import { UpdateProductCategoryDto } from './dto/update-product-category.dto'
 import { ProductCategoryService } from './product-category.service'
 import {
@@ -31,8 +33,8 @@ export class ProductCategoryController {
   @ProductCategoryFindAllDocs()
   @Auth(ROLES.ADMIN)
   @Get()
-  findAll() {
-    return this.categoryService.findAll()
+  findAll(@Query() dto: FindAllProductCategoriesDto) {
+    return this.categoryService.findAll(dto)
   }
 
   @ProductCategoryCreateDocs()

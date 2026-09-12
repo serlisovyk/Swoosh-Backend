@@ -5,17 +5,21 @@ import {
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { MONGOOSE_UPDATE_AFTER_OPTIONS } from '@shared/constants'
+import { resolvePaginationOffset } from '@shared/utils'
 import { ProductsService } from '../products.service'
 import type { ProductCategoryModel } from '../products.types'
 import { CreateProductCategoryDto } from './dto/create-product-category.dto'
+import { FindAllProductCategoriesDto } from './dto/find-all-product-categories.dto'
 import { UpdateProductCategoryDto } from './dto/update-product-category.dto'
 import { ProductCategory } from './models/product-category.model'
 import {
   PRODUCT_CATEGORY_ALREADY_IN_USE_ERROR,
+  PRODUCT_CATEGORY_DEFAULT_LIMIT,
   PRODUCT_CATEGORY_NAME_ALREADY_EXISTS_ERROR,
   PRODUCT_CATEGORY_NOT_FOUND_ERROR,
   PRODUCT_CATEGORY_SELECT_FIELDS,
 } from './product-category.constants'
+import type { ProductCategoryListResponse } from './product-category.types'
 
 @Injectable()
 export class ProductCategoryService {
@@ -25,12 +29,25 @@ export class ProductCategoryService {
     private readonly productsService: ProductsService,
   ) {}
 
-  findAll() {
-    return this.categoryModel
+  async findAll(
+    dto: FindAllProductCategoriesDto,
+  ): Promise<ProductCategoryListResponse> {
+    const limit = dto.limit ?? PRODUCT_CATEGORY_DEFAULT_LIMIT
+    const skip = resolvePaginationOffset(dto.page, limit)
+
+    const data = this.categoryModel
       .find()
       .sort({ name: 1 })
+      .skip(skip)
+      .limit(limit)
       .select(PRODUCT_CATEGORY_SELECT_FIELDS)
       .lean()
+
+    const count = this.categoryModel.countDocuments()
+
+    const [categories, total] = await Promise.all([data, count])
+
+    return { categories, total }
   }
 
   async create(dto: CreateProductCategoryDto) {

@@ -1,9 +1,10 @@
 import {
   ApiAuthRequiredDocs,
+  ApiInvalidQueryDocs,
   ApiValidationErrorDocs,
   ErrorResponseDocs,
 } from '@common/errors'
-import { applyDecorators } from '@nestjs/common'
+import { applyDecorators, Type } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
   ApiConflictResponse,
@@ -13,11 +14,20 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiProperty,
   ApiTags,
 } from '@nestjs/swagger'
-import { createPropertyDocsDecorator } from '@shared/swagger'
+import {
+  createPropertyDocsDecorator,
+  QueryLimitPropertyDocs,
+  QueryPagePropertyDocs,
+} from '@shared/swagger'
 import { PRODUCT_CATEGORY_ID_EXAMPLE } from '../products.constants'
 import { ProductsCategoryResponseDocs } from '../products.swagger'
+import {
+  PRODUCT_CATEGORY_DEFAULT_LIMIT,
+  PRODUCT_CATEGORY_MAX_LIMIT,
+} from './product-category.constants'
 
 export function ProductCategoryTagDocs() {
   return ApiTags('Product Categories')
@@ -28,17 +38,47 @@ export const ProductCategoryNamePropertyDocs = createPropertyDocsDecorator({
   example: 'Кроссовки',
 })
 
+export const ProductCategoryQueryPagePropertyDocs = QueryPagePropertyDocs({
+  example: 1,
+})
+
+export const ProductCategoryQueryLimitPropertyDocs = QueryLimitPropertyDocs({
+  example: PRODUCT_CATEGORY_DEFAULT_LIMIT,
+  maximum: PRODUCT_CATEGORY_MAX_LIMIT,
+})
+
+export function ProductCategoryListItemsPropertyDocs(model: Type<unknown>) {
+  return ApiProperty({
+    description: 'Категории товаров, соответствующие текущей странице.',
+    type: [model],
+  })
+}
+
+export const ProductCategoryTotalPropertyDocs = createPropertyDocsDecorator({
+  description: 'Общее количество категорий товаров.',
+  example: 12,
+})
+
+export class ProductCategoryListResponseDocs {
+  @ProductCategoryListItemsPropertyDocs(ProductsCategoryResponseDocs)
+  categories!: ProductsCategoryResponseDocs[]
+
+  @ProductCategoryTotalPropertyDocs()
+  total!: number
+}
+
 export function ProductCategoryFindAllDocs() {
   return applyDecorators(
     ApiOperation({
       summary: 'Получить список категорий',
       description:
-        'Возвращает все категории товаров, включая категории без товаров, отсортированные по названию.',
+        'Возвращает категории товаров, включая категории без товаров, отсортированные по названию, с пагинацией через page/limit.',
     }),
     ApiOkResponse({
       description: 'Список категорий получен успешно.',
-      type: [ProductsCategoryResponseDocs],
+      type: ProductCategoryListResponseDocs,
     }),
+    ApiInvalidQueryDocs(),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
       description: 'Только администраторы могут просматривать категории.',
