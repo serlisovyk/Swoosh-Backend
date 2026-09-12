@@ -1,7 +1,6 @@
 import {
   ApiAuthRequiredDocs,
   ApiInvalidQueryDocs,
-  ApiNotFoundDocs,
   ApiValidationErrorDocs,
   ErrorResponseDocs,
 } from '@common/errors'
@@ -11,6 +10,7 @@ import {
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -34,44 +34,45 @@ export function NewsletterSubscriptionTagDocs() {
 
 export const NewsletterSubscriptionEmailPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Newsletter subscriber email address.',
+    description: 'Email подписчика рассылки.',
     example: 'john.swoosh@example.com',
   })
 
 export const NewsletterSubscriptionResponseIdPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Newsletter subscription identifier.',
+    description: 'Идентификатор подписки на рассылку.',
     example: NEWSLETTER_SUBSCRIPTION_ID_EXAMPLE,
   })
 
 export const NewsletterSubscriptionCreatedAtPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Creation timestamp.',
+    description: 'Время создания.',
     example: '2026-03-24T10:00:00.000Z',
   })
 
 export const NewsletterSubscriptionUpdatedAtPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Last update timestamp.',
+    description: 'Время последнего обновления.',
     example: '2026-03-24T10:15:00.000Z',
   })
 
 export const NewsletterSubscriptionQuerySearchPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Free-text search by email. Available only for admins.',
+    description:
+      'Полнотекстовый поиск по email. Доступно только администраторам.',
     example: 'john.swoosh',
   })
 
 export const NewsletterSubscriptionQueryLimitPropertyDocs =
   QueryLimitPropertyDocs({
-    description: 'Maximum number of subscriptions returned per page.',
+    description: 'Максимальное количество подписок на странице.',
     example: DEFAULT_NEWSLETTER_SUBSCRIPTIONS_LIMIT,
     maximum: LIST_QUERY_MAX_LIMIT,
   })
 
 export const NewsletterSubscriptionQuerySortPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Sorting strategy for the newsletter subscriptions list.',
+    description: 'Стратегия сортировки списка подписок на рассылку.',
     enum: CREATED_AT_SORT_OPTIONS,
     enumName: 'NewsletterSubscriptionSortOptions',
     example: CREATED_AT_SORT_OPTIONS.NEWEST,
@@ -81,14 +82,15 @@ export function NewsletterSubscriptionListItemsPropertyDocs(
   model: Type<unknown>,
 ) {
   return createPropertyDocsDecorator({
-    description: 'Newsletter subscriptions matching the current admin filters.',
+    description:
+      'Подписки на рассылку, соответствующие текущим фильтрам администратора.',
     type: [model],
   })()
 }
 
 export const NewsletterSubscriptionTotalPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Total number of matching newsletter subscriptions.',
+    description: 'Общее количество найденных подписок на рассылку.',
     example: 24,
   })
 
@@ -119,13 +121,12 @@ export class NewsletterSubscriptionListResponseDocs {
 export function NewsletterSubscriptionCreateDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Create newsletter subscription',
-      description:
-        'Public endpoint for subscribing an email address to the newsletter list.',
+      summary: 'Создать подписку на рассылку',
+      description: 'Публичный эндпоинт для подписки email-адреса на рассылку.',
       security: [],
     }),
     ApiCreatedResponse({
-      description: 'Newsletter subscription processed successfully.',
+      description: 'Подписка на рассылку успешно обработана.',
       schema: {
         type: 'boolean',
         example: true,
@@ -138,18 +139,19 @@ export function NewsletterSubscriptionCreateDocs() {
 export function NewsletterSubscriptionFindAllDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Get newsletter subscriptions list',
+      summary: 'Получить список подписок на рассылку',
       description:
-        'Returns a paginated list of newsletter subscriptions for admins.',
+        'Возвращает постраничный список подписок на рассылку для администраторов.',
     }),
     ApiOkResponse({
-      description: 'Newsletter subscriptions returned successfully.',
+      description: 'Список подписок на рассылку успешно получен.',
       type: NewsletterSubscriptionListResponseDocs,
     }),
     ApiInvalidQueryDocs(),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can access newsletter subscriptions.',
+      description:
+        'Только администраторы могут просматривать подписки на рассылку.',
       type: ErrorResponseDocs,
     }),
   )
@@ -158,87 +160,98 @@ export function NewsletterSubscriptionFindAllDocs() {
 export function NewsletterSubscriptionFindByIdDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Get newsletter subscription by id',
+      summary: 'Получить подписку на рассылку по id',
     }),
     ApiParam({
       name: 'id',
-      description: 'MongoDB ObjectId of the newsletter subscription.',
+      description: 'MongoDB ObjectId подписки на рассылку.',
       example: NEWSLETTER_SUBSCRIPTION_ID_EXAMPLE,
     }),
     ApiOkResponse({
-      description: 'Newsletter subscription returned successfully.',
+      description: 'Подписка на рассылку успешно получена.',
       type: NewsletterSubscriptionResponseDocs,
     }),
     ApiBadRequestResponse({
-      description: 'Newsletter subscription id has an invalid format.',
+      description: 'Некорректный формат id подписки на рассылку.',
       type: ErrorResponseDocs,
     }),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can access newsletter subscriptions.',
+      description:
+        'Только администраторы могут просматривать подписки на рассылку.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundDocs('Newsletter subscription with the provided id'),
+    ApiNotFoundResponse({
+      description: 'Подписка на рассылку с указанным id не найдена.',
+      type: ErrorResponseDocs,
+    }),
   )
 }
 
 export function NewsletterSubscriptionUpdateDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Update newsletter subscription',
+      summary: 'Обновить подписку на рассылку',
     }),
     ApiParam({
       name: 'id',
-      description: 'MongoDB ObjectId of the newsletter subscription.',
+      description: 'MongoDB ObjectId подписки на рассылку.',
       example: NEWSLETTER_SUBSCRIPTION_ID_EXAMPLE,
     }),
     ApiOkResponse({
-      description: 'Newsletter subscription updated successfully.',
+      description: 'Подписка на рассылку успешно обновлена.',
       type: NewsletterSubscriptionResponseDocs,
     }),
     ApiBadRequestResponse({
-      description: 'Newsletter subscription id or request body is invalid.',
+      description: 'Некорректный id подписки на рассылку или тело запроса.',
       type: ErrorResponseDocs,
     }),
     ApiConflictResponse({
-      description: 'The provided email is already subscribed.',
+      description: 'Указанный email уже подписан.',
       type: ErrorResponseDocs,
     }),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can update newsletter subscriptions.',
+      description:
+        'Только администраторы могут обновлять подписки на рассылку.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundDocs('Newsletter subscription with the provided id'),
+    ApiNotFoundResponse({
+      description: 'Подписка на рассылку с указанным id не найдена.',
+      type: ErrorResponseDocs,
+    }),
   )
 }
 
 export function NewsletterSubscriptionDeleteDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Delete newsletter subscription',
+      summary: 'Удалить подписку на рассылку',
     }),
     ApiParam({
       name: 'id',
-      description: 'MongoDB ObjectId of the newsletter subscription.',
+      description: 'MongoDB ObjectId подписки на рассылку.',
       example: NEWSLETTER_SUBSCRIPTION_ID_EXAMPLE,
     }),
     ApiOkResponse({
-      description: 'Newsletter subscription deleted successfully.',
+      description: 'Подписка на рассылку успешно удалена.',
       schema: {
         type: 'boolean',
         example: true,
       },
     }),
     ApiBadRequestResponse({
-      description: 'Newsletter subscription id has an invalid format.',
+      description: 'Некорректный формат id подписки на рассылку.',
       type: ErrorResponseDocs,
     }),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can delete newsletter subscriptions.',
+      description: 'Только администраторы могут удалять подписки на рассылку.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundDocs('Newsletter subscription with the provided id'),
+    ApiNotFoundResponse({
+      description: 'Подписка на рассылку с указанным id не найдена.',
+      type: ErrorResponseDocs,
+    }),
   )
 }
