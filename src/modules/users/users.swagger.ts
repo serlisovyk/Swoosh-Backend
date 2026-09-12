@@ -12,7 +12,7 @@ import {
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
 } from '@shared/swagger'
-import { FavoritesProductIdsPropertyDocs } from '@modules/favorites'
+import { FavoritesProductIdsPropertyDocs } from '@modules/favorites/favorites.swagger'
 import { ROLES } from './users.types'
 
 export function UsersTagDocs() {
