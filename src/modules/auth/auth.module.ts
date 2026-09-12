@@ -5,8 +5,8 @@ import { UserModule } from '@modules/user/user.module'
 import { FavoritesModule } from '@modules/favorites/favorites.module'
 import { EmailModule } from '@common/email/email.module'
 import { JwtStrategy } from './strategies/jwt.strategy'
-import { AuthAccountController } from './auth-account/auth-account.controller'
-import { AuthAccountService } from './auth-account/auth-account.service'
+import { PasswordResetController } from './password-reset/password-reset.controller'
+import { PasswordResetService } from './password-reset/password-reset.service'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 
@@ -18,7 +18,7 @@ import { AuthService } from './auth.service'
     FavoritesModule,
     EmailModule,
   ],
-  controllers: [AuthController, AuthAccountController],
-  providers: [AuthService, JwtStrategy, AuthAccountService],
+  controllers: [AuthController, PasswordResetController],
+  providers: [AuthService, JwtStrategy, PasswordResetService],
 })
 export class AuthModule {}
