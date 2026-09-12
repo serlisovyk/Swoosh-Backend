@@ -29,3 +29,9 @@ export type UserWithoutPassword = Omit<User, UserPasswordAndSensitiveFields>
 
 type UserPasswordAndSensitiveFields =
   'password' | 'resetPasswordToken' | 'resetPasswordTokenExpiresAt'
+
+export interface RefreshTokenCookieOptions {
+  domain: string | undefined
+  secure: boolean
+  sameSite: 'lax' | 'none'
+}

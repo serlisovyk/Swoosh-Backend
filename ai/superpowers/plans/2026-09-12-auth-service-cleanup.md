@@ -13,19 +13,19 @@ See `ai/superpowers/specs/2026-09-12-auth-service-cleanup.md` for the two decisi
 ## Commit breakdown
 
 1. **`docs(ai): spec + plan for MY-55 auth service cleanup`** — this spec + plan, single commit, before any code.
-2. **`refactor(auth): remove dead logout method, request params, and duplicate expiry calc`**
+2. **`refactor(auth): drop dead logout/params/duplicate calc, move cookies to auth.cookies.ts`**
    - Delete `AuthService.logout`.
    - Drop the `request`/`_request` parameter from `register`, `login`, `createSession`, `getNewTokens`.
    - `createSession`/`getNewTokens` return `{ user, accessToken, refreshToken, refreshTokenExpiresAt }` (the previously-discarded value now flows out); `getNewTokens` builds its result via `createSession` instead of re-assembling the same shape.
-   - `AuthController`: drop `@Req() req` from `register`/`login` (no longer used); `logout` handler stops calling `authService.logout(...)` entirely — it already only needs to clear the cookie and return `true`.
+   - New `src/modules/auth/auth.cookies.ts`: `RefreshTokenCookieOptions` type (in `auth.types.ts`, per the no-inline-object-type convention), `buildRefreshTokenCookieOptions(configService)`, `setRefreshTokenCookie(response, refreshToken, expiresAt, options)`, `clearRefreshTokenCookie(response, options)`.
+   - Remove `setRefreshTokenCookie`/`clearRefreshTokenCookie` and the `express` import from `AuthService`.
+   - `AuthController`: drop `@Req() req` from `register`/`login` (no longer used); gains a `ConfigService` dependency, builds `RefreshTokenCookieOptions` once in the constructor, calls the new cookie functions directly; `logout` handler stops calling `authService.logout(...)` — it already only needs to clear the cookie and return `true`. Sequencing stays identical to today (clear-then-verify-then-set in `new-tokens`; set in `register`/`login`; clear in `logout`).
+
+   Note: originally planned as two commits (dead-code removal, then cookie extraction), but the two touch the same few lines of `auth.controller.ts`/`auth.service.ts` closely enough that splitting them cleanly wasn't worth the churn — merged into one milestone.
 3. **`refactor(auth): drop unused role from access-token payload`**
    - Remove `role` from `AccessTokenPayload` (`auth.types.ts`) and from the payload built in `generateSessionTokens`. Drop the now-unused `ROLES` import in `auth.types.ts`.
    - No change to `JwtStrategy` or `RolesGuard` — they already resolve role from the DB-loaded user, not the token.
-4. **`refactor(auth): extract cookie handling into auth.cookies.ts`**
-   - New `src/modules/auth/auth.cookies.ts`: `RefreshTokenCookieOptions` type (in `auth.types.ts`, per the no-inline-object-type convention), `buildRefreshTokenCookieOptions(configService)`, `setRefreshTokenCookie(response, refreshToken, expiresAt, options)`, `clearRefreshTokenCookie(response, options)`.
-   - Remove `setRefreshTokenCookie`/`clearRefreshTokenCookie` and the `express` import from `AuthService`.
-   - `AuthController` gains a `ConfigService` dependency, builds `RefreshTokenCookieOptions` once in the constructor, and calls the new functions directly. Sequencing stays identical to today (clear-then-verify-then-set in `new-tokens`; set in `register`/`login`; clear in `logout`).
-5. **`docs(ai): document auth service cleanup in decisions/rules/skills/map`**
+4. **`docs(ai): document auth service cleanup in decisions/rules/skills/map`**
    - New decision record (see spec).
    - `ai/rules/auth-and-api-contracts.md`: note the access-token payload carries only `id`; logout behavior unchanged (still just clears the cookie).
    - `ai/skills/auth-flow.md`: update "Files that move together" to include `auth.cookies.ts`; note cookie-setting is a controller responsibility now; note role comes from the DB-loaded user, never the token.

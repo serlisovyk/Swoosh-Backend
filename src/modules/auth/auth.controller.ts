@@ -9,11 +9,17 @@ import {
   Res,
 } from '@nestjs/common'
 import { Throttle } from '@nestjs/throttler'
+import { ConfigService } from '@nestjs/config'
 import { TurnstileCaptcha as Captcha } from 'nest-cloudflare-turnstile'
 import type { Response } from 'express'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
 import { AuthService } from './auth.service'
+import {
+  buildRefreshTokenCookieOptions,
+  clearRefreshTokenCookie,
+  setRefreshTokenCookie,
+} from './auth.cookies'
 import {
   AuthLoginDocs,
   AuthLogoutDocs,
@@ -27,12 +33,20 @@ import {
   REFRESH_TOKEN_COOKIE_NAME,
   REFRESH_TOKEN_MISSING_ERROR,
 } from './auth.constants'
-import type { PreparedRequest } from './auth.types'
+import type { PreparedRequest, RefreshTokenCookieOptions } from './auth.types'
 
 @AuthTagDocs()
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  private readonly refreshTokenCookieOptions: RefreshTokenCookieOptions
+
+  constructor(
+    private readonly authService: AuthService,
+    configService: ConfigService,
+  ) {
+    this.refreshTokenCookieOptions =
+      buildRefreshTokenCookieOptions(configService)
+  }
 
   @AuthRegisterDocs()
   @Throttle(AUTH_REGISTER_THROTTLE)
@@ -40,16 +54,18 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
   async register(
-    @Req() req: PreparedRequest,
     @Body() dto: RegisterDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { refreshToken, ...response } = await this.authService.register(
-      dto,
-      req,
-    )
+    const { refreshToken, refreshTokenExpiresAt, ...response } =
+      await this.authService.register(dto)
 
-    this.authService.setRefreshTokenCookie(res, refreshToken)
+    setRefreshTokenCookie(
+      res,
+      refreshToken,
+      refreshTokenExpiresAt,
+      this.refreshTokenCookieOptions,
+    )
 
     return response
   }
@@ -60,13 +76,18 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   @Post('login')
   async login(
-    @Req() req: PreparedRequest,
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { refreshToken, ...response } = await this.authService.login(dto, req)
+    const { refreshToken, refreshTokenExpiresAt, ...response } =
+      await this.authService.login(dto)
 
-    this.authService.setRefreshTokenCookie(res, refreshToken)
+    setRefreshTokenCookie(
+      res,
+      refreshToken,
+      refreshTokenExpiresAt,
+      this.refreshTokenCookieOptions,
+    )
 
     return response
   }
@@ -79,18 +100,21 @@ export class AuthController {
   ) {
     const initialRefreshToken = req.cookies?.[REFRESH_TOKEN_COOKIE_NAME]
 
-    this.authService.clearRefreshTokenCookie(res)
+    clearRefreshTokenCookie(res, this.refreshTokenCookieOptions)
 
     if (!initialRefreshToken) {
       throw new BadRequestException(REFRESH_TOKEN_MISSING_ERROR)
     }
 
-    const { refreshToken, ...response } = await this.authService.getNewTokens(
-      initialRefreshToken,
-      req,
-    )
+    const { refreshToken, refreshTokenExpiresAt, ...response } =
+      await this.authService.getNewTokens(initialRefreshToken)
 
-    this.authService.setRefreshTokenCookie(res, refreshToken)
+    setRefreshTokenCookie(
+      res,
+      refreshToken,
+      refreshTokenExpiresAt,
+      this.refreshTokenCookieOptions,
+    )
 
     return response
   }
@@ -98,13 +122,8 @@ export class AuthController {
   @AuthLogoutDocs()
   @HttpCode(HttpStatus.OK)
   @Post('logout')
-  logout(
-    @Req() req: PreparedRequest,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    this.authService.logout(req.cookies?.[REFRESH_TOKEN_COOKIE_NAME])
-
-    this.authService.clearRefreshTokenCookie(res)
+  logout(@Res({ passthrough: true }) res: Response) {
+    clearRefreshTokenCookie(res, this.refreshTokenCookieOptions)
 
     return true
   }
