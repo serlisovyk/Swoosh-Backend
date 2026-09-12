@@ -15,6 +15,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `.dockerignore` | keeps `node_modules`, `dist`, `*.tsbuildinfo`, `.env`, `.git`, `ai/`, `*.md` out of the build context/image |
 | `.husky/pre-commit` | `husky` git hook, provisioned by the `prepare` script on install; runs `lint-staged` |
 | `.lintstagedrc.json` | `lint-staged` config: `eslint --fix` on staged `src/**/*.ts` files (scoped to match `package.json`'s own `lint` script — `api/index.ts` is intentionally outside the `src/` TS program, see the Vercel row below) |
+| `public/.gitkeep` | empty placeholder — Vercel's "Other" framework preset expects a static `public/` output directory to exist even for a functions-only (no frontend) deploy; this repo serves nothing from it |
 | `api/index.ts` | Vercel's actual serverless function entry (no `vercel.json` committed — the build command is set in the Vercel project's dashboard, and Vercel auto-detects `api/index.ts` as the Node function after that build produces `dist/`). Re-exports `default` from the already-compiled `../dist/serverless.js` (plain relative import, no path aliases, so Vercel's own bundler never has to resolve `@common/*`/`@shared/*`). Deliberately outside `tsconfig.json`'s `src`-rooted program (excluded in both `tsconfig.json` and `tsconfig.build.json`) and outside the `lint` script's glob — see [decisions/vercel-serverless-entry](decisions/2026-09-12-vercel-serverless-entry.md) |
 
 ## App level

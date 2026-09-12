@@ -53,6 +53,18 @@ import.
 - Avoids a runtime `if (isServerless)` branch in the one file every developer
   reads first; the split is visible at the file-list level instead.
 
+## Vercel project settings (dashboard, not committed config)
+
+- Framework Preset must be **Other**, not Vercel's built-in "NestJS" preset —
+  that preset ignores `api/` entirely and tries to run `dist/main.js`
+  directly as the function, hitting the same `No exports found` error this
+  whole entry exists to avoid.
+- Build Command: `bun run build`.
+- Output Directory override: off (or `public`) — "Other" still expects a
+  static output directory to exist even for a functions-only deploy; an
+  empty `public/` (kept via `public/.gitkeep`) satisfies that with nothing
+  actually served from it.
+
 ## Consequences
 
 - Two files (`main.ts`, `serverless.ts`) must both call `setupApp` on any
