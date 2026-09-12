@@ -1,14 +1,14 @@
 import { BadRequestException } from '@nestjs/common'
 import type { Request } from 'express'
 import {
+  CAPTCHA_TOKEN_HEADER,
   CAPTCHA_TOKEN_IS_REQUIRED_ERROR,
   INVALID_CAPTCHA_TOKEN_ERROR,
-  TURNSTILE_TOKEN_HEADER,
 } from './captcha.constants'
 
-type TurnstileExceptionReason = 'missing' | 'invalid'
+type CaptchaExceptionReason = 'missing' | 'invalid'
 
-export function createTurnstileException(reason: TurnstileExceptionReason) {
+export function createCaptchaException(reason: CaptchaExceptionReason) {
   if (reason === 'missing') {
     return new BadRequestException(CAPTCHA_TOKEN_IS_REQUIRED_ERROR)
   }
@@ -17,7 +17,7 @@ export function createTurnstileException(reason: TurnstileExceptionReason) {
 }
 
 export function getCaptchaTokenFromRequest(request: Request): string {
-  const token = request.headers[TURNSTILE_TOKEN_HEADER]
+  const token = request.headers[CAPTCHA_TOKEN_HEADER]
 
   return Array.isArray(token) ? (token[0] ?? '') : token || ''
 }

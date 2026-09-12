@@ -18,7 +18,7 @@ import {
   createOptionalPropertyDocsDecorator,
   createPropertyDocsDecorator,
 } from '@common/swagger'
-import { TURNSTILE_TOKEN_HEADER } from '@common/captcha'
+import { CAPTCHA_TOKEN_HEADER } from '@common/captcha'
 import { UsersResponseDocs } from '../users/users.swagger'
 import {
   AUTH_EMAIL_EXAMPLE,
@@ -76,7 +76,7 @@ export class AuthTokensResponseDocs {
 
 export function AuthCaptchaHeaderDocs() {
   return ApiHeader({
-    name: TURNSTILE_TOKEN_HEADER,
+    name: CAPTCHA_TOKEN_HEADER,
     description: 'Токен Cloudflare Turnstile для защиты auth-эндпоинтов.',
     required: true,
   })

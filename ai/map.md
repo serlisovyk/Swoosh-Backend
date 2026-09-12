@@ -40,7 +40,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 
 | Package | What it provides |
 |---|---|
-| `captcha` | Cloudflare Turnstile wrapper; the `@Captcha()` decorator — applied on auth and password-reset endpoints |
+| `captcha` | Cloudflare Turnstile wrapper: `captcha.module.ts` (`TurnstileModule.forRootAsync`), `captcha.config.ts` (`getCaptchaConfig`), `captcha.utils.ts` (`createCaptchaException`, `getCaptchaTokenFromRequest`), `captcha.constants.ts` (`CAPTCHA_TOKEN_HEADER` = `cf-turnstile-token`); the `@Captcha()` decorator — applied on auth and password-reset endpoints |
 | `throttler` | global `ThrottlerGuard` registered as `APP_GUARD`; TTL/limit from env, `skipIf` in dev; tightened per route with `@Throttle` |
 | `email` | Resend + `@react-email/render`; templates in `templates/*.template.tsx` (currently `reset-password`), subjects in `email.constants.ts`; a send failure (provider error or rejected promise) is logged with recipient/subject/provider detail and rethrown as `InternalServerErrorException(EMAIL_SEND_FAILED_ERROR)` — callers never see the provider's own error |
 | `jwt` | wraps `@nestjs/jwt`: `JwtModule.registerAsync` + `jwt.config.ts` (reads `JWT_SECRET`). Same wrapper-over-a-library pattern as `mongo`/`captcha`/`email`/`throttler`. `auth` imports it for `JwtService`; `JwtStrategy` (domain logic — depends on `UsersService`) stays in `auth`, not here |
