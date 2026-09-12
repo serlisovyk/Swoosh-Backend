@@ -14,7 +14,7 @@ No spec: pure internal refactor — no behavior, validation message text, or pub
    - `src/shared/constants/list-query.constants.ts` — remove the 6 now-unused error constants; add `DEFAULT_PAGE_NUMBER = 1` next to `LIST_QUERY_MAX_LIMIT` (clearer name per the issue, since it now sits among named list-query constants rather than inside a utils file).
    - `src/shared/utils/pagination.utils.ts` — drop the local `DEFAULT_PAGE`, import `DEFAULT_PAGE_NUMBER` from `@shared/constants` instead.
    - `src/shared/utils/index.ts` — drop `DEFAULT_PAGE` from the re-export (only `resolvePaginationOffset` remains from this file).
-3. **Docs**: no `ai/map.md`/skill update needed — `shared/constants/list-query.constants.ts` and `shared/utils/pagination.utils.ts` are already listed in `ai/map.md`; their described contents don't change in a way the map's one-line summaries call out, and no pattern is reshaped.
+3. **Docs**: `ai/map.md` — both rows for `constants/list-query.constants.ts` and `utils/pagination.utils.ts` named `DEFAULT_PAGE`/the error texts explicitly; update both to match. (Deviation from the original plan text above, caught while re-checking after implementing — no skill update needed, no pattern reshaped.)
 
 ## Verification
 

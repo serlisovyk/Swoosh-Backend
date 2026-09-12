@@ -63,7 +63,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `utils/query.utils.ts` | query-param parsing only: `toStringArrayQueryParam`, `toNumberArrayQueryParam`, `toBooleanQueryParam` |
 | `utils/sanitize.utils.ts` | value sanitizing/normalizing: `trimStringValue`, `trimStringArrayValue`, `normalizeEmailValue`, `normalizePhoneValue` |
 | `utils/env.utils.ts` | `isDev` / `isProd` / `parseCorsDomainsConfigValue` |
-| `utils/pagination.utils.ts` | `resolvePaginationOffset(page, limit)` + `DEFAULT_PAGE` — the shared offset formula used by `products` (Mongo `skip`/`limit`) and `favorites` (in-memory slice); each module keeps its own default `limit` and pagination mechanism |
+| `utils/pagination.utils.ts` | `resolvePaginationOffset(page, limit)`, defaulting `page` from `constants/list-query.constants.ts`'s `DEFAULT_PAGE_NUMBER` — the shared offset formula used by `products` (Mongo `skip`/`limit`) and `favorites` (in-memory slice); each module keeps its own default `limit` and pagination mechanism |
 | `utils/list-query.utils.ts` | `resolveListQueryOptions({ page, limit, sort, sortMap, defaultSort, defaultLimit })` — resolves `skip`/`limit`/`sort` on top of `resolvePaginationOffset`; used by `contact-request`, `individual-order`, `newsletter-subscription` (`products`/`favorites` keep their own, different sort sets) |
 | `utils/regex.utils.ts` | `REGEX_SPECIAL_CHARACTERS`, `escapeRegExp`, `createContainsRegex`, `createExactRegex` — used by `products` and the three form modules |
 | `utils/crypto.utils.ts` | `generateToken`, `hashTokenWithSecret` — pure crypto helpers with no domain meaning, used by `auth`'s password-reset flow and `users.service.ts` |
@@ -71,7 +71,7 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `constants/api.constants.ts` | `API_PREFIX` (`'api/v1'`) and `SWAGGER_DOCS_PATH` (derived from it) — the single source `main.ts`'s `setGlobalPrefix` and `shared/config/swagger.config.ts` both read, so the two can't drift apart |
 | `constants/cookie.constants.ts` | `REFRESH_TOKEN_COOKIE_NAME` — the single source for the refresh-token cookie's name, re-exported by `auth.constants.ts` and used to derive `SWAGGER_REFRESH_TOKEN_AUTH_NAME` in `constants/swagger.constants.ts` |
 | `constants/env.constants.ts` | only the `NODE_ENV` as-const values — **not** a registry of env variable names |
-| `constants/list-query.constants.ts` | `CREATED_AT_SORT_MAP`, the shared page/limit/search validation error texts, `LIST_QUERY_MAX_LIMIT` |
+| `constants/list-query.constants.ts` | `CREATED_AT_SORT_MAP`, `DEFAULT_PAGE_NUMBER`, `LIST_QUERY_MAX_LIMIT` — page/limit/search validation messages are inlined at their one call site (`dto/list-query.dto.ts`), not kept here |
 | `constants/mongoose.constants.ts` | `MONGOOSE_UPDATE_AFTER_OPTIONS` — the `findByIdAndUpdate` options shared by `products` and the three form modules |
 | `constants/time.constants.ts` | `THIRTY_MINUTES_IN_MS`, `ONE_HOUR_IN_MS`, `ONE_DAY_IN_MS` |
 | `dto/list-query.dto.ts` | `ListQueryDto` — base class for `search`/`page`/`limit` (validators, Swagger via `shared/swagger`); `find-all-<x>.dto.ts` in the three form modules extend it and add their own `sort` and any module-specific fields |
