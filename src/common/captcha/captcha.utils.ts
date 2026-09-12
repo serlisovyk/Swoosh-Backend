@@ -5,8 +5,7 @@ import {
   CAPTCHA_TOKEN_IS_REQUIRED_ERROR,
   INVALID_CAPTCHA_TOKEN_ERROR,
 } from './captcha.constants'
-
-type CaptchaExceptionReason = 'missing' | 'invalid'
+import type { CaptchaExceptionReason } from './captcha.types'
 
 export function createCaptchaException(reason: CaptchaExceptionReason) {
   if (reason === 'missing') {
@@ -19,5 +18,7 @@ export function createCaptchaException(reason: CaptchaExceptionReason) {
 export function getCaptchaTokenFromRequest(request: Request): string {
   const token = request.headers[CAPTCHA_TOKEN_HEADER]
 
-  return Array.isArray(token) ? (token[0] ?? '') : token || ''
+  if (Array.isArray(token)) return token[0] ?? ''
+
+  return token || ''
 }
