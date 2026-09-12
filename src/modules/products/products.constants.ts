@@ -28,3 +28,6 @@ export const PRODUCT_SORT_MAP: Record<PRODUCT_SORT_OPTIONS, SortMap> = {
 export const PRODUCT_ID_EXAMPLE = '65f1e8d3f9a2b56789c12346'
 
 export const PRODUCT_CATEGORY_ID_EXAMPLE = '65f1e8d3f9a2b56789c12345'
+
+export const PRODUCT_SELECT_FIELDS = '-__v'
+export const PRODUCT_CATEGORY_SELECT_FIELDS = '-__v'

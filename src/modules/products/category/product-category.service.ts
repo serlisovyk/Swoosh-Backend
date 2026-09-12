@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
+import { MONGOOSE_UPDATE_AFTER_OPTIONS } from '@shared/constants'
 import { ProductsService } from '../products.service'
 import type { ProductCategoryModel } from '../products.types'
 import { CreateProductCategoryDto } from './dto/create-product-category.dto'
@@ -13,7 +14,7 @@ import {
   PRODUCT_CATEGORY_ALREADY_IN_USE_ERROR,
   PRODUCT_CATEGORY_NAME_ALREADY_EXISTS_ERROR,
   PRODUCT_CATEGORY_NOT_FOUND_ERROR,
-  updateProductCategoryOptions,
+  PRODUCT_CATEGORY_SELECT_FIELDS,
 } from './product-category.constants'
 
 @Injectable()
@@ -24,13 +25,11 @@ export class ProductCategoryService {
     private readonly productsService: ProductsService,
   ) {}
 
-  private readonly selectFields = '-__v'
-
   findAll() {
     return this.categoryModel
       .find()
       .sort({ name: 1 })
-      .select(this.selectFields)
+      .select(PRODUCT_CATEGORY_SELECT_FIELDS)
       .lean()
   }
 
@@ -51,8 +50,8 @@ export class ProductCategoryService {
   async update(id: string, dto: UpdateProductCategoryDto) {
     try {
       const category = await this.categoryModel
-        .findByIdAndUpdate(id, dto, updateProductCategoryOptions)
-        .select(this.selectFields)
+        .findByIdAndUpdate(id, dto, MONGOOSE_UPDATE_AFTER_OPTIONS)
+        .select(PRODUCT_CATEGORY_SELECT_FIELDS)
         .lean()
 
       if (!category) {
@@ -92,7 +91,7 @@ export class ProductCategoryService {
   private async findById(id: string) {
     const category = await this.categoryModel
       .findById(id)
-      .select(this.selectFields)
+      .select(PRODUCT_CATEGORY_SELECT_FIELDS)
       .lean()
 
     if (!category) throw new NotFoundException(PRODUCT_CATEGORY_NOT_FOUND_ERROR)

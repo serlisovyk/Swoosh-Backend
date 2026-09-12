@@ -8,7 +8,4 @@ export const PRODUCT_CATEGORY_NAME_ALREADY_EXISTS_ERROR =
 export const PRODUCT_CATEGORY_ALREADY_IN_USE_ERROR =
   'Категория используется в товарах и не может быть удалена'
 
-export const updateProductCategoryOptions = {
-  returnDocument: 'after' as const,
-  runValidators: true,
-}
+export const PRODUCT_CATEGORY_SELECT_FIELDS = '-__v'

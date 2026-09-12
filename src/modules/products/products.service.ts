@@ -14,9 +14,11 @@ import { UpdateProductDto } from './dto/update-product.dto'
 import { buildProductListQueryOptions } from './products.utils'
 import {
   FILTERS_METADATA_CACHE_TTL_MS,
+  PRODUCT_CATEGORY_SELECT_FIELDS,
   PRODUCT_NOT_FOUND_ERROR,
   PRODUCT_OLD_PRICE_LOWER_THAN_PRICE_ERROR,
   PRODUCT_SALE_CF_REQUIRES_OLD_PRICE_ERROR,
+  PRODUCT_SELECT_FIELDS,
 } from './products.constants'
 import type {
   FiltersMetadataCacheEntry,
@@ -35,9 +37,6 @@ export class ProductsService {
     @InjectModel(ProductCategory.name)
     private readonly categoryModel: ProductCategoryModel,
   ) {}
-
-  private readonly productSelectFields = '-__v'
-  private readonly categorySelectFields = '-__v'
 
   private filtersMetadataCache: FiltersMetadataCacheEntry | null = null
 
@@ -61,8 +60,8 @@ export class ProductsService {
       .sort(sort)
       .skip(skip)
       .limit(limit)
-      .select(this.productSelectFields)
-      .populate('category', this.categorySelectFields)
+      .select(PRODUCT_SELECT_FIELDS)
+      .populate('category', PRODUCT_CATEGORY_SELECT_FIELDS)
       .lean()
 
     const count = this.productModel.countDocuments(queryFilters)
@@ -147,8 +146,8 @@ export class ProductsService {
   async findById(id: string) {
     const product = await this.productModel
       .findById(id)
-      .select(this.productSelectFields)
-      .populate('category', this.categorySelectFields)
+      .select(PRODUCT_SELECT_FIELDS)
+      .populate('category', PRODUCT_CATEGORY_SELECT_FIELDS)
       .lean()
 
     if (!product) throw new NotFoundException(PRODUCT_NOT_FOUND_ERROR)
@@ -197,8 +196,8 @@ export class ProductsService {
 
     const updatedProduct = await this.productModel
       .findByIdAndUpdate(id, payload, MONGOOSE_UPDATE_AFTER_OPTIONS)
-      .select(this.productSelectFields)
-      .populate('category', this.categorySelectFields)
+      .select(PRODUCT_SELECT_FIELDS)
+      .populate('category', PRODUCT_CATEGORY_SELECT_FIELDS)
       .lean()
 
     if (!updatedProduct) throw new NotFoundException(PRODUCT_NOT_FOUND_ERROR)
@@ -286,8 +285,8 @@ export class ProductsService {
   findManyByIds(productIds: string[]) {
     return this.productModel
       .find({ _id: { $in: productIds } })
-      .select(this.productSelectFields)
-      .populate('category', this.categorySelectFields)
+      .select(PRODUCT_SELECT_FIELDS)
+      .populate('category', PRODUCT_CATEGORY_SELECT_FIELDS)
       .lean()
   }
 
@@ -305,8 +304,8 @@ export class ProductsService {
         ...filters,
         _id: { $in: filteredProductIds },
       })
-      .select(this.productSelectFields)
-      .populate('category', this.categorySelectFields)
+      .select(PRODUCT_SELECT_FIELDS)
+      .populate('category', PRODUCT_CATEGORY_SELECT_FIELDS)
       .lean()
 
     const productsMap = new Map(
