@@ -1,4 +1,10 @@
-export { isDev, isProd, parseCorsDomainsConfigValue } from './env.utils'
+export {
+  getEnv,
+  getEnvOrThrow,
+  isDev,
+  isProd,
+  parseCorsDomainsConfigValue,
+} from './env.utils'
 export {
   toStringArrayQueryParam,
   toNumberArrayQueryParam,

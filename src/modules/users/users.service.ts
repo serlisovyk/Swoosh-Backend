@@ -10,7 +10,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { mongo } from 'mongoose'
 import { hash, verify } from 'argon2'
 import { AppEnv } from '@shared/config'
-import { hashTokenWithSecret } from '@shared/utils'
+import { getEnv, hashTokenWithSecret } from '@shared/utils'
 import { THIRTY_MINUTES_IN_MS } from '@shared/constants'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './models/user.model'
@@ -144,7 +144,7 @@ export class UsersService {
   consumePasswordResetToken(token: string) {
     const hashedToken = hashTokenWithSecret(
       token,
-      this.configService.get('RESET_TOKEN_SECRET', { infer: true }),
+      getEnv(this.configService, 'jwt.RESET_TOKEN_SECRET'),
     )
 
     return this.userModel
@@ -165,7 +165,7 @@ export class UsersService {
     return this.userModel.findByIdAndUpdate(userId, {
       resetPasswordToken: hashTokenWithSecret(
         token,
-        this.configService.get('RESET_TOKEN_SECRET', { infer: true }),
+        getEnv(this.configService, 'jwt.RESET_TOKEN_SECRET'),
       ),
       resetPasswordTokenExpiresAt: new Date(Date.now() + THIRTY_MINUTES_IN_MS),
     })

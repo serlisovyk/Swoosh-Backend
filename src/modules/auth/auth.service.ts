@@ -10,6 +10,7 @@ import { ConfigService } from '@nestjs/config'
 import { verify } from 'argon2'
 import ms, { StringValue } from 'ms'
 import { AppEnv } from '@shared/config'
+import { getEnv } from '@shared/utils'
 import { FavoritesService } from '@modules/favorites'
 import { UsersService } from '../users/users.service'
 import { RegisterDto } from './dto/register.dto'
@@ -90,7 +91,7 @@ export class AuthService {
 
     return this.jwt
       .verifyAsync<RefreshTokenPayload>(refreshToken, {
-        secret: this.configService.get('JWT_REFRESH_SECRET', { infer: true }),
+        secret: getEnv(this.configService, 'jwt.JWT_REFRESH_SECRET'),
       })
       .catch(() => null)
   }
@@ -101,9 +102,9 @@ export class AuthService {
     const user = await this.usersService.getByEmailWithPassword(email)
 
     if (!user) {
-      const dummyPasswordHash = this.configService.get(
-        'AUTH_DUMMY_PASSWORD_HASH',
-        { infer: true },
+      const dummyPasswordHash = getEnv(
+        this.configService,
+        'jwt.AUTH_DUMMY_PASSWORD_HASH',
       )
 
       await verify(dummyPasswordHash, password)
@@ -153,14 +154,20 @@ export class AuthService {
       id: String(user._id),
     }
 
+    // ms's StringValue is a branded template-literal type class-validator
+    // can't express as a runtime-checked shape (the schema only guarantees a
+    // non-empty string) — getEnv's return type is computed directly from the
+    // key (unlike ConfigService.get's own free generic default, which let
+    // this flow in via context with no `as`), so the cast is explicit here.
     const accessToken = this.jwt.sign(accessTokenPayload, {
-      expiresIn: this.configService.get('JWT_ACCESS_TOKEN_EXPIRES_IN', {
-        infer: true,
-      }),
+      expiresIn: getEnv(
+        this.configService,
+        'jwt.JWT_ACCESS_TOKEN_EXPIRES_IN',
+      ) as StringValue,
     })
 
     const refreshToken = this.jwt.sign(refreshTokenPayload, {
-      secret: this.configService.get('JWT_REFRESH_SECRET', { infer: true }),
+      secret: getEnv(this.configService, 'jwt.JWT_REFRESH_SECRET'),
       expiresIn: this.getRefreshTokenExpiresIn(),
     })
 
@@ -171,13 +178,11 @@ export class AuthService {
     }
   }
 
-  // ms's StringValue is a branded template-literal type zod can't express as
-  // a runtime-checked shape (schema only guarantees a non-empty string) — an
-  // explicit return type here lets it flow in via context, no `as` needed.
   private getRefreshTokenExpiresIn(): StringValue {
-    return this.configService.get('JWT_REFRESH_TOKEN_EXPIRES_IN', {
-      infer: true,
-    })
+    return getEnv(
+      this.configService,
+      'jwt.JWT_REFRESH_TOKEN_EXPIRES_IN',
+    ) as StringValue
   }
 
   private getRefreshTokenExpiresAt() {

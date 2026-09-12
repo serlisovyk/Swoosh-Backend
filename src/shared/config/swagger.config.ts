@@ -1,7 +1,7 @@
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { ConfigService } from '@nestjs/config'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
-import { isDev } from '@shared/utils'
+import { getEnv, getEnvOrThrow, isDev } from '@shared/utils'
 import {
   SWAGGER_DOCS_PATH,
   SWAGGER_ACCESS_TOKEN_AUTH_NAME,
@@ -47,13 +47,11 @@ export function setupSwagger(
   app: NestExpressApplication,
   configService: ConfigService<AppEnv, true>,
 ) {
-  if (!configService.get('SWAGGER_ENABLED', { infer: true })) return
+  if (!getEnv(configService, 'swagger.SWAGGER_ENABLED')) return
 
   if (!isDev(configService)) {
-    const user = configService.getOrThrow('SWAGGER_USER', { infer: true })
-    const password = configService.getOrThrow('SWAGGER_PASSWORD', {
-      infer: true,
-    })
+    const user = getEnvOrThrow(configService, 'swagger.SWAGGER_USER')
+    const password = getEnvOrThrow(configService, 'swagger.SWAGGER_PASSWORD')
 
     app.use(
       createSwaggerBasicAuthMiddleware(`/${SWAGGER_DOCS_PATH}`, user, password),

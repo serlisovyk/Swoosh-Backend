@@ -15,7 +15,7 @@ import {
 } from '@common/logging'
 import { AppEnv, getValidationConfig, setupSwagger } from '@shared/config'
 import { API_PREFIX } from '@shared/constants'
-import { isDev } from '@shared/utils'
+import { getEnv, isDev } from '@shared/utils'
 import { AppModule } from './app.module'
 
 const logger = new Logger('Bootstrap')
@@ -51,13 +51,13 @@ async function bootstrap() {
   app.use(helmet())
 
   app.enableCors({
-    origin: configService.get('CORS_DOMAINS', { infer: true }),
+    origin: getEnv(configService, 'cors.CORS_DOMAINS'),
     credentials: true,
   })
 
   setupSwagger(app, configService)
 
-  const port = configService.get('PORT', { infer: true })
+  const port = getEnv(configService, 'app.PORT')
 
   await app.listen(port)
 }

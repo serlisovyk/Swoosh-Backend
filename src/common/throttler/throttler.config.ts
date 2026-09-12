@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { ThrottlerOptions } from '@nestjs/throttler'
 import { AppEnv } from '@shared/config'
-import { isDev } from '@shared/utils'
+import { getEnv, isDev } from '@shared/utils'
 
 const logger = new Logger('ThrottlerConfig')
 
@@ -15,8 +15,8 @@ export function getThrottlerConfig(
 
   return [
     {
-      ttl: configService.get('THROTTLE_TTL', { infer: true }),
-      limit: configService.get('THROTTLE_LIMIT', { infer: true }),
+      ttl: getEnv(configService, 'throttler.THROTTLE_TTL'),
+      limit: getEnv(configService, 'throttler.THROTTLE_LIMIT'),
       skipIf: () => isDev(configService),
     },
   ]
