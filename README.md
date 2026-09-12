@@ -1,18 +1,53 @@
 # Swoosh Server
 
-Standalone NestJS backend for the Swoosh store API.
+🛍️ REST API server for the Swoosh e-commerce store.
 
-## Stack
+This backend provides product catalog, favorites, authentication, and public form data through a NestJS + TypeScript API. The project is organized around feature modules, with cross-cutting infrastructure and DI-free helpers kept in separate layers, DTO-based validation, a canonical error envelope, and Swagger documentation.
 
+## ✨ Features
+
+- JWT authentication with stateless refresh tokens in an HttpOnly cookie, and email-based password reset
+- Product catalog with pagination, category/material/size/color/price filters, text search, sort, and ids lookup
+- Product category management (admin)
+- Favorites with optimistic-locking updates
+- Public forms — contact requests, individual orders, newsletter subscriptions — with admin listing/management
+- Cloudflare Turnstile captcha on auth and public form submissions
+- Canonical error envelope with per-field validation messages
+- Request logging with `x-request-id`
+- Environment validation on startup
+- Swagger UI protected outside development
+
+## 🧰 Tech Stack
+
+- Node.js
 - NestJS 11
 - TypeScript
-- MongoDB with Mongoose
-- JWT auth with Passport
-- Cloudflare Turnstile on auth forms
-- Resend email for password reset
-- Swagger/OpenAPI
+- MongoDB
+- Mongoose
+- Passport JWT
+- Cloudflare Turnstile
+- Resend
+- Swagger / OpenAPI
+- Docker
+- Bun
 
-## Auth Model
+## 📁 Project Structure
+
+```text
+src/
+  common/        Nest-wired infrastructure: mongo, captcha, email, throttler, errors, logging
+  shared/        DI-free code: config, constants, types, utils, swagger factories
+  modules/
+    auth/        Login, register, tokens, password reset
+    users/       Profile and address
+    products/    Catalog, categories
+    favorites/   User favorite products
+    forms/       Contact requests, individual orders, newsletter subscriptions
+    system/      Root and health endpoints
+  main.ts        Bootstrap entry point
+```
+
+## 🔐 Auth Model
 
 - Access tokens are returned in JSON responses from `POST /auth/register`, `POST /auth/login`, and `POST /auth/new-tokens`.
 - Protected endpoints expect `Authorization: Bearer <accessToken>`.
@@ -23,7 +58,36 @@ Standalone NestJS backend for the Swoosh store API.
 
 Because refresh tokens are stateless, logout does not revoke already issued refresh tokens before expiry. Add a token version or blacklist only if early server-side revocation becomes a real requirement.
 
-## Setup
+## ⚙️ Environment Variables
+
+Create `.env` from `.env.sample` and fill the backend values:
+
+```bash
+cp .env.sample .env
+```
+
+Env is validated at boot against a schema (`src/shared/config/env.config.ts`) — a missing, empty, or malformed value fails startup immediately and lists every offending key at once, rather than crashing later on first use. `CORS_DOMAINS` is required outside development.
+
+Mongo connection is a single `MONGO_URI` env var — paste the connection string as-is from Atlas (or any Mongo host), no assembly from separate parts.
+
+## 🐳 Docker
+
+Build and run the app in a container:
+
+```bash
+docker build -t swoosh-server .
+docker compose up
+```
+
+`docker compose up` starts only the `app` service (`MONGO_URI` in `.env` already points at Atlas — no local database needed). An optional `mongo` service is available behind a Compose profile for local development without Atlas:
+
+```bash
+docker compose --profile local-db up
+```
+
+The image runs as the non-root `node` user; `.env` is never baked into the image (`.dockerignore`), only passed in at runtime via `env_file`.
+
+## 🚀 Scripts
 
 Install dependencies:
 
@@ -31,32 +95,144 @@ Install dependencies:
 bun install
 ```
 
-`bun install` also provisions a local pre-commit hook (`husky`) that runs `eslint --fix` on staged `*.ts` files via `lint-staged` — it blocks a commit that lint would fail. This does not replace `bun run lint` / `bun run build` before merging (see Checks below).
+`bun install` also provisions a local pre-commit hook (`husky`) that runs `eslint --fix` on staged `*.ts` files via `lint-staged` — it blocks a commit that lint would fail.
 
-Create `.env` from `.env.sample` and fill the backend values. Env is validated at boot against a schema (`src/shared/config/env.config.ts`) — a missing, empty, or malformed value fails startup immediately and lists every offending key at once, rather than crashing later on first use. `CORS_DOMAINS` is required outside development.
-
-Mongo connection is a single `MONGO_URI` env var — paste the connection string as-is from Atlas (or any Mongo host), no assembly from separate parts.
-
-Start development server:
+Run in development mode:
 
 ```bash
 bun run start:dev
 ```
 
-The API uses the global prefix `/api/v1`.
+Build:
 
-Swagger is available at:
-
-```text
-http://localhost:4000/api/v1/docs
+```bash
+bun run build
 ```
 
-In dev it's open. Outside dev (`NODE_ENV` other than `development`) it
-requires HTTP Basic auth — set `SWAGGER_USER`/`SWAGGER_PASSWORD`, or the app
-refuses to start. Set `SWAGGER_ENABLED=false` to turn the docs route off
-entirely (404 instead of a login prompt).
+Run the compiled app:
 
-`GET /api/v1` returns a welcome message; `GET /api/v1/health` is a public liveness check (`{ status: 'ok', timestamp }`, no dependency checks) — both unauthenticated and exempt from rate limiting, meant for uptime monitors and load balancers.
+```bash
+bun run start:prod
+```
+
+Lint:
+
+```bash
+bun run lint
+```
+
+Format:
+
+```bash
+bun run format
+```
+
+## 🔌 API Endpoints
+
+All routes are served under the global prefix `/api/v1`.
+
+### Auth
+
+```text
+POST /auth/register
+POST /auth/login
+POST /auth/new-tokens
+POST /auth/logout
+POST /auth/request-password-reset
+POST /auth/reset-password
+```
+
+### Profile
+
+```text
+GET /profile
+PUT /profile
+```
+
+### Products
+
+`GET /products` supported query parameters:
+
+| Parameter                        | Type      | Description                        |
+| --------------------------------- | --------- | ----------------------------------- |
+| `page`                             | number    | Page number, starts from 1          |
+| `limit`                            | number    | Page size, up to 100                |
+| `search`                           | string    | Text search                         |
+| `sort`                             | string    | Sort option                         |
+| `category`, `material`, `colorName`| string[]  | Filter by these fields              |
+| `size`, `price`                    | number[]  | Filter by size / price range        |
+| `isHit`, `isNewArrival`, `hasDiscount` | boolean | Filter flags                    |
+| `ids`, `excludeIds`                | string[]  | Include/exclude specific product ids|
+
+```text
+GET /products/filters
+GET /products/:id
+POST /products          (admin)
+PUT /products/:id       (admin)
+DELETE /products/:id    (admin)
+```
+
+### Product Categories (admin)
+
+```text
+GET /products/categories
+POST /products/categories
+PUT /products/categories/:id
+DELETE /products/categories/:id
+```
+
+### Favorites
+
+```text
+GET /favorites
+PUT /favorites/:productId
+DELETE /favorites/:productId
+```
+
+### Forms
+
+Each of `forms/contact-requests`, `forms/individual-orders`, `forms/newsletter-subscriptions` exposes the same shape — public submission, admin listing/management:
+
+```text
+POST /forms/<resource>
+GET /forms/<resource>
+GET /forms/<resource>/:id
+PUT /forms/<resource>/:id
+DELETE /forms/<resource>/:id
+```
+
+### System
+
+```text
+GET /            Welcome message
+GET /health      Liveness check — { status, timestamp }, unauthenticated, exempt from rate limiting
+```
+
+## ❌ Error Format
+
+The API returns errors in a consistent shape:
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid query parameters",
+    "fields": {
+      "page": "Invalid input: expected number, received string"
+    }
+  }
+}
+```
+
+Validation errors that relate to the whole object instead of a specific field are placed under the `_root` key.
+
+## 🧱 Architecture Notes
+
+- `common/` holds anything that instantiates the Nest DI container (modules, providers, global filters/guards); `shared/` holds code with no DI involvement (config, constants, utils, types, swagger decorator factories).
+- A module only injects its own Mongoose models — data owned by another module is reached through that module's service, never through a direct `@InjectModel`.
+- Every feature module keeps its own DTOs and a co-located `*.swagger.ts` next to the controller/service.
+- A global `AllExceptionsFilter` normalizes every thrown error into the canonical envelope above.
+- Every request gets an `x-request-id` (generated or forwarded), logged alongside method/path/status/duration and echoed back in the response.
 
 ## Checks
 
@@ -68,23 +244,3 @@ bun run build
 `bun run lint` enforces formatting (Prettier), no floating promises, no unsafe arguments, and no `any` as build-failing errors, not warnings. `bun run build` runs with TypeScript `strict` mode plus `noUncheckedIndexedAccess`.
 
 This backend has no automated test suite.
-
-## Docker
-
-Build and run the app in a container:
-
-```bash
-docker build -t swoosh-server .
-docker compose up
-```
-
-`docker compose up` starts only the `app` service (`MONGO_URI` in `.env` already
-points at Atlas — no local database needed). An optional `mongo` service is
-available behind a Compose profile for local development without Atlas:
-
-```bash
-docker compose --profile local-db up
-```
-
-The image runs as the non-root `node` user; `.env` is never baked into the
-image (`.dockerignore`), only passed in at runtime via `env_file`.
