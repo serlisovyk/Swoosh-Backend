@@ -7,6 +7,8 @@ import {
 import { Product, ProductSchema } from './models/product.model'
 import { ProductsController } from './products.controller'
 import { ProductsService } from './products.service'
+import { ProductCategoryController } from './category/product-category.controller'
+import { ProductCategoryService } from './category/product-category.service'
 
 @Module({
   imports: [
@@ -15,8 +17,8 @@ import { ProductsService } from './products.service'
       { name: ProductCategory.name, schema: ProductCategorySchema },
     ]),
   ],
-  controllers: [ProductsController],
-  providers: [ProductsService],
+  controllers: [ProductsController, ProductCategoryController],
+  providers: [ProductsService, ProductCategoryService],
   exports: [ProductsService],
 })
 export class ProductsModule {}

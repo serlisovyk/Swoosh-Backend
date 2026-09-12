@@ -43,10 +43,6 @@ export const PRODUCT_COLORS_MIN_SIZE_ERROR =
   'Нужно указать хотя бы один цвет товара'
 export const PRODUCT_CATEGORY_ID_ERROR =
   'Категория товара должна быть валидным id'
-export const PRODUCT_CATEGORY_NAME_STRING_ERROR =
-  'Название категории должно быть строкой'
-export const PRODUCT_CATEGORY_NAME_EMPTY_ERROR =
-  'Название категории не должно быть пустым'
 export const PRODUCT_COLOR_NAME_STRING_ERROR =
   'Название цвета должно быть строкой'
 export const PRODUCT_COLOR_NAME_EMPTY_ERROR =
@@ -54,7 +50,6 @@ export const PRODUCT_COLOR_NAME_EMPTY_ERROR =
 export const PRODUCT_COLOR_HEX_STRING_ERROR = 'HEX цвета должен быть строкой'
 export const PRODUCT_COLOR_HEX_EMPTY_ERROR = 'HEX цвета не должен быть пустым'
 export const PRODUCT_NOT_FOUND_ERROR = 'Товар не найден'
-export const PRODUCT_CATEGORY_NOT_FOUND_ERROR = 'Категория товара не найдена'
 export const PRODUCT_QUERY_SIZE_ARRAY_ERROR =
   'Фильтр размера должен быть массивом'
 export const PRODUCT_QUERY_SIZE_NUMBER_ERROR =
