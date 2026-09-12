@@ -33,7 +33,7 @@ bun install
 
 `bun install` also provisions a local pre-commit hook (`husky`) that runs `eslint --fix` on staged `*.ts` files via `lint-staged` — it blocks a commit that lint would fail. This does not replace `bun run lint` / `bun run build` before merging (see Checks below).
 
-Create `.env` from `.env.sample` and fill the backend values.
+Create `.env` from `.env.sample` and fill the backend values. Env is validated at boot against a schema (`src/shared/config/env.config.ts`) — a missing, empty, or malformed value fails startup immediately and lists every offending key at once, rather than crashing later on first use. `CORS_DOMAINS` is required outside development.
 
 Mongo connection is a single `MONGO_URI` env var — paste the connection string as-is from Atlas (or any Mongo host), no assembly from separate parts.
 

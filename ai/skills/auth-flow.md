@@ -29,9 +29,9 @@ All auth orchestration stays under `src/modules/auth`. Other modules reach `Auth
 
 ## Token model (do not drift)
 
-- Access token: stateless JWT signed with `JWT_SECRET`, payload is `{ id }` only (no `role` — see below), returned in the response body of register/login/new-tokens, consumed as `Authorization: Bearer <token>` and validated by `jwt.strategy.ts` + `jwt.guard.ts`. `expiresIn` (`JWT_ACCESS_TOKEN_EXPIRES_IN`) is read with `getOrThrow` — never let it fall through to `undefined`, that issues a token with no expiry.
+- Access token: stateless JWT signed with `JWT_SECRET`, payload is `{ id }` only (no `role` — see below), returned in the response body of register/login/new-tokens, consumed as `Authorization: Bearer <token>` and validated by `jwt.strategy.ts` + `jwt.guard.ts`. `expiresIn` (`JWT_ACCESS_TOKEN_EXPIRES_IN`) is schema-required at boot (`src/shared/config/env.config.ts`, see [decisions/env-validated-at-boot](../decisions/2026-09-12-env-validated-at-boot.md)) — never let it fall through to `undefined`, that issues a token with no expiry.
 - Refresh token: stateless JWT signed with a **separate** `JWT_REFRESH_SECRET`, stored only in the `refreshToken` HttpOnly cookie. `POST /auth/new-tokens` reads it from the cookie; `POST /auth/logout` clears the cookie.
-- The refresh token's lifetime has one source: `JWT_REFRESH_TOKEN_EXPIRES_IN` (`ms` format, e.g. `"1d"`, `getOrThrow`). It signs the JWT and — via `ms()` — derives the cookie's `expires` date. Do not add a second, days-based env var for the cookie.
+- The refresh token's lifetime has one source: `JWT_REFRESH_TOKEN_EXPIRES_IN` (`ms` format, e.g. `"1d"`, schema-required at boot same as the access token's). It signs the JWT and — via `ms()` — derives the cookie's `expires` date. Do not add a second, days-based env var for the cookie.
 - The `refreshToken` cookie uses `sameSite: 'none'` + `secure: true` in production and `sameSite: 'lax'` + `secure: false` in dev — the frontend and API are on different sites in production but share `localhost` in dev. See [decisions/refresh-cookie-cross-site-policy](../decisions/2026-09-11-refresh-cookie-cross-site-policy.md).
 - Logout does not revoke already-issued refresh tokens before expiry — there is no token version or blacklist. Do not claim otherwise.
 
