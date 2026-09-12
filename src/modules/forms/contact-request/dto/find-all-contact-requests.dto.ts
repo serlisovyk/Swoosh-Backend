@@ -1,7 +1,6 @@
 import { IsEnum, IsOptional } from 'class-validator'
 import { ListQueryDto } from '@shared/dto'
 import { CREATED_AT_SORT_OPTIONS } from '@shared/types'
-import { CONTACT_REQUEST_SORT_ERROR } from '../contact-request.constants'
 import {
   ContactRequestQueryLimitPropertyDocs,
   ContactRequestQuerySearchPropertyDocs,
@@ -18,7 +17,7 @@ export class FindAllContactRequestsDto extends ListQueryDto {
   @ContactRequestQuerySortPropertyDocs()
   @IsOptional()
   @IsEnum(CREATED_AT_SORT_OPTIONS, {
-    message: CONTACT_REQUEST_SORT_ERROR,
+    message: 'Некорректное значение сортировки',
   })
   sort?: CREATED_AT_SORT_OPTIONS
 }
