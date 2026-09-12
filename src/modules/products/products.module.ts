@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose'
 import {
   ProductCategory,
   ProductCategorySchema,
-} from './models/product-category.model'
+} from './category/models/product-category.model'
 import { Product, ProductSchema } from './models/product.model'
 import { ProductsController } from './products.controller'
 import { ProductsService } from './products.service'

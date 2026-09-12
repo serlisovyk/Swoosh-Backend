@@ -1,5 +1,5 @@
 import { Model } from 'mongoose'
-import { ProductCategory } from './models/product-category.model'
+import { ProductCategory } from './category/models/product-category.model'
 import { Product } from './models/product.model'
 
 export type ProductModel = Model<Product>

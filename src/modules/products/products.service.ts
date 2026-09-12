@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { ProductCategory } from './models/product-category.model'
+import { ProductCategory } from './category/models/product-category.model'
 import { Product } from './models/product.model'
 import { CreateProductDto } from './dto/create-product.dto'
 import { FindAllProductsDto } from './dto/find-all-products.dto'

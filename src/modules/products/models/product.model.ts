@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Schema as MongooseSchema } from 'mongoose'
-import { ProductCategory } from './product-category.model'
+import { ProductCategory } from '../category/models/product-category.model'
 import { ProductColor, ProductColorSchema } from './product-color.model'
 
 @Schema({ timestamps: true })
