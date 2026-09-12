@@ -14,7 +14,13 @@ export class User {
   @Prop({ required: true, select: false })
   password!: string
 
-  @Prop({ type: String, default: null, select: false })
+  @Prop({
+    type: String,
+    default: null,
+    select: false,
+    index: true,
+    sparse: true,
+  })
   resetPasswordToken?: string | null
 
   @Prop({ type: Date, default: null, select: false })
