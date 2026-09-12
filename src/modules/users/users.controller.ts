@@ -17,7 +17,7 @@ import {
 } from './users.swagger'
 
 @UsersTagDocs()
-@Controller('/profile')
+@Controller('profile')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
