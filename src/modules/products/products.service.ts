@@ -4,7 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { ProductCategory } from './models/product-category.model'
+import { ProductCategory } from './category/models/product-category.model'
+import { PRODUCT_CATEGORY_NOT_FOUND_ERROR } from './category/product-category.constants'
 import { Product } from './models/product.model'
 import { CreateProductDto } from './dto/create-product.dto'
 import { FindAllProductsDto } from './dto/find-all-products.dto'
@@ -12,7 +13,6 @@ import { UpdateProductDto } from './dto/update-product.dto'
 import { buildProductListQueryOptions } from './products.utils'
 import {
   FILTERS_METADATA_CACHE_TTL_MS,
-  PRODUCT_CATEGORY_NOT_FOUND_ERROR,
   PRODUCT_NOT_FOUND_ERROR,
   PRODUCT_OLD_PRICE_LOWER_THAN_PRICE_ERROR,
   PRODUCT_SALE_CF_REQUIRES_OLD_PRICE_ERROR,
@@ -262,6 +262,10 @@ export class ProductsService {
 
   existsById(productId: string) {
     return this.productModel.exists({ _id: productId }).then(Boolean)
+  }
+
+  existsWithCategory(categoryId: string) {
+    return this.productModel.exists({ category: categoryId }).then(Boolean)
   }
 
   async filterExistingIds(productIds: string[]) {
