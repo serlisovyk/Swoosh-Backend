@@ -13,6 +13,8 @@ Orientation in one read — so `src/` does not have to be rediscovered every ses
 | `Dockerfile` | multi-stage build — `builder` (`oven/bun:1-alpine`) installs, builds, and prunes to prod-only `node_modules`; `runner` (plain `node:24-alpine`, matching `.nvmrc`) runs `dist/main.js` as the non-root `node` user |
 | `docker-compose.yml` | `app` service (build + `env_file: .env` + port `3001`) is the default; an optional `mongo` service sits behind the `local-db` Compose profile for local dev without Atlas |
 | `.dockerignore` | keeps `node_modules`, `dist`, `*.tsbuildinfo`, `.env`, `.git`, `ai/`, `*.md` out of the build context/image |
+| `.husky/pre-commit` | `husky` git hook, provisioned by the `prepare` script on install; runs `lint-staged` |
+| `.lintstagedrc.json` | `lint-staged` config: `eslint --fix` on staged `*.ts` files |
 
 ## App level
 

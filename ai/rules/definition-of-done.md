@@ -29,6 +29,7 @@ A backend change is done when all of the following hold. Use it as a pre-commit 
 ## Verification
 
 - `bun run lint` is clean — and actually means something: `prettier/prettier`, `no-floating-promises`, `no-unsafe-argument`, and `no-explicit-any` are all `'error'`, not `'warn'`. A green lint run rules out unformatted code, floating promises, unsafe arguments, and `any`, not just the rules that happen to fail the build.
+- A local `husky` pre-commit hook runs `eslint --fix` on staged files (`lint-staged`) as a fast first pass — it is a convenience, not a substitute for running `bun run lint` / `bun run build` yourself before merge.
 - `bun run build` is clean (required after deleting files, changing dependencies, or changing public contracts) — `tsconfig.json` has `strict: true` and `noUncheckedIndexedAccess: true`, so this also rules out implicit `any`, unchecked nulls, and unchecked array/index access, not just syntax errors.
 - No automated test suite exists — verify by lint, build, and manual reasoning. Do not add tests unless explicitly asked.
 
