@@ -67,6 +67,7 @@
 - Inline one-off validation messages, Swagger descriptions, and examples when they are only used locally and extraction hurts readability.
 - Remove stale constants after deleting features.
 - Even module-private constants (a status→code lookup map, a threshold used only inside one filter/service) belong in `<feature>.constants.ts`, not declared at the top of the class file that uses them. Keeps the class file to behavior, keeps constants greppable in one place — see `src/common/errors/error-codes.constants.ts` (`STATUS_TO_ERROR_CODE`, `INTERNAL_SERVER_ERROR_STATUS`) vs `all-exceptions.filter.ts`.
+- A constant lives at the lowest level every one of its consumers can import — never copy the same literal into two files "because it's easier". If a `common/*` package and a feature module both need the same value, it belongs in `shared/constants`, and each side imports (or re-exports) it — see `API_PREFIX`/`SWAGGER_DOCS_PATH` (`shared/constants/api.constants.ts`, read by `main.ts` and `common/swagger`) and `REFRESH_TOKEN_COOKIE_NAME` (`shared/constants/cookie.constants.ts`, read by `modules/auth` and `common/swagger`'s `SWAGGER_REFRESH_TOKEN_AUTH_NAME`). Two independent literals that are supposed to stay equal will eventually drift.
 
 ## Files
 
