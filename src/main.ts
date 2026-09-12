@@ -10,12 +10,13 @@ import {
 } from '@common/errors'
 import { setupSwagger } from '@common/swagger'
 import { AppEnv, setupValidation } from '@shared/config'
+import { API_PREFIX } from '@shared/constants'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
 
-  app.setGlobalPrefix('api/v1')
+  app.setGlobalPrefix(API_PREFIX)
 
   const configService = app.get<ConfigService<AppEnv, true>>(ConfigService)
 

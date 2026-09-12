@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { AppEnv } from '@shared/config'
 import { isDev } from '@shared/utils'
+import { SWAGGER_DOCS_PATH } from '@shared/constants'
 import {
   addSwaggerCookieAuth,
   createSwaggerBasicAuthMiddleware,
@@ -14,7 +15,6 @@ import {
   SWAGGER_SITE_TITLE,
   SWAGGER_DESCRIPTION,
   SWAGGER_VERSION,
-  SWAGGER_PATH,
 } from '../constants'
 
 export function setupSwagger(
@@ -30,7 +30,7 @@ export function setupSwagger(
     })
 
     app.use(
-      createSwaggerBasicAuthMiddleware(`/${SWAGGER_PATH}`, user, password),
+      createSwaggerBasicAuthMiddleware(`/${SWAGGER_DOCS_PATH}`, user, password),
     )
   }
 
@@ -58,7 +58,7 @@ export function setupSwagger(
     operationIdFactory: createSwaggerOperationId,
   })
 
-  SwaggerModule.setup(SWAGGER_PATH, app, document, {
+  SwaggerModule.setup(SWAGGER_DOCS_PATH, app, document, {
     customSiteTitle: SWAGGER_SITE_TITLE,
     explorer: true,
     swaggerOptions: { persistAuthorization: true },
