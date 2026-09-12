@@ -4,7 +4,7 @@ Fill in `{ISSUE}` and send it as the session's first message. Nothing else to fi
 
 ---
 
-Pick up Linear issue **{ISSUE}**.
+Pick up Linear issue MY-**{ISSUE}**.
 
 First, set up the environment:
 
