@@ -7,11 +7,11 @@ import { InjectModel } from '@nestjs/mongoose'
 import { CreateNewsletterSubscriptionDto } from './dto/create-newsletter-subscription.dto'
 import { FindAllNewsletterSubscriptionsDto } from './dto/find-all-newsletter-subscriptions.dto'
 import { UpdateNewsletterSubscriptionDto } from './dto/update-newsletter-subscription.dto'
+import { MONGOOSE_UPDATE_AFTER_OPTIONS } from '@shared/constants'
 import { NewsletterSubscription } from './models/newsletter-subscription.model'
 import {
   NEWSLETTER_SUBSCRIPTION_ALREADY_EXISTS_ERROR,
   NEWSLETTER_SUBSCRIPTION_NOT_FOUND_ERROR,
-  updateNewsletterSubscriptionOptions,
 } from './newsletter-subscription.constants'
 import type {
   NewsletterSubscriptionListResponse,
@@ -84,7 +84,7 @@ export class NewsletterSubscriptionService {
 
     try {
       const newsletterSubscription = await this.newsletterSubscriptionModel
-        .findByIdAndUpdate(id, dto, updateNewsletterSubscriptionOptions)
+        .findByIdAndUpdate(id, dto, MONGOOSE_UPDATE_AFTER_OPTIONS)
         .select(this.selectFields)
         .lean()
 
