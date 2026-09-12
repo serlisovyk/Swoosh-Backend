@@ -153,7 +153,6 @@ export class AuthService {
   private generateSessionTokens(user: UserWithoutPassword) {
     const accessTokenPayload: AccessTokenPayload = {
       id: String(user._id),
-      role: user.role,
     }
 
     const refreshTokenPayload: RefreshTokenPayload = {
