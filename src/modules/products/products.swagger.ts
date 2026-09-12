@@ -1,7 +1,6 @@
 import {
   ApiAuthRequiredDocs,
   ApiInvalidQueryDocs,
-  ApiNotFoundDocs,
   ApiValidationErrorDocs,
   ErrorResponseDocs,
 } from '@common/errors'
@@ -36,33 +35,33 @@ export function ProductsTagDocs() {
 }
 
 export const ProductsColorNamePropertyDocs = createPropertyDocsDecorator({
-  description: 'Display name of the product color.',
+  description: 'Отображаемое название цвета товара.',
   example: 'Graphite',
 })
 
 export const ProductsColorHexPropertyDocs = createPropertyDocsDecorator({
-  description: 'HEX code of the product color.',
+  description: 'HEX-код цвета товара.',
   example: '#2F3640',
 })
 
 export const ProductsTitlePropertyDocs = createPropertyDocsDecorator({
-  description: 'Product title shown in the catalog.',
+  description: 'Название товара в каталоге.',
   example: 'Nike Air Max Pulse',
 })
 
 export const ProductsPricePropertyDocs = createPropertyDocsDecorator({
-  description: 'Current product price.',
+  description: 'Текущая цена товара.',
   example: 189.99,
   minimum: 0,
 })
 
 export const ProductsDescriptionPropertyDocs = createPropertyDocsDecorator({
-  description: 'Detailed product description.',
+  description: 'Подробное описание товара.',
   example: 'Breathable everyday sneakers with lightweight cushioning.',
 })
 
 export const ProductsImagesPropertyDocs = createPropertyDocsDecorator({
-  description: 'List of product image URLs.',
+  description: 'Список URL изображений товара.',
   example: [
     'https://image-example.com/products/air-max-pulse/front.webp',
     'https://image-example.com/products/air-max-pulse/side.webp',
@@ -74,7 +73,7 @@ export const ProductsImagesPropertyDocs = createPropertyDocsDecorator({
 
 export const ProductsOldPricePropertyDocs = createOptionalPropertyDocsDecorator(
   {
-    description: 'Previous price before discount.',
+    description: 'Цена до скидки.',
     example: 229.99,
     minimum: 0,
   },
@@ -82,24 +81,24 @@ export const ProductsOldPricePropertyDocs = createOptionalPropertyDocsDecorator(
 
 export const ProductsNullableOldPricePropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Previous price before discount.',
+    description: 'Цена до скидки.',
     example: 229.99,
     nullable: true,
   })
 
 export const ProductsSaleCFPropertyDocs = createOptionalPropertyDocsDecorator({
-  description: 'Discount coefficient or sale marker value.',
+  description: 'Коэффициент скидки или маркер акции.',
   example: 15,
   minimum: 0,
 })
 
 export const ProductsSaleCFRequiredPropertyDocs = createPropertyDocsDecorator({
-  description: 'Discount coefficient or sale marker value.',
+  description: 'Коэффициент скидки или маркер акции.',
   example: 15,
 })
 
 export const ProductsSizesPropertyDocs = createPropertyDocsDecorator({
-  description: 'Available product sizes.',
+  description: 'Доступные размеры товара.',
   example: [40, 41, 42, 43],
   type: [Number],
   minItems: 1,
@@ -108,57 +107,57 @@ export const ProductsSizesPropertyDocs = createPropertyDocsDecorator({
 
 export const ProductsMaterialPropertyDocs = createOptionalPropertyDocsDecorator(
   {
-    description: 'Primary material of the product.',
+    description: 'Основной материал товара.',
     example: 'Mesh',
   },
 )
 
 export const ProductsMaterialRequiredPropertyDocs = createPropertyDocsDecorator(
   {
-    description: 'Primary material of the product.',
+    description: 'Основной материал товара.',
     example: 'Mesh',
   },
 )
 
 export const ProductsIsHitPropertyDocs = createOptionalPropertyDocsDecorator({
-  description: 'Marks the product as a catalog hit.',
+  description: 'Отмечает товар как хит каталога.',
   example: true,
 })
 
 export const ProductsIsHitRequiredPropertyDocs = createPropertyDocsDecorator({
-  description: 'Whether the product is marked as a hit.',
+  description: 'Отмечен ли товар как хит.',
   example: true,
 })
 
 export const ProductsIsNewArrivalPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Marks the product as a new arrival.',
+    description: 'Отмечает товар как новинку.',
     example: true,
   })
 
 export const ProductsIsNewArrivalRequiredPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Whether the product is marked as a new arrival.',
+    description: 'Отмечен ли товар как новинка.',
     example: true,
   })
 
 export function ProductsColorsPropertyDocs(model: Type<unknown>) {
   return ApiProperty({
-    description: 'Available product colors.',
+    description: 'Доступные цвета товара.',
     type: [model],
     minItems: 1,
   })
 }
 
 export const ProductsCategoryIdPropertyDocs = createPropertyDocsDecorator({
-  description: 'MongoDB ObjectId of the product category.',
+  description: 'MongoDB ObjectId категории товара.',
   example: PRODUCT_CATEGORY_ID_EXAMPLE,
 })
 
 export const ProductsQuerySizePropertyDocs =
   createOptionalPropertyDocsDecorator({
     description:
-      'Filter by sizes. Accepts repeated query params or a comma-separated string.',
+      'Фильтр по размерам. Принимает повторяющиеся query-параметры или строку через запятую.',
     example: [40, 41],
     type: [Number],
   })
@@ -166,7 +165,7 @@ export const ProductsQuerySizePropertyDocs =
 export const ProductsQueryPricePropertyDocs =
   createOptionalPropertyDocsDecorator({
     description:
-      'Filter by price. One value means exact price, two values mean min and max range.',
+      'Фильтр по цене. Одно значение — точная цена, два значения — диапазон от и до.',
     example: [120, 250],
     type: [Number],
     maxItems: 2,
@@ -175,7 +174,7 @@ export const ProductsQueryPricePropertyDocs =
 export const ProductsQueryColorNamePropertyDocs =
   createOptionalPropertyDocsDecorator({
     description:
-      'Filter by color names. Accepts repeated query params or a comma-separated string.',
+      'Фильтр по названиям цветов. Принимает повторяющиеся query-параметры или строку через запятую.',
     example: ['Black', 'White'],
     type: [String],
   })
@@ -183,7 +182,7 @@ export const ProductsQueryColorNamePropertyDocs =
 export const ProductsQueryCategoryPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description:
-      'Filter by category ids. Accepts repeated query params or a comma-separated string.',
+      'Фильтр по id категорий. Принимает повторяющиеся query-параметры или строку через запятую.',
     example: [PRODUCT_CATEGORY_ID_EXAMPLE],
     type: [String],
   })
@@ -191,35 +190,35 @@ export const ProductsQueryCategoryPropertyDocs =
 export const ProductsQueryMaterialPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description:
-      'Filter by material. Accepts repeated query params or a comma-separated string.',
+      'Фильтр по материалу. Принимает повторяющиеся query-параметры или строку через запятую.',
     example: ['Mesh', 'Leather'],
     type: [String],
   })
 
 export const ProductsQueryIsHitPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Filter by products marked as hits.',
+    description: 'Фильтр по товарам, отмеченным как хиты.',
     example: true,
     type: Boolean,
   })
 
 export const ProductsQueryIsNewArrivalPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Filter by products marked as new arrivals.',
+    description: 'Фильтр по товарам, отмеченным как новинки.',
     example: true,
     type: Boolean,
   })
 
 export const ProductsQueryHasDiscountPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Filter by products with or without a discount.',
+    description: 'Фильтр по наличию или отсутствию скидки на товар.',
     example: true,
     type: Boolean,
   })
 
 export const ProductsQuerySearchPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Free-text search by product title or description.',
+    description: 'Полнотекстовый поиск по названию или описанию товара.',
     example: 'Air Max',
   })
 
@@ -234,7 +233,7 @@ export const ProductsQueryPagePropertyDocs = QueryPagePropertyDocs({
 
 export const ProductsQuerySortPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Sorting strategy for the products list.',
+    description: 'Стратегия сортировки списка товаров.',
     enum: PRODUCT_SORT_OPTIONS,
     enumName: 'ProductSortOptions',
     example: PRODUCT_SORT_OPTIONS.NEWEST,
@@ -243,7 +242,7 @@ export const ProductsQuerySortPropertyDocs =
 export const ProductsQueryIdsPropertyDocs = createOptionalPropertyDocsDecorator(
   {
     description:
-      'Specific product ids to load. Accepts repeated query params or a comma-separated string.',
+      'Id конкретных товаров для загрузки. Принимает повторяющиеся query-параметры или строку через запятую.',
     example: [PRODUCT_ID_EXAMPLE, PRODUCT_CATEGORY_ID_EXAMPLE],
     type: [String],
   },
@@ -252,39 +251,39 @@ export const ProductsQueryIdsPropertyDocs = createOptionalPropertyDocsDecorator(
 export const ProductsQueryExcludeIdsPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description:
-      'Product ids to exclude from the result. Accepts repeated query params or a comma-separated string.',
+      'Id товаров, исключаемых из результата. Принимает повторяющиеся query-параметры или строку через запятую.',
     example: [PRODUCT_ID_EXAMPLE],
     type: [String],
   })
 
 export const ProductsFilterSizesPropertyDocs = createPropertyDocsDecorator({
-  description: 'Available product sizes for the catalog filters.',
+  description: 'Доступные размеры товаров для фильтров каталога.',
   example: [40, 41, 42, 43],
   type: [Number],
 })
 
 export const ProductsFilterMaterialsPropertyDocs = createPropertyDocsDecorator({
-  description: 'Available product materials for the catalog filters.',
+  description: 'Доступные материалы товаров для фильтров каталога.',
   example: ['Leather', 'Mesh', 'Textile'],
   type: [String],
 })
 
 export const ProductsFilterColorsPropertyDocs = createPropertyDocsDecorator({
-  description: 'Available product colors for the catalog filters.',
+  description: 'Доступные цвета товаров для фильтров каталога.',
   example: ['Black', 'White', 'Gray'],
   type: [String],
 })
 
 export function ProductsFilterCategoriesPropertyDocs(model: Type<unknown>) {
   return ApiProperty({
-    description: 'Available product categories for the catalog filters.',
+    description: 'Доступные категории товаров для фильтров каталога.',
     type: [model],
   })
 }
 
 export const ProductsFilterPriceRangePropertyDocs = createPropertyDocsDecorator(
   {
-    description: 'Min and max product prices available in the catalog.',
+    description: 'Минимальная и максимальная цена товаров в каталоге.',
     example: [132, 219],
     type: [Number],
     minItems: 2,
@@ -293,59 +292,59 @@ export const ProductsFilterPriceRangePropertyDocs = createPropertyDocsDecorator(
 )
 
 export const ProductsResponseIdPropertyDocs = createPropertyDocsDecorator({
-  description: 'Product identifier.',
+  description: 'Идентификатор товара.',
   example: PRODUCT_ID_EXAMPLE,
 })
 
 export const ProductsCategoryResponseIdPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Category identifier.',
+    description: 'Идентификатор категории.',
     example: PRODUCT_CATEGORY_ID_EXAMPLE,
   })
 
 export const ProductsCategoryNamePropertyDocs = createPropertyDocsDecorator({
-  description: 'Category name.',
+  description: 'Название категории.',
   example: 'Running',
 })
 
 export const ProductsCreatedAtPropertyDocs = createPropertyDocsDecorator({
-  description: 'Product creation timestamp.',
+  description: 'Время создания товара.',
   example: '2026-03-14T12:00:00.000Z',
 })
 
 export const ProductsUpdatedAtPropertyDocs = createPropertyDocsDecorator({
-  description: 'Product update timestamp.',
+  description: 'Время последнего обновления товара.',
   example: '2026-03-14T12:15:00.000Z',
 })
 
 export const ProductsCategoryCreatedAtPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Category creation timestamp.',
+    description: 'Время создания категории.',
     example: '2026-03-14T12:00:00.000Z',
   })
 
 export const ProductsCategoryUpdatedAtPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Category update timestamp.',
+    description: 'Время последнего обновления категории.',
     example: '2026-03-14T12:00:00.000Z',
   })
 
 export function ProductsResolvedCategoryPropertyDocs(model: Type<unknown>) {
   return ApiProperty({
-    description: 'Resolved product category.',
+    description: 'Категория товара.',
     type: model,
   })
 }
 
 export function ProductsListItemsPropertyDocs(model: Type<unknown>) {
   return ApiProperty({
-    description: 'Products matching the current filters.',
+    description: 'Товары, соответствующие текущим фильтрам.',
     type: [model],
   })
 }
 
 export const ProductsTotalPropertyDocs = createPropertyDocsDecorator({
-  description: 'Total number of products matching the current filters.',
+  description: 'Общее количество товаров, соответствующих текущим фильтрам.',
   example: 24,
 })
 
@@ -454,13 +453,13 @@ export class ProductsFiltersMetadataResponseDocs {
 export function ProductsFindAllDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Get products list',
+      summary: 'Получить список товаров',
       description:
-        'Returns a filtered list of products with the total count. Supports catalog filters and free-text search. When ids are provided, the response preserves the same order as in the query. In that case, page, limit, and sort are ignored and every matching product is returned.',
+        'Возвращает отфильтрованный список товаров с общим количеством. Поддерживает фильтры каталога и полнотекстовый поиск. Если переданы ids, порядок ответа сохраняет порядок из запроса. В этом случае page, limit и sort игнорируются, и возвращаются все найденные товары.',
       security: [],
     }),
     ApiOkResponse({
-      description: 'Products list returned successfully.',
+      description: 'Список товаров успешно получен.',
       type: ProductsListResponseDocs,
     }),
     ApiInvalidQueryDocs(),
@@ -470,13 +469,13 @@ export function ProductsFindAllDocs() {
 export function ProductsFindFiltersDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Get products filters metadata',
+      summary: 'Получить метаданные фильтров товаров',
       description:
-        'Returns filter values and price bounds used by the catalog filters.',
+        'Возвращает значения фильтров и границы цен, используемые фильтрами каталога.',
       security: [],
     }),
     ApiOkResponse({
-      description: 'Product filters metadata returned successfully.',
+      description: 'Метаданные фильтров товаров успешно получены.',
       type: ProductsFiltersMetadataResponseDocs,
     }),
   )
@@ -485,41 +484,44 @@ export function ProductsFindFiltersDocs() {
 export function ProductsFindByIdDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Get product by id',
+      summary: 'Получить товар по id',
       security: [],
     }),
     ApiParam({
       name: 'id',
-      description: 'MongoDB ObjectId of the product.',
+      description: 'MongoDB ObjectId товара.',
       example: PRODUCT_ID_EXAMPLE,
     }),
     ApiOkResponse({
-      description: 'Product returned successfully.',
+      description: 'Товар успешно получен.',
       type: ProductsResponseDocs,
     }),
     ApiBadRequestResponse({
-      description: 'Product id has an invalid format.',
+      description: 'Некорректный формат id товара.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundDocs('Product with the provided id'),
+    ApiNotFoundResponse({
+      description: 'Товар с указанным id не найден.',
+      type: ErrorResponseDocs,
+    }),
   )
 }
 
 export function ProductsCreateDocs() {
   return applyDecorators(
-    ApiOperation({ summary: 'Create product' }),
+    ApiOperation({ summary: 'Создать товар' }),
     ApiCreatedResponse({
-      description: 'Product created successfully.',
+      description: 'Товар успешно создан.',
       type: ProductsResponseDocs,
     }),
     ApiValidationErrorDocs(),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can create products.',
+      description: 'Только администраторы могут создавать товары.',
       type: ErrorResponseDocs,
     }),
     ApiNotFoundResponse({
-      description: 'Product category was not found.',
+      description: 'Категория товара не найдена.',
       type: ErrorResponseDocs,
     }),
   )
@@ -527,27 +529,27 @@ export function ProductsCreateDocs() {
 
 export function ProductsUpdateDocs() {
   return applyDecorators(
-    ApiOperation({ summary: 'Update product' }),
+    ApiOperation({ summary: 'Обновить товар' }),
     ApiParam({
       name: 'id',
-      description: 'MongoDB ObjectId of the product.',
+      description: 'MongoDB ObjectId товара.',
       example: PRODUCT_ID_EXAMPLE,
     }),
     ApiOkResponse({
-      description: 'Product updated successfully.',
+      description: 'Товар успешно обновлён.',
       type: ProductsResponseDocs,
     }),
     ApiBadRequestResponse({
-      description: 'Product id or request body is invalid.',
+      description: 'Некорректный id товара или тело запроса.',
       type: ErrorResponseDocs,
     }),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can update products.',
+      description: 'Только администраторы могут обновлять товары.',
       type: ErrorResponseDocs,
     }),
     ApiNotFoundResponse({
-      description: 'Product or category was not found.',
+      description: 'Товар или категория не найдены.',
       type: ErrorResponseDocs,
     }),
   )
@@ -555,28 +557,31 @@ export function ProductsUpdateDocs() {
 
 export function ProductsDeleteDocs() {
   return applyDecorators(
-    ApiOperation({ summary: 'Delete product' }),
+    ApiOperation({ summary: 'Удалить товар' }),
     ApiParam({
       name: 'id',
-      description: 'MongoDB ObjectId of the product.',
+      description: 'MongoDB ObjectId товара.',
       example: PRODUCT_ID_EXAMPLE,
     }),
     ApiOkResponse({
-      description: 'Product deleted successfully.',
+      description: 'Товар успешно удалён.',
       schema: {
         type: 'boolean',
         example: true,
       },
     }),
     ApiBadRequestResponse({
-      description: 'Product id has an invalid format.',
+      description: 'Некорректный формат id товара.',
       type: ErrorResponseDocs,
     }),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can delete products.',
+      description: 'Только администраторы могут удалять товары.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundDocs('Product with the provided id'),
+    ApiNotFoundResponse({
+      description: 'Товар с указанным id не найден.',
+      type: ErrorResponseDocs,
+    }),
   )
 }
