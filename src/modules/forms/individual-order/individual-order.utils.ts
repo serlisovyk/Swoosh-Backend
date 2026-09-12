@@ -1,13 +1,9 @@
+import { createContainsRegex, resolveListQueryOptions } from '@shared/utils'
+import { CREATED_AT_SORT_MAP } from '@shared/constants'
+import { CREATED_AT_SORT_OPTIONS } from '@shared/types'
 import { FindAllIndividualOrdersDto } from './dto/find-all-individual-orders.dto'
-import {
-  DEFAULT_INDIVIDUAL_ORDERS_LIMIT,
-  INDIVIDUAL_ORDER_SORT_MAP,
-  REGEX_SPECIAL_CHARACTERS,
-} from './individual-order.constants'
-import {
-  type IndividualOrderListQueryOptions,
-  INDIVIDUAL_ORDER_SORT_OPTIONS,
-} from './individual-order.types'
+import { DEFAULT_INDIVIDUAL_ORDERS_LIMIT } from './individual-order.constants'
+import type { IndividualOrderListQueryOptions } from './individual-order.types'
 
 export function buildIndividualOrderListQueryOptions(
   dto: FindAllIndividualOrdersDto,
@@ -26,13 +22,18 @@ export function buildIndividualOrderListQueryOptions(
     filters.$or = [{ name: regex }, { email: regex }, { phone: regex }]
   }
 
-  const limitOption = limit ?? DEFAULT_INDIVIDUAL_ORDERS_LIMIT
-
-  const sortOption = sort
-    ? INDIVIDUAL_ORDER_SORT_MAP[sort]
-    : INDIVIDUAL_ORDER_SORT_MAP[INDIVIDUAL_ORDER_SORT_OPTIONS.NEWEST]
-
-  const skip = ((page ?? 1) - 1) * limitOption
+  const {
+    skip,
+    limit: limitOption,
+    sort: sortOption,
+  } = resolveListQueryOptions({
+    page,
+    limit,
+    sort,
+    sortMap: CREATED_AT_SORT_MAP,
+    defaultSort: CREATED_AT_SORT_OPTIONS.NEWEST,
+    defaultLimit: DEFAULT_INDIVIDUAL_ORDERS_LIMIT,
+  })
 
   return {
     filters,
@@ -40,12 +41,4 @@ export function buildIndividualOrderListQueryOptions(
     sort: sortOption,
     skip,
   }
-}
-
-function createContainsRegex(value: string): RegExp {
-  return new RegExp(escapeRegExp(value), 'i')
-}
-
-function escapeRegExp(value: string): string {
-  return value.replace(REGEX_SPECIAL_CHARACTERS, '\\$&')
 }
