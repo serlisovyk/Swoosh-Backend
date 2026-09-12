@@ -20,39 +20,38 @@ export function UsersTagDocs() {
 }
 
 export const UsersNamePropertyDocs = createOptionalPropertyDocsDecorator({
-  description: 'User display name.',
+  description: 'Отображаемое имя пользователя.',
   example: 'John Doe',
 })
 
 export const UsersNameRequiredPropertyDocs = createPropertyDocsDecorator({
-  description: 'User display name.',
+  description: 'Отображаемое имя пользователя.',
   example: 'John Doe',
 })
 
 export const UsersEmailPropertyDocs = createOptionalPropertyDocsDecorator({
-  description: 'User email address.',
+  description: 'Email пользователя.',
   example: 'john.swoosh@example.com',
 })
 
 export const UsersEmailRequiredPropertyDocs = createPropertyDocsDecorator({
-  description: 'User email address.',
+  description: 'Email пользователя.',
   example: 'john.swoosh@example.com',
 })
 
 export const UsersPhonePropertyDocs = createOptionalPropertyDocsDecorator({
-  description: 'User phone number.',
+  description: 'Номер телефона пользователя.',
   example: '+380991112233',
 })
 
 export const UsersPhoneRequiredPropertyDocs = createPropertyDocsDecorator({
-  description: 'User phone number.',
+  description: 'Номер телефона пользователя.',
   example: '+380991112233',
 })
 
 export const UsersNewPasswordPropertyDocs = createOptionalPropertyDocsDecorator(
   {
-    description:
-      'New password. When provided, currentPassword must also be sent.',
+    description: 'Новый пароль. При передаче также обязателен currentPassword.',
     example: 'newSecret123',
     minLength: 6,
   },
@@ -60,104 +59,104 @@ export const UsersNewPasswordPropertyDocs = createOptionalPropertyDocsDecorator(
 
 export const UsersCurrentPasswordPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Current password used to confirm password change.',
+    description: 'Текущий пароль для подтверждения смены пароля.',
     example: 'secret123',
   })
 
 export const UsersRolePropertyDocs = createPropertyDocsDecorator({
-  description: 'User role.',
+  description: 'Роль пользователя.',
   enum: ROLES,
   enumName: 'UserRoles',
   example: ROLES.USER,
 })
 
 export const UsersIdPropertyDocs = createPropertyDocsDecorator({
-  description: 'User identifier.',
+  description: 'Идентификатор пользователя.',
   example: '65f1e8d3f9a2b56789c54321',
 })
 
 export const UsersAddressCompanyPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Company name for delivery details.',
+    description: 'Название компании для данных доставки.',
     example: 'Swoosh',
   })
 
 export const UsersAddressCompanyRequiredPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Company name for delivery details.',
+    description: 'Название компании для данных доставки.',
     example: 'Swoosh',
   })
 
 export const UsersAddressRegionPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Region for delivery details.',
+    description: 'Регион для данных доставки.',
     example: 'Kyiv region',
   })
 
 export const UsersAddressRegionRequiredPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Region for delivery details.',
+    description: 'Регион для данных доставки.',
     example: 'Kyiv region',
   })
 
 export const UsersAddressCityPropertyDocs = createOptionalPropertyDocsDecorator(
   {
-    description: 'City for delivery details.',
+    description: 'Город для данных доставки.',
     example: 'Kyiv',
   },
 )
 
 export const UsersAddressCityRequiredPropertyDocs = createPropertyDocsDecorator(
   {
-    description: 'City for delivery details.',
+    description: 'Город для данных доставки.',
     example: 'Kyiv',
   },
 )
 
 export const UsersAddressStreetPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Street for delivery details.',
+    description: 'Улица для данных доставки.',
     example: 'Khreshchatyk St',
   })
 
 export const UsersAddressStreetRequiredPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Street for delivery details.',
+    description: 'Улица для данных доставки.',
     example: 'Khreshchatyk St',
   })
 
 export const UsersAddressZipPropertyDocs = createOptionalPropertyDocsDecorator({
-  description: 'Postal code for delivery details.',
+  description: 'Почтовый индекс для данных доставки.',
   example: '01001',
 })
 
 export const UsersAddressZipRequiredPropertyDocs = createPropertyDocsDecorator({
-  description: 'Postal code for delivery details.',
+  description: 'Почтовый индекс для данных доставки.',
   example: '01001',
 })
 
 export const UsersAddressBuildingNumberPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Building or apartment number for delivery details.',
+    description: 'Номер дома или квартиры для данных доставки.',
     example: '15A',
   })
 
 export const UsersAddressBuildingNumberRequiredPropertyDocs =
   createPropertyDocsDecorator({
-    description: 'Building or apartment number for delivery details.',
+    description: 'Номер дома или квартиры для данных доставки.',
     example: '15A',
   })
 
 export function UsersAddressPropertyDocs(model: Type<unknown>) {
   return ApiProperty({
-    description: 'User delivery address.',
+    description: 'Адрес доставки пользователя.',
     type: model,
   })
 }
 
 export function UsersAddressOptionalPropertyDocs(model: Type<unknown>) {
   return ApiProperty({
-    description: 'User delivery address.',
+    description: 'Адрес доставки пользователя.',
     type: model,
     required: false,
   })
@@ -208,9 +207,9 @@ export class UsersResponseDocs {
 
 export function UsersGetProfileDocs() {
   return applyDecorators(
-    ApiOperation({ summary: 'Get current user profile' }),
+    ApiOperation({ summary: 'Получить профиль текущего пользователя' }),
     ApiOkResponse({
-      description: 'Current user profile returned successfully.',
+      description: 'Профиль текущего пользователя успешно получен.',
       type: UsersResponseDocs,
     }),
     ApiAuthRequiredDocs(),
@@ -219,18 +218,18 @@ export function UsersGetProfileDocs() {
 
 export function UsersUpdateProfileDocs() {
   return applyDecorators(
-    ApiOperation({ summary: 'Update current user profile' }),
+    ApiOperation({ summary: 'Обновить профиль текущего пользователя' }),
     ApiOkResponse({
-      description: 'Current user profile updated successfully.',
+      description: 'Профиль текущего пользователя успешно обновлён.',
       type: UsersResponseDocs,
     }),
     ApiBadRequestResponse({
       description:
-        'Request body is invalid, current password is missing, or email is already taken.',
+        'Тело запроса невалидно, отсутствует текущий пароль, либо email уже занят.',
       type: ErrorResponseDocs,
     }),
     ApiUnauthorizedResponse({
-      description: 'Authentication is required or current password is wrong.',
+      description: 'Требуется аутентификация либо неверный текущий пароль.',
       type: ErrorResponseDocs,
     }),
   )
