@@ -19,7 +19,6 @@ import {
   FAVORITES_DEFAULT_LIMIT,
   FAVORITES_MAX_PRODUCT_IDS,
   FAVORITES_PRODUCT_IDS_MAX_SIZE_ERROR,
-  FAVORITES_UPDATE_CONFLICT_ERROR,
 } from './favorites.constants'
 import {
   FavoritesListResponse,
@@ -202,7 +201,9 @@ export class FavoritesService {
       }
     }
 
-    throw new ConflictException(FAVORITES_UPDATE_CONFLICT_ERROR)
+    throw new ConflictException(
+      'Избранное было обновлено одновременно. Пожалуйста, повторите попытку.',
+    )
   }
 
   private async findUserFavoriteStateOrThrow(userId: string) {
