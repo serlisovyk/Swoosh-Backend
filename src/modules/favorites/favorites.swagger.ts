@@ -25,8 +25,6 @@ import {
   FAVORITES_DEFAULT_LIMIT,
   FAVORITES_MAX_LIMIT,
   FAVORITES_MAX_PRODUCT_IDS,
-  FAVORITES_PRODUCT_ID_EXAMPLE,
-  FAVORITES_PRODUCT_IDS_EXAMPLE,
 } from './favorites.constants'
 
 export function FavoritesTagDocs() {
@@ -37,7 +35,7 @@ export const FavoritesProductIdsPropertyDocs = createPropertyDocsDecorator({
   description:
     'Favorite product ids that should be merged into the account state.',
   type: [String],
-  example: FAVORITES_PRODUCT_IDS_EXAMPLE,
+  example: ['65f1e8d3f9a2b56789c12345', '65f1e8d3f9a2b56789c12346'],
   uniqueItems: true,
   maxItems: FAVORITES_MAX_PRODUCT_IDS,
 })
@@ -47,7 +45,7 @@ export const FavoritesOptionalProductIdsPropertyDocs =
     description:
       'Guest favorite product ids that will be merged with stored favorites.',
     type: [String],
-    example: FAVORITES_PRODUCT_IDS_EXAMPLE,
+    example: ['65f1e8d3f9a2b56789c12345', '65f1e8d3f9a2b56789c12346'],
     uniqueItems: true,
     maxItems: FAVORITES_MAX_PRODUCT_IDS,
   })
@@ -107,7 +105,7 @@ export function FavoritesAddDocs() {
     ApiParam({
       name: 'productId',
       description: 'MongoDB ObjectId of the product to add to favorites.',
-      example: FAVORITES_PRODUCT_ID_EXAMPLE,
+      example: '65f1e8d3f9a2b56789c12345',
     }),
     ApiOkResponse({
       description: 'Product added to favorites successfully.',
@@ -134,7 +132,7 @@ export function FavoritesRemoveDocs() {
     ApiParam({
       name: 'productId',
       description: 'MongoDB ObjectId of the product to remove from favorites.',
-      example: FAVORITES_PRODUCT_ID_EXAMPLE,
+      example: '65f1e8d3f9a2b56789c12345',
     }),
     ApiOkResponse({
       description: 'Product removed from favorites successfully.',
