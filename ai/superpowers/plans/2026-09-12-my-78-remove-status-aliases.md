@@ -23,6 +23,17 @@ contract change (same `HttpStatus.*` values, just referenced directly).
      `HttpStatus.BAD_REQUEST`/`HttpStatus.INTERNAL_SERVER_ERROR` (new
      `HttpStatus` import).
    - No other files reference either alias (confirmed by repo-wide grep).
+   - Deviation found during implementation: comparing the plain-`number`
+     `status`/`statusCode` locals against `HttpStatus.*` (an enum) trips
+     `@typescript-eslint/no-unsafe-enum-comparison` — this is exactly why
+     the removed aliases were typed `: number` in the first place. Fixed by
+     typing the value as `HttpStatus` where it's first produced instead —
+     `resolveStatus()`'s return type and `buildResponseBody`'s `status`
+     param in `all-exceptions.filter.ts`, `RequestLogPayload.statusCode`,
+     and the `statusCode` local in `request-logging.middleware.ts` — so
+     every later comparison is enum-to-enum and the rule never fires; no
+     `eslint-disable` and no `as` cast anywhere. See
+     [decisions/no-number-typed-http-status-aliases](../decisions/2026-09-12-no-number-typed-http-status-aliases.md).
 
 ## Verification
 
