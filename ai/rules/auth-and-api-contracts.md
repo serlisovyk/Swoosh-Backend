@@ -80,3 +80,7 @@ The canonical error shape for this API — the same shape used across the author
 
 - Keep throwing built-in Nest HTTP exceptions from services — do **not** hand-roll a different error shape in individual endpoints.
 - A field-validation 400 gets `code: "VALIDATION_ERROR"` and a `fields` map; every other 400 (e.g. Turnstile) gets `code: "BAD_REQUEST"` with no `fields`.
+
+## Request ID
+
+Every response — success or error — carries an `x-request-id` response header (`src/common/logging/request-logging.middleware.ts`, wired first in `main.ts`). A client-supplied `x-request-id` request header is echoed back verbatim when it matches a safe id shape (`REQUEST_ID_PATTERN`); otherwise one is generated. This is a plain response header, not part of the JSON error envelope body above — the envelope shape is unchanged.
