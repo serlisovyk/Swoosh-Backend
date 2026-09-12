@@ -164,16 +164,16 @@ PUT /profile
 
 `GET /products` supported query parameters:
 
-| Parameter                        | Type      | Description                        |
-| --------------------------------- | --------- | ----------------------------------- |
-| `page`                             | number    | Page number, starts from 1          |
-| `limit`                            | number    | Page size, up to 100                |
-| `search`                           | string    | Text search                         |
-| `sort`                             | string    | Sort option                         |
-| `category`, `material`, `colorName`| string[]  | Filter by these fields              |
-| `size`, `price`                    | number[]  | Filter by size / price range        |
-| `isHit`, `isNewArrival`, `hasDiscount` | boolean | Filter flags                    |
-| `ids`, `excludeIds`                | string[]  | Include/exclude specific product ids|
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `page` | number | Page number, starts from 1 |
+| `limit` | number | Page size, up to 100 |
+| `search` | string | Text search |
+| `sort` | string | Sort option |
+| `category`, `material`, `colorName` | string[] | Filter by these fields |
+| `size`, `price` | number[] | Filter by size / price range |
+| `isHit`, `isNewArrival`, `hasDiscount` | boolean | Filter flags |
+| `ids`, `excludeIds` | string[] | Include/exclude specific product ids |
 
 ```text
 GET /products/filters
