@@ -1,7 +1,6 @@
 import {
   ApiAuthRequiredDocs,
   ApiInvalidQueryDocs,
-  ApiNotFoundDocs,
   ApiValidationErrorDocs,
   ErrorResponseDocs,
 } from '@common/errors'
@@ -10,6 +9,7 @@ import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -32,54 +32,54 @@ export function ContactRequestTagDocs() {
 }
 
 export const ContactRequestNamePropertyDocs = createPropertyDocsDecorator({
-  description: 'Sender name from the contact form.',
+  description: 'Имя отправителя из формы обратной связи.',
   example: 'John Swoosh',
 })
 
 export const ContactRequestEmailPropertyDocs = createPropertyDocsDecorator({
-  description: 'Sender email from the contact form.',
+  description: 'Email отправителя из формы обратной связи.',
   example: 'john.swoosh@example.com',
 })
 
 export const ContactRequestMessagePropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Optional message from the contact form.',
+    description: 'Необязательное сообщение из формы обратной связи.',
     example: 'I want to clarify delivery terms for a recent order.',
   })
 
 export const ContactRequestResponseIdPropertyDocs = createPropertyDocsDecorator(
   {
-    description: 'Contact request identifier.',
+    description: 'Идентификатор обращения.',
     example: CONTACT_REQUEST_ID_EXAMPLE,
   },
 )
 
 export const ContactRequestCreatedAtPropertyDocs = createPropertyDocsDecorator({
-  description: 'Creation timestamp.',
+  description: 'Время создания.',
   example: '2026-04-10T10:00:00.000Z',
 })
 
 export const ContactRequestUpdatedAtPropertyDocs = createPropertyDocsDecorator({
-  description: 'Last update timestamp.',
+  description: 'Время последнего обновления.',
   example: '2026-04-10T10:15:00.000Z',
 })
 
 export const ContactRequestQuerySearchPropertyDocs =
   createOptionalPropertyDocsDecorator({
     description:
-      'Free-text search by name, email, or message. Available only for admins.',
+      'Полнотекстовый поиск по имени, email или сообщению. Доступно только администраторам.',
     example: 'delivery',
   })
 
 export const ContactRequestQueryLimitPropertyDocs = QueryLimitPropertyDocs({
-  description: 'Maximum number of contact requests returned per page.',
+  description: 'Максимальное количество обращений на странице.',
   example: DEFAULT_CONTACT_REQUESTS_LIMIT,
   maximum: LIST_QUERY_MAX_LIMIT,
 })
 
 export const ContactRequestQuerySortPropertyDocs =
   createOptionalPropertyDocsDecorator({
-    description: 'Sorting strategy for the contact requests list.',
+    description: 'Стратегия сортировки списка обращений.',
     enum: CREATED_AT_SORT_OPTIONS,
     enumName: 'ContactRequestSortOptions',
     example: CREATED_AT_SORT_OPTIONS.NEWEST,
@@ -87,13 +87,13 @@ export const ContactRequestQuerySortPropertyDocs =
 
 export function ContactRequestListItemsPropertyDocs(model: Type<unknown>) {
   return createPropertyDocsDecorator({
-    description: 'Contact requests matching the current admin filters.',
+    description: 'Обращения, соответствующие текущим фильтрам администратора.',
     type: [model],
   })()
 }
 
 export const ContactRequestTotalPropertyDocs = createPropertyDocsDecorator({
-  description: 'Total number of matching contact requests.',
+  description: 'Общее количество найденных обращений.',
   example: 24,
 })
 
@@ -128,13 +128,13 @@ export class ContactRequestListResponseDocs {
 export function ContactRequestCreateDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Create contact request',
+      summary: 'Создать обращение',
       description:
-        'Public endpoint for sending a message through the contact form.',
+        'Публичный эндпоинт для отправки сообщения через форму обратной связи.',
       security: [],
     }),
     ApiCreatedResponse({
-      description: 'Contact request processed successfully.',
+      description: 'Обращение успешно обработано.',
       schema: {
         type: 'boolean',
         example: true,
@@ -147,17 +147,18 @@ export function ContactRequestCreateDocs() {
 export function ContactRequestFindAllDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Get contact requests list',
-      description: 'Returns a paginated list of contact requests for admins.',
+      summary: 'Получить список обращений',
+      description:
+        'Возвращает постраничный список обращений для администраторов.',
     }),
     ApiOkResponse({
-      description: 'Contact requests returned successfully.',
+      description: 'Список обращений успешно получен.',
       type: ContactRequestListResponseDocs,
     }),
     ApiInvalidQueryDocs(),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can access contact requests.',
+      description: 'Только администраторы могут просматривать обращения.',
       type: ErrorResponseDocs,
     }),
   )
@@ -166,83 +167,92 @@ export function ContactRequestFindAllDocs() {
 export function ContactRequestFindByIdDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Get contact request by id',
+      summary: 'Получить обращение по id',
     }),
     ApiParam({
       name: 'id',
-      description: 'MongoDB ObjectId of the contact request.',
+      description: 'MongoDB ObjectId обращения.',
       example: CONTACT_REQUEST_ID_EXAMPLE,
     }),
     ApiOkResponse({
-      description: 'Contact request returned successfully.',
+      description: 'Обращение успешно получено.',
       type: ContactRequestResponseDocs,
     }),
     ApiBadRequestResponse({
-      description: 'Contact request id has an invalid format.',
+      description: 'Некорректный формат id обращения.',
       type: ErrorResponseDocs,
     }),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can access contact requests.',
+      description: 'Только администраторы могут просматривать обращения.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundDocs('Contact request with the provided id'),
+    ApiNotFoundResponse({
+      description: 'Обращение с указанным id не найдено.',
+      type: ErrorResponseDocs,
+    }),
   )
 }
 
 export function ContactRequestUpdateDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Update contact request',
+      summary: 'Обновить обращение',
     }),
     ApiParam({
       name: 'id',
-      description: 'MongoDB ObjectId of the contact request.',
+      description: 'MongoDB ObjectId обращения.',
       example: CONTACT_REQUEST_ID_EXAMPLE,
     }),
     ApiOkResponse({
-      description: 'Contact request updated successfully.',
+      description: 'Обращение успешно обновлено.',
       type: ContactRequestResponseDocs,
     }),
     ApiBadRequestResponse({
-      description: 'Contact request id or request body is invalid.',
+      description: 'Некорректный id обращения или тело запроса.',
       type: ErrorResponseDocs,
     }),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can update contact requests.',
+      description: 'Только администраторы могут обновлять обращения.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundDocs('Contact request with the provided id'),
+    ApiNotFoundResponse({
+      description: 'Обращение с указанным id не найдено.',
+      type: ErrorResponseDocs,
+    }),
   )
 }
 
 export function ContactRequestDeleteDocs() {
   return applyDecorators(
     ApiOperation({
-      summary: 'Delete contact request',
+      summary: 'Удалить обращение',
     }),
     ApiParam({
       name: 'id',
-      description: 'MongoDB ObjectId of the contact request.',
+      description: 'MongoDB ObjectId обращения.',
       example: CONTACT_REQUEST_ID_EXAMPLE,
     }),
     ApiOkResponse({
-      description: 'Contact request deleted successfully.',
+      description: 'Обращение успешно удалено.',
       schema: {
         type: 'boolean',
         example: true,
       },
     }),
     ApiBadRequestResponse({
-      description: 'Contact request id has an invalid format.',
+      description: 'Некорректный формат id обращения.',
       type: ErrorResponseDocs,
     }),
     ApiAuthRequiredDocs(),
     ApiForbiddenResponse({
-      description: 'Only admins can delete contact requests.',
+      description: 'Только администраторы могут удалять обращения.',
       type: ErrorResponseDocs,
     }),
-    ApiNotFoundDocs('Contact request with the provided id'),
+    ApiNotFoundResponse({
+      description: 'Обращение с указанным id не найдено.',
+      type: ErrorResponseDocs,
+    }),
   )
 }
