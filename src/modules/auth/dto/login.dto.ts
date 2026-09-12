@@ -14,9 +14,9 @@ import {
   FAVORITES_PRODUCT_ID_FORMAT_ERROR,
   FAVORITES_PRODUCT_IDS_MAX_SIZE_ERROR,
   FAVORITES_MAX_PRODUCT_IDS,
-} from '@modules/favorites/favorites.constants'
+  FavoritesOptionalProductIdsPropertyDocs,
+} from '@modules/favorites'
 import { normalizeEmailValue } from '@shared/utils'
-import { FavoritesOptionalProductIdsPropertyDocs } from '@modules/favorites/favorites.swagger'
 import {
   AuthEmailPropertyDocs,
   AuthPasswordPropertyDocs,

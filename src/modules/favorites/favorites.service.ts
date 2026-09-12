@@ -4,8 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { ProductsService } from '@modules/products/products.service'
-import { PRODUCT_NOT_FOUND_ERROR } from '@modules/products/products.constants'
+import { PRODUCT_NOT_FOUND_ERROR, ProductsService } from '@modules/products'
 import { UserService } from '@modules/user/user.service'
 import { USER_NOT_FOUND_ERROR } from '@modules/user/user.constants'
 import { FindAllFavoritesDto } from './dto/find-all-favorites.dto'
