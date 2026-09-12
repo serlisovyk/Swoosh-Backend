@@ -11,9 +11,6 @@ import {
 } from './password-reset.constants'
 import { AuthTagDocs } from '../auth.swagger'
 
-// Same `/auth` prefix and Swagger tag as AuthController — a `/auth/password-reset`
-// subpath was considered and rejected, since it would change these two public
-// routes. Keeping them flat under /auth was the deliberate choice (MY-54).
 @AuthTagDocs()
 @Controller('auth')
 export class PasswordResetController {

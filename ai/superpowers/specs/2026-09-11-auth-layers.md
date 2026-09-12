@@ -39,7 +39,7 @@ src/modules/auth/
 
 ## Decision: keep `/auth` prefix + tag shared between two controllers
 
-`AuthController` and `PasswordResetController` both declare `@Controller('auth')` and both use `AuthTagDocs()`. The issue asks to consciously choose between leaving this as-is (with a comment) or giving password-reset its own subpath. A subpath (`@Controller('auth/password-reset')`) would change the two public routes to `/auth/password-reset/request-password-reset` etc. — a breaking path change, which contradicts "Готово когда: пути ... те же" for this ticket. **Chosen: keep the shared prefix and tag**, with a one-line comment on `PasswordResetController` explaining why (so the next reader doesn't "fix" the apparent duplication). Recorded as a decision (`ai/decisions/2026-09-11-password-reset-shares-auth-prefix.md`).
+`AuthController` and `PasswordResetController` both declare `@Controller('auth')` and both use `AuthTagDocs()`. The issue asks to consciously choose between leaving this as-is (with a comment) or giving password-reset its own subpath. A subpath (`@Controller('auth/password-reset')`) would change the two public routes to `/auth/password-reset/request-password-reset` etc. — a breaking path change, which contradicts "Готово когда: пути ... те же" for this ticket. **Chosen: keep the shared prefix and tag**, recorded as a decision (`ai/decisions/2026-09-11-password-reset-shares-auth-prefix.md`) rather than an inline comment — no comment on `PasswordResetController` itself, per author feedback that it read as noise.
 
 ## What does NOT change
 

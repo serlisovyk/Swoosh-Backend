@@ -8,7 +8,7 @@ Date: 2026-09-11 · Status: implemented (MY-54)
 
 ## Decision
 
-Keep the shared `/auth` prefix and `Auth` Swagger tag. A subpath would change two public routes (`POST /auth/request-password-reset` → `POST /auth/password-reset/request-password-reset`, and similarly for `reset-password`) — a breaking change for any client, for a purely internal code-organization reason. MY-54's own "Готово когда" requires the public paths to stay identical. `PasswordResetController` carries a comment pointing here so a future reader doesn't "fix" the apparent duplication by introducing that breaking change.
+Keep the shared `/auth` prefix and `Auth` Swagger tag. A subpath would change two public routes (`POST /auth/request-password-reset` → `POST /auth/password-reset/request-password-reset`, and similarly for `reset-password`) — a breaking change for any client, for a purely internal code-organization reason. MY-54's own "Готово когда" requires the public paths to stay identical. No inline comment in `PasswordResetController` — this record is the reference if a future reader wonders about the apparent duplication.
 
 ## Consequences
 
