@@ -1,4 +1,5 @@
 import { Model } from 'mongoose'
+import { SortMap } from '@shared/types'
 import { IndividualOrder } from './models/individual-order.model'
 
 export type IndividualOrderModel = Model<IndividualOrder>
@@ -7,7 +8,7 @@ export interface IndividualOrderListQueryOptions {
   filters: Record<string, unknown>
   limit: number
   skip: number
-  sort: Record<string, 1 | -1>
+  sort: SortMap
 }
 
 export interface IndividualOrderListResponse {

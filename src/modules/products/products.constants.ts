@@ -1,3 +1,4 @@
+import { SortMap } from '@shared/types'
 import { PRODUCT_SORT_OPTIONS } from './products.types'
 
 export const PRODUCT_NOT_FOUND_ERROR = 'Товар не найден'
@@ -17,10 +18,7 @@ export const PRODUCT_QUERY_LIMIT_MAX_ERROR = `Лимит должен быть �
 
 export const FILTERS_METADATA_CACHE_TTL_MS = 60_000
 
-export const PRODUCT_SORT_MAP: Record<
-  PRODUCT_SORT_OPTIONS,
-  Record<string, 1 | -1>
-> = {
+export const PRODUCT_SORT_MAP: Record<PRODUCT_SORT_OPTIONS, SortMap> = {
   [PRODUCT_SORT_OPTIONS.NEWEST]: { createdAt: -1 },
   [PRODUCT_SORT_OPTIONS.OLDEST]: { createdAt: 1 },
   [PRODUCT_SORT_OPTIONS.PRICE_ASC]: { price: 1 },

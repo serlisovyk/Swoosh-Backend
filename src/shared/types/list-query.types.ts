@@ -1,3 +1,5 @@
+import { SortMap } from './sort.types'
+
 export const CREATED_AT_SORT_OPTIONS = {
   NEWEST: 'NEWEST',
   OLDEST: 'OLDEST',
@@ -12,7 +14,7 @@ export interface ResolveListQueryOptionsParams<
   page?: number
   limit?: number
   sort?: TSort
-  sortMap: Record<TSort, Record<string, 1 | -1>>
+  sortMap: Record<TSort, SortMap>
   defaultSort: TSort
   defaultLimit: number
 }
@@ -20,5 +22,5 @@ export interface ResolveListQueryOptionsParams<
 export interface ResolvedListQueryOptions {
   skip: number
   limit: number
-  sort: Record<string, 1 | -1>
+  sort: SortMap
 }
