@@ -9,8 +9,7 @@ import {
   flattenValidationErrors,
 } from '@common/errors'
 import { setupSwagger } from '@common/swagger'
-import { setupValidation } from '@shared/config'
-import { parseCorsDomainsConfigValue } from '@shared/utils'
+import { AppEnv, setupValidation } from '@shared/config'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
@@ -18,7 +17,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1')
 
-  const configService = app.get(ConfigService)
+  const configService = app.get<ConfigService<AppEnv, true>>(ConfigService)
 
   setupValidation(
     app,
@@ -32,9 +31,7 @@ async function bootstrap() {
   app.use(helmet())
 
   app.enableCors({
-    origin: parseCorsDomainsConfigValue(
-      configService.get<string>('CORS_DOMAINS'),
-    ),
+    origin: configService.get('CORS_DOMAINS', { infer: true }),
     credentials: true,
   })
 
@@ -42,9 +39,9 @@ async function bootstrap() {
 
   setupSwagger(app, configService)
 
-  const PORT = configService.getOrThrow<number>('PORT')
+  const port = configService.get('PORT', { infer: true })
 
-  await app.listen(PORT)
+  await app.listen(port)
 }
 
 void bootstrap()

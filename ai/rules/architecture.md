@@ -41,6 +41,13 @@ These rules apply to the Swoosh Server backend.
 - When a list endpoint follows a query-options builder pattern, keep using it.
 - Keep default sort and limit values in module constants when reused.
 
+## Configuration and Environment
+
+- `ConfigModule.forRoot` is wired with a `class-validator` schema (`src/shared/config/env.config.ts`, `AppEnv` class + `validateEnv`) as its `validate` option, plus `cache: true`. A missing or malformed env var fails the whole boot with every offending key listed at once — do not read an env var with a bare `configService.get`/`getOrThrow` without first adding it to the schema.
+- Inject `ConfigService<AppEnv, true>` (`AppEnv` from `@shared/config`), never a bare `ConfigService`, wherever env values are read. Read with `configService.get('KEY', { infer: true })` — no explicit `<T>` type argument; the type comes from the schema. Reserve `getOrThrow` for the few keys the schema itself leaves optional where the call site wants a hard crash on absence (e.g. `SWAGGER_USER`/`SWAGGER_PASSWORD` outside dev).
+- `CORS_DOMAINS` is the only key whose requiredness differs by environment: required in production, defaulted to a local origin in development. Any other env-conditional requirement follows the same pattern (schema-level, not a runtime `if` sprinkled at the read site) — see [decisions/env-validated-at-boot](../decisions/2026-09-12-env-validated-at-boot.md).
+- `cache: true` on `ConfigModule` means a running process does not pick up an env change without a restart — this is deliberate, not an oversight.
+
 ## Application Bootstrap (`src/main.ts`)
 
 - Global route prefix is `api/v1`. Do not set per-controller prefixes that fight it.
@@ -53,7 +60,7 @@ These rules apply to the Swoosh Server backend.
 
 ## Global Providers
 
-- `ThrottlerGuard` is registered globally as an `APP_GUARD` (`src/common/throttler`); tighten specific routes with `@Throttle`. Throttling is skipped in dev via `skipIf`.
+- `ThrottlerGuard` is registered globally as an `APP_GUARD` (`src/common/throttler`); tighten specific routes with `@Throttle`. Throttling is skipped in dev via `skipIf`, and `getThrottlerConfig` (the `ThrottlerModule` `useFactory`, run once at boot) logs a warning when it is — a prod host misconfigured with `NODE_ENV=development` shows up in the boot log instead of silently losing rate limiting.
 - `AllExceptionsFilter` (`src/common/errors`) is registered globally in `main.ts` via `app.useGlobalFilters`. There are still no global interceptors. If you add one, document it here and update the review/security skills in the same change.
 
 ## Persistence (Mongo)

@@ -1,6 +1,7 @@
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { ConfigService } from '@nestjs/config'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
+import { AppEnv } from '@shared/config'
 import { isDev } from '@shared/utils'
 import {
   addSwaggerCookieAuth,
@@ -18,13 +19,15 @@ import {
 
 export function setupSwagger(
   app: NestExpressApplication,
-  configService: ConfigService,
+  configService: ConfigService<AppEnv, true>,
 ) {
-  if (configService.get<string>('SWAGGER_ENABLED') === 'false') return
+  if (!configService.get('SWAGGER_ENABLED', { infer: true })) return
 
   if (!isDev(configService)) {
-    const user = configService.getOrThrow<string>('SWAGGER_USER')
-    const password = configService.getOrThrow<string>('SWAGGER_PASSWORD')
+    const user = configService.getOrThrow('SWAGGER_USER', { infer: true })
+    const password = configService.getOrThrow('SWAGGER_PASSWORD', {
+      infer: true,
+    })
 
     app.use(
       createSwaggerBasicAuthMiddleware(`/${SWAGGER_PATH}`, user, password),

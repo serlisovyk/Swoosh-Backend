@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { validateEnv } from '@shared/config'
 import { MongoModule } from '@common/mongo'
 import { ThrottlerModule } from '@common/throttler'
 import { CaptchaModule } from '@common/captcha'
@@ -12,7 +13,11 @@ import { SystemModule } from './modules/system/system.module'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate: validateEnv,
+      cache: true,
+    }),
     MongoModule,
     ThrottlerModule,
     CaptchaModule,

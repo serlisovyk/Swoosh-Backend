@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config'
 import { InjectModel } from '@nestjs/mongoose'
 import { mongo } from 'mongoose'
 import { hash, verify } from 'argon2'
+import { AppEnv } from '@shared/config'
 import { hashTokenWithSecret } from '@shared/utils'
 import { THIRTY_MINUTES_IN_MS } from '@shared/constants'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -27,7 +28,7 @@ import { ROLES, type CreateUserInput, type UserModel } from './user.types'
 export class UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: UserModel,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<AppEnv, true>,
   ) {}
 
   getById(id: string) {
@@ -147,7 +148,7 @@ export class UserService {
   consumePasswordResetToken(token: string) {
     const hashedToken = hashTokenWithSecret(
       token,
-      this.configService.getOrThrow<string>('RESET_TOKEN_SECRET'),
+      this.configService.get('RESET_TOKEN_SECRET', { infer: true }),
     )
 
     return this.userModel
@@ -168,7 +169,7 @@ export class UserService {
     return this.userModel.findByIdAndUpdate(userId, {
       resetPasswordToken: hashTokenWithSecret(
         token,
-        this.configService.getOrThrow<string>('RESET_TOKEN_SECRET'),
+        this.configService.get('RESET_TOKEN_SECRET', { infer: true }),
       ),
       resetPasswordTokenExpiresAt: new Date(Date.now() + THIRTY_MINUTES_IN_MS),
     })

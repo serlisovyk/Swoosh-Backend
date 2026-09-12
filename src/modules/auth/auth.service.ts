@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
 import { verify } from 'argon2'
 import ms, { StringValue } from 'ms'
+import { AppEnv } from '@shared/config'
 import { noop } from '@shared/utils'
 import { FavoritesService } from '@modules/favorites/favorites.service'
 import { UserService } from '../user/user.service'
@@ -33,7 +34,7 @@ export class AuthService {
     private readonly jwt: JwtService,
     private readonly userService: UserService,
     private readonly favoritesService: FavoritesService,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<AppEnv, true>,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -95,7 +96,7 @@ export class AuthService {
 
     return this.jwt
       .verifyAsync<RefreshTokenPayload>(refreshToken, {
-        secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+        secret: this.configService.get('JWT_REFRESH_SECRET', { infer: true }),
       })
       .catch(() => null)
   }
@@ -106,8 +107,9 @@ export class AuthService {
     const user = await this.userService.getByEmailWithPassword(email)
 
     if (!user) {
-      const dummyPasswordHash = this.configService.getOrThrow<string>(
+      const dummyPasswordHash = this.configService.get(
         'AUTH_DUMMY_PASSWORD_HASH',
+        { infer: true },
       )
 
       await verify(dummyPasswordHash, password)
@@ -160,13 +162,13 @@ export class AuthService {
     }
 
     const accessToken = this.jwt.sign(accessTokenPayload, {
-      expiresIn: this.configService.getOrThrow<StringValue>(
-        'JWT_ACCESS_TOKEN_EXPIRES_IN',
-      ),
+      expiresIn: this.configService.get('JWT_ACCESS_TOKEN_EXPIRES_IN', {
+        infer: true,
+      }),
     })
 
     const refreshToken = this.jwt.sign(refreshTokenPayload, {
-      secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+      secret: this.configService.get('JWT_REFRESH_SECRET', { infer: true }),
       expiresIn: this.getRefreshTokenExpiresIn(),
     })
 
@@ -177,10 +179,13 @@ export class AuthService {
     }
   }
 
-  private getRefreshTokenExpiresIn() {
-    return this.configService.getOrThrow<StringValue>(
-      'JWT_REFRESH_TOKEN_EXPIRES_IN',
-    )
+  // ms's StringValue is a branded template-literal type zod can't express as
+  // a runtime-checked shape (schema only guarantees a non-empty string) — an
+  // explicit return type here lets it flow in via context, no `as` needed.
+  private getRefreshTokenExpiresIn(): StringValue {
+    return this.configService.get('JWT_REFRESH_TOKEN_EXPIRES_IN', {
+      infer: true,
+    })
   }
 
   private getRefreshTokenExpiresAt() {
