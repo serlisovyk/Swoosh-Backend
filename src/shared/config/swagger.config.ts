@@ -28,7 +28,7 @@ function buildSwaggerDocument(app: NestExpressApplication) {
       type: 'http',
       scheme: 'bearer',
       bearerFormat: 'JWT',
-      description: 'Access token passed in the Authorization header.',
+      description: 'Access-токен, передаваемый в заголовке Authorization.',
     },
     SWAGGER_ACCESS_TOKEN_AUTH_NAME,
   )

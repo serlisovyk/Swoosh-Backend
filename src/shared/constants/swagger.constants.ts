@@ -7,5 +7,5 @@ export const SWAGGER_BASIC_AUTH_REALM = 'Swoosh API Docs'
 
 export const SWAGGER_SITE_TITLE = 'Swoosh API Docs'
 export const SWAGGER_DESCRIPTION =
-  'REST API documentation for Swoosh store application'
+  'REST API документация приложения интернет-магазина Swoosh'
 export const SWAGGER_VERSION = '1.0.0'

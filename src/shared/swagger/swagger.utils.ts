@@ -26,7 +26,7 @@ export function createOptionalPropertyDocsDecorator(
 
 export function QueryPagePropertyDocs(options: QueryPagePropertyDocsOptions) {
   return createOptionalPropertyDocsDecorator({
-    description: options.description ?? 'Results page number.',
+    description: options.description ?? 'Номер страницы результатов.',
     example: options.example,
     minimum: 1,
   })
@@ -35,7 +35,7 @@ export function QueryPagePropertyDocs(options: QueryPagePropertyDocsOptions) {
 export function QueryLimitPropertyDocs(options: QueryLimitPropertyDocsOptions) {
   return createOptionalPropertyDocsDecorator({
     description:
-      options.description ?? 'Maximum number of items returned per page.',
+      options.description ?? 'Максимальное количество элементов на странице.',
     example: options.example,
     minimum: 1,
     maximum: options.maximum,
@@ -64,7 +64,7 @@ export function addSwaggerCookieAuth(
     token,
     {
       type: 'apiKey',
-      description: 'Refresh token stored in an HttpOnly cookie.',
+      description: 'Refresh-токен, хранящийся в HttpOnly cookie.',
     },
     token,
   )

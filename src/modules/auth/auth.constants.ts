@@ -1,6 +1,8 @@
 export { REFRESH_TOKEN_COOKIE_NAME } from '@shared/constants'
 
 export const INVALID_CREDENTIALS_ERROR = 'Неверный email или пароль'
+export const AUTH_REQUIRED_ERROR = 'Требуется аутентификация'
+export const ACCESS_DENIED_ERROR = 'Доступ запрещён'
 
 export const EMAIL_VALIDATION_ERROR = 'Email должен быть валидным email адресом'
 export const PASSWORD_STRING_ERROR = 'Пароль должен быть строкой'

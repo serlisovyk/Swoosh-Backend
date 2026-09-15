@@ -29,8 +29,8 @@ Docs are **module-local wrappers**, not long inline decorator stacks on controll
 - Never expose passwords, reset tokens, hashed values, or internal-only fields in docs.
 - Do not document removed features (OAuth, email verification, auth sessions).
 - When a request/response shape changes, update its Swagger in the **same** change.
-- `description`/`summary` text is Russian — see `ai/rules/code-conventions.md` → Documentation language. Every module's Swagger is translated except `system.swagger.ts`, not yet covered by any issue; translate a module's file in full as soon as any issue touches it.
-- A module file that calls a shared error-docs helper taking an entity argument (`ApiNotFoundDocs(entity)`) renders that helper's fixed English template — swap the call for a direct `ApiNotFoundResponse({ description: '<russian text>', type: ErrorResponseDocs })` instead of passing a Russian argument into an English template. Helpers with no argument (`ApiAuthRequiredDocs`, `ApiValidationErrorDocs`, `ApiInvalidQueryDocs`) carry no per-file text and need no change.
+- `description`/`summary` text is Russian — see `ai/rules/code-conventions.md` → Documentation language. Every module's Swagger is translated, including `system.swagger.ts` and the shared helpers in `@common/errors`.
+- `ApiNotFoundDocs(entity: string)` renders `` `Объект «${entity}» не найден.` `` — pass a Russian entity phrase, not an English one, so the rendered sentence stays consistent.
 - A sub-feature with its own controller (e.g. `auth/password-reset`) gets its own `<sub-feature>.swagger.ts` for its operations and property docs, not entries bolted onto the parent module's file — see `src/modules/auth/password-reset/password-reset.swagger.ts`. Only truly shared decorators (like the parent's `*TagDocs()`) stay imported from the parent file.
 
 ## Reaching the docs locally
@@ -43,10 +43,10 @@ Docs are **module-local wrappers**, not long inline decorator stacks on controll
 
 Four shared helpers in `@common/errors` (`src/common/errors/errors.swagger.ts`) exist to remove byte-identical `Api*Response` text that was copy-pasted across modules — use them instead of retyping the same decorator. They live in `common/errors`, not `shared/swagger`, because they're built on `ErrorResponseDocs` — see [decisions/common-vs-shared-boundary](../decisions/2026-09-12-common-vs-shared-boundary.md):
 
-- `ApiAuthRequiredDocs()` → `ApiUnauthorizedResponse({ description: 'Authentication is required.' })` — any endpoint that requires a valid access token.
-- `ApiValidationErrorDocs()` → `ApiBadRequestResponse({ description: 'Request body validation failed.' })` — a request body failed DTO validation. Do not use it for query-parameter validation.
-- `ApiInvalidQueryDocs()` → `ApiBadRequestResponse({ description: 'One or more query parameters are invalid.' })` — a list endpoint's query DTO failed validation.
-- `ApiNotFoundDocs(entity: string)` → `ApiNotFoundResponse({ description: \`${entity} was not found.\` })` — pass the exact entity phrase needed for the existing text, including a suffix like `'with the provided id'` when that's part of the current wording (e.g. `ApiNotFoundDocs('Product with the provided id')` reproduces `'Product with the provided id was not found.'`). Never assume the shorter phrasing — check the byte-for-byte text you're replacing first.
+- `ApiAuthRequiredDocs()` → `ApiUnauthorizedResponse({ description: 'Требуется аутентификация.' })` — any endpoint that requires a valid access token.
+- `ApiValidationErrorDocs()` → `ApiBadRequestResponse({ description: 'Валидация тела запроса не пройдена.' })` — a request body failed DTO validation. Do not use it for query-parameter validation.
+- `ApiInvalidQueryDocs()` → `ApiBadRequestResponse({ description: 'Один или несколько параметров запроса недопустимы.' })` — a list endpoint's query DTO failed validation.
+- `ApiNotFoundDocs(entity: string)` → `ApiNotFoundResponse({ description: \`Объект «${entity}» не найден.\` })` — pass the exact Russian entity phrase needed for the existing text. Never assume the shorter phrasing — check the byte-for-byte text you're replacing first.
 
 **When not to use them — do not force a match:**
 
