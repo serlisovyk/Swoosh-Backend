@@ -25,9 +25,6 @@ export class PasswordResetService {
     const clientUrl = getEnv(this.configService, 'app.CLIENT_URL')
     const resetUrl = `${clientUrl}${RESET_PASSWORD_URL}?token=${resetToken}`
 
-    // Neither call is awaited: response timing must not depend on whether
-    // the account exists, and the dominant cost here (a Resend network
-    // call) is too variable for a same-cost dummy op — see MY-80.
     void this.usersService
       .setPasswordResetToken(String(user._id), resetToken)
       .catch((error: unknown) => {

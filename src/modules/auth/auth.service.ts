@@ -154,11 +154,6 @@ export class AuthService {
       id: String(user._id),
     }
 
-    // ms's StringValue is a branded template-literal type class-validator
-    // can't express as a runtime-checked shape (the schema only guarantees a
-    // non-empty string) — getEnv's return type is computed directly from the
-    // key (unlike ConfigService.get's own free generic default, which let
-    // this flow in via context with no `as`), so the cast is explicit here.
     const accessToken = this.jwt.sign(accessTokenPayload, {
       expiresIn: getEnv(
         this.configService,
