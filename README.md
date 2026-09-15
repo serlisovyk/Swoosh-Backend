@@ -98,11 +98,11 @@ The image runs as the non-root `node` user; `.env` is never baked into the image
 
 The app can also be deployed as a Vercel serverless function, in addition to Docker:
 
-- `vercel.json` only sets one `rewrites` rule (every path → `/api`) — the build command (`bun run build`) is set directly in the Vercel project's dashboard settings, not in this file.
-- Framework Preset in the Vercel dashboard must be **Other**, not the built-in "NestJS" preset (that preset bypasses `api/` and tries to run `dist/main.js` directly).
+- `vercel.json` is the whole deploy contract — `framework: null`, `buildCommand: "bun run build:vercel"`, `outputDirectory: "public"`, and the one `rewrites` rule (every path → `/api`). Nothing deploy-relevant lives in the Vercel dashboard.
+- `bun run build:vercel` runs the normal `bun run build` and then creates an empty `public/` — Vercel's "Other" framework preset still expects a static output directory to exist even for a functions-only deploy. `public/` is gitignored; the build script is what creates it, both locally and on Vercel.
 - `api/index.ts` is the function Vercel auto-detects; it re-exports the handler built in `src/serverless.ts`, which reuses the same `setupApp()` wiring as `src/main.ts` but calls `app.init()` instead of `app.listen()` and caches the Nest app across warm invocations.
 - Set every variable from `.env.sample` in the Vercel project's environment variables (dashboard or `vercel env add`) — nothing is read from a committed `.env` file.
-- See [decisions/vercel-serverless-entry](ai/decisions/2026-09-12-vercel-serverless-entry.md) for why the serverless entry is a separate file rather than a branch inside `main.ts`.
+- See [decisions/vercel-serverless-entry](ai/decisions/2026-09-12-vercel-serverless-entry.md) for why the serverless entry is a separate file rather than a branch inside `main.ts`, and [decisions/vercel-config-in-repo](ai/decisions/2026-09-15-vercel-config-in-repo.md) for why the deploy config moved out of the dashboard.
 
 ## 🚀 Scripts
 

@@ -8,6 +8,7 @@
   "scripts": {
     "prepare": "husky",
     "build": "nest build && tsc-alias -p tsconfig.build.json",
+    "build:vercel": "bun run build && mkdir -p public",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
