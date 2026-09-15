@@ -21,7 +21,7 @@ import {
   button,
   link,
   footer,
-} from './styles'
+} from './reset-password.styles'
 
 export function ResetPasswordEmail({
   url,

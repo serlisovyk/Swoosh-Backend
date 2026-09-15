@@ -1,1 +1,1 @@
-export { ResetPasswordEmail } from './template'
+export { ResetPasswordEmail } from './reset-password.template'
