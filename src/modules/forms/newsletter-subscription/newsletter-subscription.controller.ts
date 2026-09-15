@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common'
 import { ParseObjectIdPipe } from '@nestjs/mongoose'
 import { Auth } from '@modules/auth'
-import { ROLES } from '@modules/users/users.types'
+import { ROLES } from '@modules/users'
 import { CreateNewsletterSubscriptionDto } from './dto/create-newsletter-subscription.dto'
 import { FindAllNewsletterSubscriptionsDto } from './dto/find-all-newsletter-subscriptions.dto'
 import { UpdateNewsletterSubscriptionDto } from './dto/update-newsletter-subscription.dto'

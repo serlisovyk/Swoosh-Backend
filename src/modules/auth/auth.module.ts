@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { PassportModule } from '@nestjs/passport'
 import { JwtModule } from '@common/jwt'
-import { UsersModule } from '@modules/users/users.module'
+import { UsersModule } from '@modules/users'
 import { FavoritesModule } from '@modules/favorites'
 import { EmailModule } from '@common/email'
 import { JwtStrategy } from './strategies/jwt.strategy'

@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common'
 import { ParseObjectIdPipe } from '@nestjs/mongoose'
 import { Auth } from '@modules/auth'
-import { ROLES } from '@modules/users/users.types'
+import { ROLES } from '@modules/users'
 import { CreateProductCategoryDto } from './dto/create-product-category.dto'
 import { FindAllProductCategoriesDto } from './dto/find-all-product-categories.dto'
 import { UpdateProductCategoryDto } from './dto/update-product-category.dto'

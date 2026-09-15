@@ -18,7 +18,7 @@ import {
 } from '@shared/swagger'
 import { SWAGGER_REFRESH_TOKEN_AUTH_NAME } from '@shared/constants'
 import { CAPTCHA_TOKEN_HEADER } from '@common/captcha'
-import { UsersResponseDocs } from '../users/users.swagger'
+import { UsersResponseDocs } from '@modules/users'
 
 export function AuthTagDocs() {
   return ApiTags('Auth')

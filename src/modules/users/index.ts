@@ -1,0 +1,6 @@
+export { UsersService } from './users.service'
+export { UsersModule } from './users.module'
+export { ROLES } from './users.types'
+export { USER_NOT_FOUND_ERROR } from './users.constants'
+export { User } from './models/user.model'
+export { UsersResponseDocs } from './users.swagger'

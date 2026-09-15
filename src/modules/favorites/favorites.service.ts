@@ -5,8 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { PRODUCT_NOT_FOUND_ERROR, ProductsService } from '@modules/products'
-import { UsersService } from '@modules/users/users.service'
-import { USER_NOT_FOUND_ERROR } from '@modules/users/users.constants'
+import { USER_NOT_FOUND_ERROR, UsersService } from '@modules/users'
 import { FindAllFavoritesDto } from './dto/find-all-favorites.dto'
 import {
   areFavoriteProductIdsEqual,
