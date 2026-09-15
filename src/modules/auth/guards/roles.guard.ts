@@ -5,7 +5,7 @@ import {
   Injectable,
 } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { ROLES } from '@modules/users'
+import { ROLES } from '@modules/users/users.types'
 import { ACCESS_DENIED_ERROR, ROLES_METADATA_KEY } from '../auth.constants'
 import { PreparedRequest } from '../auth.types'
 
